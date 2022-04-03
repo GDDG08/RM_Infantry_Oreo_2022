@@ -1,13 +1,12 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Utility\i2c_util.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Utility\i2c_util.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:53:34
+ * @LastEditTime : 2022-04-03 22:47:21
  */
-
 
 #ifndef I2C_UTIL_H
 #define I2C_UTIL_H

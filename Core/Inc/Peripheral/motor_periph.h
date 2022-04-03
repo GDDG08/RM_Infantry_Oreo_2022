@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Peripheral\motor_periph.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Peripheral\motor_periph.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-20 12:00:37
+ * @LastEditTime : 2022-04-03 22:47:09
  */
 
 #ifndef MOTOR_PERIPH_H
@@ -71,7 +71,7 @@ typedef struct {
     uint8_t motor_num;
     Motor_MotorTypeDef* motor_handle[4];
     Motor_MotorTypeEnum type;
-    FDCAN_HandleTypeDef*  can_handle;
+    FDCAN_HandleTypeDef* can_handle;
     FDCAN_TxHeaderTypeDef can_header;
 } Motor_MotorGroupTypeDef;
 

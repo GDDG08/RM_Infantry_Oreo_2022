@@ -1,21 +1,30 @@
+/*
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\tim.h
+ * @Descripttion :
+ * @Author       : GDDG08
+ * @Date         : 2022-04-03 22:45:51
+ * @LastEditors  : GDDG08
+ * @LastEditTime : 2022-04-03 22:46:38
+ */
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    tim.h
-  * @brief   This file contains all the function prototypes for
-  *          the tim.c file
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    tim.h
+ * @brief   This file contains all the function prototypes for
+ *          the tim.c file
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2022 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __TIM_H__
@@ -60,7 +69,7 @@ void MX_TIM15_Init(void);
 void MX_TIM16_Init(void);
 void MX_TIM17_Init(void);
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -71,4 +80,3 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 #endif
 
 #endif /* __TIM_H__ */
-

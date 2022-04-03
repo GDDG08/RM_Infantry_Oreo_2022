@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Common_Contrrol\buscomm_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Common_Contrrol\buscomm_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-30 22:31:00
+ * @LastEditTime : 2022-04-03 22:47:31
  */
 
 #include "buscomm_ctrl.h"
@@ -110,17 +110,17 @@ void BusComm_Task(void const* argument) {
  */
 void BusComm_InitBusComm() {
     BusComm_ResetBusCommData();
-    FDCAN_InitTxHander(&BusComm_GimControl, CMD_SET_CONTROL, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
-    FDCAN_InitTxHander(&BusComm_GimImuYaw, CMD_SET_IMU_YAW, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
-    FDCAN_InitTxHander(&BusComm_GimChassisRef, CMD_SET_CHA_REF, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_GimControl, CMD_SET_CONTROL, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_GimImuYaw, CMD_SET_IMU_YAW, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_GimChassisRef, CMD_SET_CHA_REF, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
 
-    FDCAN_InitTxHander(&BusComm_ChaRefereeData, CMD_SET_REFEREE_DATA, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
-    FDCAN_InitTxHander(&BusComm_CapMode, CMD_SET_CAP_MODE, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_ChaRefereeData, CMD_SET_REFEREE_DATA, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_CapMode, CMD_SET_CAP_MODE, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
 
     // FDCAN_InitTxHander(&BusComm_CapState, CMD_SEND_CAP_STATE, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
 
-    FDCAN_InitTxHander(&BusComm_CapState_1, CMD_SET_CAP_STATE_1, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
-    FDCAN_InitTxHander(&BusComm_CapState_2, CMD_SET_CAP_STATE_2, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_CapState_1, CMD_SET_CAP_STATE_1, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_CapState_2, CMD_SET_CAP_STATE_2, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
 }
 
 /**

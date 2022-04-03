@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Peripheral\motor_periph.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Peripheral\motor_periph.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-20 12:01:35
+ * @LastEditTime : 2022-04-03 22:47:49
  */
 
 #include "motor_periph.h"
@@ -300,7 +300,7 @@ void Motor_InitMotorGroup(Motor_MotorGroupTypeDef* pgroup, Motor_MotorTypeEnum t
         if (phfdcan == NULL)
             return;
         pgroup->can_handle = phfdcan;
-        FDCAN_InitTxHander(&(pgroup->can_header),stdid,Const_Motor_MOTOR_TX_DLC,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
+        FDCAN_InitTxHander(&(pgroup->can_header), stdid, Const_Motor_MOTOR_TX_DLC, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
     }
     for (int i = 0; i < 4; ++i) {
         pgroup->motor_handle[i] = NULL;

@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Utility\uart_util.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Utility\uart_util.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-30 19:31:58
+ * @LastEditTime : 2022-04-03 22:47:56
  */
 
 #include "uart_util.h"
@@ -21,7 +21,6 @@
 #include "debug_BTlog.h"
 
 /********** VOLATILE USER CODE **********/
-
 
 /**
  * @brief      UART RX Callback allocation function
@@ -163,47 +162,41 @@ void Uart_InitUartDMA(UART_HandleTypeDef* huart) {
 }
 
 /**
-  * @brief Receive an amount of data in DMA mode.
-  * @note   When the UART parity is enabled (PCE = 1), the received data contain
-  *         the parity bit (MSB position).
-  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
-  *         the received data is handled as a set of u16. In this case, Size must indicate the number
-  *         of u16 available through pData.
-  * @param huart UART handle.
-  * @param pData Pointer to data buffer (u8 or u16 data elements).
-  * @param Size  Amount of data elements (u8 or u16) to be received.
-  * @retval HAL status
-  */
-HAL_StatusTypeDef Uart_ReceiveDMA(UART_HandleTypeDef* huart, uint8_t *pData, uint16_t Size) {
-  /* Check that a Rx process is not already ongoing */
-  if (huart->RxState == HAL_UART_STATE_READY)
-  {
-    if ((pData == NULL) || (Size == 0U))
-    {
-      return HAL_ERROR;
+ * @brief Receive an amount of data in DMA mode.
+ * @note   When the UART parity is enabled (PCE = 1), the received data contain
+ *         the parity bit (MSB position).
+ * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+ *         the received data is handled as a set of u16. In this case, Size must indicate the number
+ *         of u16 available through pData.
+ * @param huart UART handle.
+ * @param pData Pointer to data buffer (u8 or u16 data elements).
+ * @param Size  Amount of data elements (u8 or u16) to be received.
+ * @retval HAL status
+ */
+HAL_StatusTypeDef Uart_ReceiveDMA(UART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size) {
+    /* Check that a Rx process is not already ongoing */
+    if (huart->RxState == HAL_UART_STATE_READY) {
+        if ((pData == NULL) || (Size == 0U)) {
+            return HAL_ERROR;
+        }
+
+        __HAL_LOCK(huart);
+
+        /* Set Reception type to Standard reception */
+        huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
+
+        if (!(IS_LPUART_INSTANCE(huart->Instance))) {
+            /* Check that USART RTOEN bit is set */
+            if (READ_BIT(huart->Instance->CR2, USART_CR2_RTOEN) != 0U) {
+                /* Enable the UART Receiver Timeout Interrupt */
+                ATOMIC_SET_BIT(huart->Instance->CR1, USART_CR1_RTOIE);
+            }
+        }
+
+        return (UART_Start_Receive_DMA(huart, pData, Size));
+    } else {
+        return HAL_BUSY;
     }
-
-    __HAL_LOCK(huart);
-
-    /* Set Reception type to Standard reception */
-    huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
-
-    if (!(IS_LPUART_INSTANCE(huart->Instance)))
-    {
-      /* Check that USART RTOEN bit is set */
-      if (READ_BIT(huart->Instance->CR2, USART_CR2_RTOEN) != 0U)
-      {
-        /* Enable the UART Receiver Timeout Interrupt */
-        ATOMIC_SET_BIT(huart->Instance->CR1, USART_CR1_RTOIE);
-      }
-    }
-
-    return (UART_Start_Receive_DMA(huart, pData, Size));
-  }
-  else
-  {
-    return HAL_BUSY;
-  }
 }
 
 /**

@@ -1,11 +1,11 @@
 /*
- * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Code_specification.h
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Code_specification.h
  * @Descripttion :
  * @Author       : GDDG08
- * @Date         : 2021-12-22 22:06:02
+ * @Date         : 2022-04-03 22:45:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:49:00
+ * @LastEditTime : 2022-04-03 22:51:09
  */
 
 /*

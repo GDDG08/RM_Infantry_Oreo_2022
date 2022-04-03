@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Utility\uart_util.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Utility\uart_util.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:58:44
+ * @LastEditTime : 2022-04-03 22:47:22
  */
 
 #ifndef UART_UTIL_H
@@ -30,7 +30,7 @@ void Uart_SendMessage_IT_Force(UART_HandleTypeDef* huart, uint8_t txdata[], uint
 void Uart_ErrorHandler(uint32_t ret);
 uint16_t Uart_DMACurrentDataCounter(DMA_HandleTypeDef* dma_handle);
 void Uart_InitUartDMA(UART_HandleTypeDef* huart);
-HAL_StatusTypeDef Uart_ReceiveDMA(UART_HandleTypeDef* huart, uint8_t *pData, uint16_t Size);
+HAL_StatusTypeDef Uart_ReceiveDMA(UART_HandleTypeDef* huart, uint8_t* pData, uint16_t Size);
 void Uart_ReceiveHandler(UART_HandleTypeDef* huart);
 
 #endif

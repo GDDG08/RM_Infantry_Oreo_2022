@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Library\gif_lib.h
- * @Descripttion : 
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Library\gif_lib.h
+ * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:51:23
+ * @LastEditTime : 2022-04-03 22:47:02
  */
 
 #ifndef GIF_LIB_H

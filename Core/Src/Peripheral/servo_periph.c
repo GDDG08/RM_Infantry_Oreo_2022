@@ -1,13 +1,12 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Peripheral\servo_periph.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Peripheral\servo_periph.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:55:59
+ * @LastEditTime : 2022-04-03 22:47:51
  */
-
 
 #include "servo_periph.h"
 

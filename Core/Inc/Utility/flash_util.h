@@ -1,4 +1,13 @@
 /*
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Utility\flash_util.h
+ * @Descripttion : 
+ * @Author       : GDDG08
+ * @Date         : 2022-04-03 22:11:16
+ * @LastEditors  : GDDG08
+ * @LastEditTime : 2022-04-03 22:47:19
+ */
+/*
  * @Project      : RM_Infantry_Neptune
  * @FilePath     : \infantry_-neptune\Core\Inc\Utility\flash_util.h
  * @Descripttion :
@@ -7,7 +16,6 @@
  * @LastEditors  : GDDG08
  * @LastEditTime : 2022-03-24 19:52:34
  */
-
 
 #ifndef FLASH_UTIL_H
 #define FLASH_UTIL_H

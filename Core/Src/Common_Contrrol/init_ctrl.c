@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Common_Contrrol\init_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Common_Contrrol\init_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-20 12:01:18
+ * @LastEditTime : 2022-04-03 22:47:32
  */
 
 #include "init_ctrl.h"
@@ -89,7 +89,6 @@ void Init_Task(void const* argument) {
     FDCAN_IntFilterAndStart(&hfdcan1);
     FDCAN_IntFilterAndStart(&hfdcan2);
     FDCAN_IntFilterAndStart(&hfdcan3);
-
 
     Gimbal_InitOffset();
     Shooter_InitShooter();

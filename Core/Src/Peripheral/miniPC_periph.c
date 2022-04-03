@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Peripheral\miniPC_periph.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Peripheral\miniPC_periph.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-31 23:58:00
+ * @LastEditTime : 2022-04-03 22:47:48
  */
 
 #include "minipc_periph.h"
@@ -18,7 +18,7 @@
 #include "gim_ins_ctrl.h"
 #include "buff_lib.h"
 
-//UART_HandleTypeDef* Const_MiniPC_UART_HANDLER = &huart5;
+// UART_HandleTypeDef* Const_MiniPC_UART_HANDLER = &huart5;
 
 /*              Mini_PC control constant            */
 /*const */ uint32_t Const_MiniPC_HEART_SENT_PERIOD = 100;  // (ms)
@@ -71,8 +71,8 @@ uint8_t MiniPC_TxData_state[Const_MiniPC_TX_BUFF_LEN];  // miniPC transmit buff
  */
 void MiniPC_InitMiniPC() {
     MiniPC_ResetMiniPCData();
-    //Uart_InitUartDMA(Const_MiniPC_UART_HANDLER);
-    //Uart_ReceiveDMA(Const_MiniPC_UART_HANDLER, MiniPC_RxData, Const_MiniPC_RX_BUFF_LEN);
+    // Uart_InitUartDMA(Const_MiniPC_UART_HANDLER);
+    // Uart_ReceiveDMA(Const_MiniPC_UART_HANDLER, MiniPC_RxData, Const_MiniPC_RX_BUFF_LEN);
 }
 
 /**
@@ -149,9 +149,9 @@ void MiniPC_SendDataPacket() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
-	osDelay(Const_MiniPC_CAPT_PRE);
+    osDelay(Const_MiniPC_CAPT_PRE);
     GPIO_Set(PC_CAM);
-    
+
 #endif
 
     //		COMM DEBUG
@@ -203,14 +203,14 @@ void MiniPC_SendDataPacket() {
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
     osDelay(Const_MiniPC_CAPT_DUR);
     data_count = HAL_GetTick();
-		
+
 #endif
     /*
     if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
         return;  // tx busy
     Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, Const_MiniPC_TX_DATA_FRAME_LEN);
     */
-    CDC_Transmit_FS((uint8_t *)&buff,sizeof(buff));
+    CDC_Transmit_FS((uint8_t*)&buff, sizeof(buff));
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
     GPIO_Reset(PC_CAM);

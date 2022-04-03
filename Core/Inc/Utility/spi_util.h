@@ -1,13 +1,12 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Utility\spi_util.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Utility\spi_util.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:53:41
+ * @LastEditTime : 2022-04-03 22:47:22
  */
-
 
 #ifndef SPI_UTIL_H
 #define SPI_UTIL_H

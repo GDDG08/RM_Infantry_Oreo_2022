@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Const\infantry8_const.h
- * @Descripttion : 
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Const\infantry8_const.h
+ * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:50:41
+ * @LastEditTime : 2022-04-03 22:46:57
  */
 
 #ifndef INFANTRY8_CONST_H

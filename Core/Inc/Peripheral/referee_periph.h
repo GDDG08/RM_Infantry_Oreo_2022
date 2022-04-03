@@ -1,13 +1,12 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Peripheral\referee_periph.h
- * @Descripttion : 
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Peripheral\referee_periph.h
+ * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-23 22:22:25
+ * @LastEditTime : 2022-04-03 22:47:14
  */
-
 
 #ifndef REFEREE_PERIPH_H
 #define REFEREE_PERIPH_H

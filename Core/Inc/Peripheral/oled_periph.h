@@ -1,13 +1,12 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Peripheral\oled_periph.h
- * @Descripttion : 
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Peripheral\oled_periph.h
+ * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:52:08
+ * @LastEditTime : 2022-04-03 22:47:10
  */
-
 
 #ifndef OLED_PERIPH_H
 #define OLED_PERIPH_H

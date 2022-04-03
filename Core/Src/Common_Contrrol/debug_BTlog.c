@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Common_Contrrol\debug_BTlog.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Common_Contrrol\debug_BTlog.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-30 19:33:07
+ * @LastEditTime : 2022-04-03 22:47:31
  */
 
 #include "debug_BTlog.h"
@@ -326,7 +326,7 @@ void BTlog_RXCallback(UART_HandleTypeDef* huart) {
     __HAL_DMA_DISABLE(huart->hdmarx);
     uint16_t rxdatalen = Const_BTlog_RX_BUFF_LEN_MAX - Uart_DMACurrentDataCounter(huart->hdmarx);
     //@Todo New board
-//    uint16_t rxdatalen = Const_BTlog_RX_BUFF_LEN_MAX - Uart_DMACurrentDataCounter(huart->hdmarx);
+    //    uint16_t rxdatalen = Const_BTlog_RX_BUFF_LEN_MAX - Uart_DMACurrentDataCounter(huart->hdmarx);
 
     BTlog_DecodeData(BTlog_RxData, rxdatalen);
 
