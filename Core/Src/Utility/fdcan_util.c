@@ -57,12 +57,14 @@ void FDCAN_IntFilterAndStart(FDCAN_HandleTypeDef* phfdcan) {
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
     sFilterConfig.FilterID1 = 0x0400;
+    // sFilterConfig.FilterID1 = 0x0000;
     sFilterConfig.FilterID2 = 0x0000;
 
     if (HAL_FDCAN_ConfigFilter(phfdcan, &sFilterConfig) != HAL_OK) {
         FDCAN_ErrorHandler();
     }
     if (HAL_FDCAN_ConfigGlobalFilter(phfdcan, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK) {
+        // if (HAL_FDCAN_ConfigGlobalFilter(phfdcan, FDCAN_ACCEPT_IN_RX_FIFO0, FDCAN_ACCEPT_IN_RX_FIFO0, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE) != HAL_OK) {
         FDCAN_ErrorHandler();
     }
     if (HAL_FDCAN_Start(phfdcan) != HAL_OK) {
@@ -111,10 +113,10 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* phfdcan, uint32_t RxFifo0ITs
  * @retval     NULL
  */
 void FDCan_RxMessageCallback(FDCAN_HandleTypeDef* phfdcan, FDCAN_RxHeaderTypeDef* rxheader, uint8_t rxdata[]) {
-    BusComm_CANRxCallback(phfdcan, rxheader->Identifier, rxdata, rxheader->DataLength);
+    BusComm_CANRxCallback(phfdcan, rxheader->Identifier, rxdata, (rxheader->DataLength) >> 16);
 
 #if __FN_IF_ENABLE(__FN_PERIPH_MOTOR)
-    Motor_EncoderDecodeCallback(phfdcan, rxheader->Identifier, rxdata, rxheader->DataLength);  //
+    Motor_EncoderDecodeCallback(phfdcan, rxheader->Identifier, rxdata, (rxheader->DataLength) >> 16);  //
 #endif
 }
 

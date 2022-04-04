@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Common_Contrrol\buscomm_cmd.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Common_Contrrol\buscomm_cmd.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-01 01:12:08
+ * @LastEditTime : 2022-04-04 18:14:35
  */
 
 #include "buscomm_cmd.h"
@@ -208,7 +208,6 @@ static void _set_referee_data(uint8_t buff[]) {
     buscomm->heat_cooling_limit = buff2ui16(buff + 2);
     buscomm->heat_17mm = buff2ui16(buff + 4);
     buscomm->speed_17mm_limit = buff2ui16(buff + 6);
-
     buscomm->last_update_time[0] = HAL_GetTick();
 }
 

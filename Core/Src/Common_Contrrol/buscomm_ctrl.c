@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 17:24:01
+ * @LastEditTime : 2022-04-04 21:09:45
  */
 
 #include "buscomm_ctrl.h"
@@ -261,7 +261,7 @@ void BusComm_SendBlockError() {
 void BusComm_ResetBusCommData() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
-    buscomm->last_update_time[0] = HAL_GetTick();
+    // buscomm->last_update_time[0] = HAL_GetTick();
 
 // Chassis stream
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
@@ -279,7 +279,7 @@ void BusComm_ResetBusCommData() {
 
 // Gimbal stream
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-    buscomm->last_update_time[1] = 0;
+    // buscomm->last_update_time[1] = 0;
     buscomm->gimbal_yaw_mode = 0;
     buscomm->gimbal_yaw_ref = 0;
     buscomm->gimbal_imu_pos = 0.0f;
