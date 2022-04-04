@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 16:35:00
+ * @LastEditTime : 2022-04-04 17:24:01
  */
 
 #include "buscomm_ctrl.h"
@@ -35,8 +35,8 @@
 FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER = &hfdcan2;
 
 /*      infantry communication functions      */
-const uint16_t Const_BusComm_TX_BUFF_LEN = 20;
-const uint16_t Const_BusComm_RX_BUFF_LEN = 20;
+const uint16_t Const_BusComm_TX_BUFF_LEN = 64;
+const uint16_t Const_BusComm_RX_BUFF_LEN = 64;
 const uint16_t Const_BusComm_OFFLINE_TIME = 500;
 
 const uint32_t Const_BusComm_SIZE = FDCAN_DLC_BYTES_8;
