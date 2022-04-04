@@ -170,6 +170,21 @@
           <WinNumber>1</WinNumber>
           <ItemText>Motor_chassisMotors</ItemText>
         </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>BusComm_BusCommData</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>GimbalYaw_gimbalYawMotorParamNoAuto</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Chassis_chassisMotorParamNormal</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
