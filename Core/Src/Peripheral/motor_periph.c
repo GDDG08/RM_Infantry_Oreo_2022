@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:47:49
+ * @LastEditTime : 2022-04-04 11:16:20
  */
 
 #include "motor_periph.h"
@@ -221,7 +221,7 @@ void Motor_InitAllMotors() {
     Motor_feederMotors.motor_handle[3] = &Motor_feederMotor;
 
     Motor_groupHandle[3] = &Motor_shooterMotors;
-    Motor_InitMotorGroup(&Motor_shooterMotors, Motor_TYPE_PWM_MOTOR, 2, &hfdcan1, 0);
+    Motor_InitMotorGroup(&Motor_shooterMotors, Motor_TYPE_PWM_MOTOR, 2, NULL, 0);
     Motor_InitMotor(&Motor_shooterMotorLeft, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim2, TIM_CHANNEL_1, &htim3, shooter_encoder_callback);
     Motor_InitMotor(&Motor_shooterMotorRight, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim16, TIM_CHANNEL_1, &htim5, shooter_encoder_callback);
     Motor_shooterMotors.motor_handle[0] = &Motor_shooterMotorLeft;

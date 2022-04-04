@@ -61,7 +61,7 @@ void Referee_InitReferee() {
 
 #include "const.h"
 
-UART_HandleTypeDef* Const_Referee_UART_HANDLER = &huart1;
+UART_HandleTypeDef* Const_Referee_UART_HANDLER = &huart2;
 
 const uint16_t Const_Referee_TX_BUFF_LEN = 300;
 const uint16_t Const_Referee_RX_BUFF_LEN = 300;

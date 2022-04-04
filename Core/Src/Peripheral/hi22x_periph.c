@@ -10,7 +10,7 @@
 
 #include "hi22x_periph.h"
 
-UART_HandleTypeDef* Const_HI22X_UART_HANDLER = &huart2;
+UART_HandleTypeDef* Const_HI22X_UART_HANDLER = &huart1;
 
 #if __FN_IF_ENABLE(__IMU_HI22X)
 
