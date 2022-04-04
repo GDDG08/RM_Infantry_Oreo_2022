@@ -185,6 +185,21 @@
           <WinNumber>1</WinNumber>
           <ItemText>Chassis_chassisMotorParamNormal</ItemText>
         </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Chassis_chassisMotorParamNormal</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>buff</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>BusComm_RxData</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
@@ -198,7 +213,7 @@
         <Mm>
           <WinNumber>4</WinNumber>
           <SubType>0</SubType>
-          <ItemText>Motor_gimbalMotorYaw</ItemText>
+          <ItemText>\\Infantry_Oreo\../Core/Src/Common_Contrrol/buscomm_cmd.c\_set_control\buff</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow4>

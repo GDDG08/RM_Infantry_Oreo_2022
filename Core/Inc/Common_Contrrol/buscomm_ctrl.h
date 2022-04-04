@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 17:53:12
+ * @LastEditTime : 2022-04-04 22:55:48
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -103,7 +103,7 @@ typedef struct {
     float chassis_lr_ref;         // Target value of chassis left and right speed
     uint8_t cap_mode_user;        // Capacitance mode   1bit
     uint8_t cap_boost_mode_user;  // cap boost mode    1bit
-    uint8_t power_limit_mode;     // Force to change power limit mode 1bit
+    uint8_t power_limit_mode;     // Force to change power limit mode 2bit
     // float pitch_angle;
     uint8_t ui_cmd;         // 1bit
     uint8_t infantry_code;  // 4bit

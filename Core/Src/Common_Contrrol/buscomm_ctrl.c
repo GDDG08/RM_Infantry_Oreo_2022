@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 21:09:45
+ * @LastEditTime : 2022-04-04 22:55:03
  */
 
 #include "buscomm_ctrl.h"
@@ -55,15 +55,15 @@ const uint8_t GIMBAL_YAW_CTRL_IMU_DEBUG = 0x05;
 const uint8_t GIMBAL_YAW_CTRL_BIG_ENERGY = 0x06;
 const uint8_t GIMBAL_YAW_CTRL_SMALL_ENERGY = 0x07;
 //      chassis mode
-const uint8_t CHASSIS_CTRL_STOP = 0x08;
-const uint8_t CHASSIS_CTRL_NORMAL = 0x09;
-const uint8_t CHASSIS_CTRL_GYRO = 0x0A;
+const uint8_t CHASSIS_CTRL_STOP = 0x01;
+const uint8_t CHASSIS_CTRL_NORMAL = 0x02;
+const uint8_t CHASSIS_CTRL_GYRO = 0x03;
 //      cap mode
 const uint8_t SUPERCAP_CTRL_OFF = 0x00;
 const uint8_t SUPERCAP_CTRL_ON = 0x01;
 //      cap boost mode
-const uint8_t SUPERCAP_BOOST = 0x01;
 const uint8_t SUPERCAP_UNBOOST = 0x00;
+const uint8_t SUPERCAP_BOOST = 0x01;
 //      cap state
 const uint8_t SUPERCAP_MODE_OFF = 0x51;
 const uint8_t SUPERCAP_MODE_ON = 0x52;

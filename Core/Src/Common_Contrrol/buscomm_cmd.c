@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 18:14:35
+ * @LastEditTime : 2022-04-04 23:07:03
  */
 
 #include "buscomm_cmd.h"
@@ -222,11 +222,11 @@ static void _set_control(uint8_t buff[]) {
     }
 
     buscomm->gimbal_yaw_mode = buff[0] >> 4;
-    buscomm->chassis_mode = buff[0] & 0x0C >> 2;
-    buscomm->power_limit_mode = buff[0] & 0x01;
+    buscomm->chassis_mode = (buff[0] & 0x0C )>> 2;
+    buscomm->power_limit_mode = buff[0] & 0x03;
     buscomm->infantry_code = buff[1] >> 4;
     buscomm->ui_cmd = buff[1] & 0x04 >> 2;
-    buscomm->cap_mode_user = buff[1] & 0x02 >> 1;
+    buscomm->cap_mode_user = (buff[1] & 0x02) >> 1;
     buscomm->cap_boost_mode_user = buff[1] & 0x01;
     buscomm->yaw_relative_angle = ((float)buff2i16(buff + 2)) / 100.0f;
     buscomm->gimbal_yaw_ref = buff2float(buff + 4);
