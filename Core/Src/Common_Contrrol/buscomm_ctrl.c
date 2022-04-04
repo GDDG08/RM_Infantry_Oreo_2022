@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 15:48:12
+ * @LastEditTime : 2022-04-04 16:35:00
  */
 
 #include "buscomm_ctrl.h"
@@ -39,7 +39,7 @@ const uint16_t Const_BusComm_TX_BUFF_LEN = 20;
 const uint16_t Const_BusComm_RX_BUFF_LEN = 20;
 const uint16_t Const_BusComm_OFFLINE_TIME = 500;
 
-const uint8_t Const_BusComm_SIZE = 8;
+const uint32_t Const_BusComm_SIZE = FDCAN_DLC_BYTES_8;
 const uint8_t Const_BusComm_GIMBAL_BUFF_SIZE = 3;
 const uint8_t Const_BusComm_CHASSIS_BUFF_SIZE = 2;
 // const uint8_t Const_BusComm_SUPERCAP_BUFF_SIZE = 1;
