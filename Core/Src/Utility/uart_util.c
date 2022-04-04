@@ -47,9 +47,9 @@ void Uart_RxIdleCallback(UART_HandleTypeDef* huart) {
 #endif
 
 #if __FN_IF_ENABLE(__FN_PERIPH_MINIPC)
-    if (huart == Const_MiniPC_UART_HANDLER) {
-        MiniPC_RXCallback(huart);
-    }
+//    if (huart == Const_MiniPC_UART_HANDLER) {
+//        MiniPC_RXCallback(huart);
+//    }
 #endif
 
 #if __FN_IF_ENABLE(__FN_SUPER_CAP_COMM)

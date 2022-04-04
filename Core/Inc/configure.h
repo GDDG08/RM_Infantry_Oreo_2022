@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\configure.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\configure.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-01 01:13:15
+ * @LastEditTime : 2022-04-04 10:29:19
  */
 
 // Note:
@@ -24,7 +24,7 @@ extern "C" {
 
 /* Main Control program       */
 
-//#define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
+// #define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
 #define __FN_BOARD_TYPE __FN_BOARD_TYPE_GIMBAL
 
 #define __FN_BOARD_TYPE_CHASSIS 1
@@ -165,7 +165,7 @@ extern int GLOBAL_INIT_FLAG;
 // Enable IMU
 #endif
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-#define __FN_PERIPH_MAG __FN_ENABLE
+#define __FN_PERIPH_MAG __FN_DISABLE
 // Enable magnetic
 #endif
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)

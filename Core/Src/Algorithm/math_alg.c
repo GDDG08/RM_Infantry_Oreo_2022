@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Algorithm\math_alg.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Algorithm\math_alg.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:59:35
+ * @LastEditTime : 2022-04-04 09:46:05
  */
 
 #include "math_alg.h"

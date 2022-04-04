@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Gimbal_Control\gim_client_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Gimbal_Control\gim_client_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-29 19:11:51
+ * @LastEditTime : 2022-04-04 09:37:20
  */
 
 #include "gim_client_ctrl.h"
@@ -254,12 +254,12 @@ void Client_BackKeyLongHandler() {
 // Client_ShootState
 // short press
 static void shoot_state_func_short_press() {
-    Shooter_ModifySpeedOffset(1);
+    // Shooter_ModifySpeedOffset(1);
 }
 
 // long press
 static void shoot_state_func_long_press() {
-    Shooter_ModifySpeedOffset(-1);
+    // Shooter_ModifySpeedOffset(-1);
 }
 
 // Client_PeriphState

@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Utility\gpio_util.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Utility\gpio_util.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-29 22:51:56
+ * @LastEditTime : 2022-04-03 22:57:44
  */
 
 #include "gpio_util.h"
@@ -114,12 +114,12 @@ void GPIO_IRQCallback(uint16_t GPIO_Pin) {
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     GPIO_PinState pin_state = GPIO_PIN_RESET;
     switch (GPIO_Pin) {
-        case IST8310_DRDY_Pin:
-            pin_state = GPIO_ReadPin(IST8310_DRDY);
-            IST8310_DRDY->tick = trigger_time;
-            Ins_GPIOExitCallback(IST8310_DRDY);
-            break;
-        case Func_Pin:
+        // case IST8310_DRDY_Pin:
+        //     pin_state = GPIO_ReadPin(IST8310_DRDY);
+        //     IST8310_DRDY->tick = trigger_time;
+        //     Ins_GPIOExitCallback(IST8310_DRDY);
+        //     break;
+        case Buttom1_Pin:
             pin_state = GPIO_ReadPin(KEY_FUNC);
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
@@ -133,23 +133,23 @@ void GPIO_IRQCallback(uint16_t GPIO_Pin) {
             Key_KeyEventHandler(KEY_FUNC);
 #endif
             break;
-        case Back_Pin:
+        case Buttom2_Pin:
             pin_state = GPIO_ReadPin(KEY_BACK);
             KEY_BACK->tick = trigger_time;
             Key_KeyEventHandler(KEY_BACK);
             break;
-        case BMI088_INT1_Pin:
-            pin_state = GPIO_ReadPin(BMI_INT1);
-            BMI_INT1->tick = trigger_time;
-            if (pin_state == GPIO_PIN_SET)
-                Ins_GPIOExitCallback(BMI_INT1);
-            break;
-        case BMI088_INT2_Pin:
-            pin_state = GPIO_ReadPin(BMI_INT3);
-            BMI_INT3->tick = trigger_time;
-            if (pin_state == GPIO_PIN_SET)
-                Ins_GPIOExitCallback(BMI_INT3);
-            break;
+        // case BMI088_INT1_Pin:
+        //     pin_state = GPIO_ReadPin(BMI_INT1);
+        //     BMI_INT1->tick = trigger_time;
+        //     if (pin_state == GPIO_PIN_SET)
+        //         Ins_GPIOExitCallback(BMI_INT1);
+        //     break;
+        // case BMI088_INT2_Pin:
+        //     pin_state = GPIO_ReadPin(BMI_INT3);
+        //     BMI_INT3->tick = trigger_time;
+        //     if (pin_state == GPIO_PIN_SET)
+        //         Ins_GPIOExitCallback(BMI_INT3);
+        //     break;
         default:
             break;
     }

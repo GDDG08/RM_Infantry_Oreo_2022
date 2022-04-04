@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:47:48
+ * @LastEditTime : 2022-04-03 22:56:18
  */
 
 #include "minipc_periph.h"
@@ -125,9 +125,9 @@ void MiniPC_SendHeartPacket() {
 
     heart_count = HAL_GetTick();
 
-    if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
-        return;  // tx busy
-    Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, size);
+//    if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
+//        return;  // tx busy
+//    Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, size);
 }
 
 /**
@@ -240,7 +240,7 @@ void MiniPC_RXCallback(UART_HandleTypeDef* huart) {
     __HAL_DMA_DISABLE(huart->hdmarx);
 
     /* handle dbus data dbus_buf from DMA */
-    uint16_t rxdatalen = Const_MiniPC_RX_BUFF_LEN - Uart_DMACurrentDataCounter(huart->hdmarx->Instance);
+    uint16_t rxdatalen = Const_MiniPC_RX_BUFF_LEN - Uart_DMACurrentDataCounter(huart->hdmarx);
 
     MiniPC_DecodeMiniPCPacket(MiniPC_RxData, rxdatalen);
     MiniPC_UpdateControlData();

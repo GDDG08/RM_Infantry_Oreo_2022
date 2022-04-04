@@ -1,8 +1,9 @@
-MDK-ARM/Infantry_Neptune/*
-MDK-ARM/Infantry_Neptune.uvguix.*
+MDK-ARM/Infantry_Oreo/*
+MDK-ARM/Infantry_Oreo.uvguix.*
 MDK-ARM/JLinkLog.txt
-MDK-ARM/Infantry_Neptune.uvoptx
+MDK-ARM/Infantry_Oreo.uvoptx
 .vscode
 Core/.VSCodeCounters
-MDK-ARM/startup_stm32f405xx.lst
-infantry_-neptune.zip
+MDK-ARM/startup_stm32g473xx.s
+MDK-ARM/startup_stm32g473xx.lst
+infantry_-oreo.zip

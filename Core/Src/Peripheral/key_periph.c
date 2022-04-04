@@ -28,15 +28,16 @@ uint8_t Key_GetEquipCode() {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
 
-    if (GPIO_ReadPin(CODE1) == GPIO_PIN_RESET) {
-        code |= 0x01;
-    }
-    if (GPIO_ReadPin(CODE2) == GPIO_PIN_RESET) {
-        code |= 0x02;
-    }
-    if (GPIO_ReadPin(CODE3) == GPIO_PIN_RESET) {
-        code |= 0x04;
-    }
+    // if (GPIO_ReadPin(CODE1) == GPIO_PIN_RESET) {
+    //     code |= 0x01;
+    // }
+    // if (GPIO_ReadPin(CODE2) == GPIO_PIN_RESET) {
+    //     code |= 0x02;
+    // }
+    // if (GPIO_ReadPin(CODE3) == GPIO_PIN_RESET) {
+    //     code |= 0x04;
+    // }
+    code = 0x06;
 #else
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     code = buscomm->infantry_code;

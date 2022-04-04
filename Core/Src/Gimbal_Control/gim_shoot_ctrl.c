@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Gimbal_Control\gim_shoot_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Gimbal_Control\gim_shoot_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-29 20:25:14
+ * @LastEditTime : 2022-04-03 22:56:51
  */
 
 #include "gim_shoot_ctrl.h"
@@ -65,7 +65,7 @@ void Shooter_InitShooter() {
     shooter->shooter_speed_15mpers = Const_Shooter15mpers;
     shooter->shooter_speed_18mpers = Const_Shooter18mpers;
     shooter->shooter_speed_30mpers = Const_Shooter30mpers;
-    Shooter_SpeedOffsetFlashInit();
+    // Shooter_SpeedOffsetFlashInit();
     Shooter_InitShooterMotor();
 
     Const_SetShooterPIDParam();
@@ -73,41 +73,41 @@ void Shooter_InitShooter() {
     Shooter_HeatCtrlInit();
 }
 
-/**
- * @brief      shooter control initialization
- * @param      NULL
- * @retval     NULL
- */
-void Shooter_SpeedOffsetFlashInit() {
-    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
-    uint32_t speed_15_off, speed_18_off, speed_30_off;
-    Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &speed_15_off, 1);
-    Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &speed_18_off, 1);
-    Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &speed_30_off, 1);
+// /**
+//  * @brief      shooter control initialization
+//  * @param      NULL
+//  * @retval     NULL
+//  */
+// void Shooter_SpeedOffsetFlashInit() {
+//     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+//     uint32_t speed_15_off, speed_18_off, speed_30_off;
+//     Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &speed_15_off, 1);
+//     Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &speed_18_off, 1);
+//     Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &speed_30_off, 1);
 
-    if (speed_15_off > 300) {
-        speed_15_off = 150;
-        Flash_EraseAddress(SHOOT_15M_SPEED_ADDRESS, 1);
-        Flash_WriteSingleAddress(SHOOT_15M_SPEED_ADDRESS, &speed_15_off, 1);
-        Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &speed_15_off, 1);
-    }
-    if (speed_18_off > 300) {
-        speed_18_off = 150;
-        Flash_EraseAddress(SHOOT_18M_SPEED_ADDRESS, 1);
-        Flash_WriteSingleAddress(SHOOT_18M_SPEED_ADDRESS, &speed_18_off, 1);
-        Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &speed_18_off, 1);
-    }
-    if (speed_30_off > 300) {
-        speed_30_off = 150;
-        Flash_EraseAddress(SHOOT_30M_SPEED_ADDRESS, 1);
-        Flash_WriteSingleAddress(SHOOT_30M_SPEED_ADDRESS, &speed_30_off, 1);
-        Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &speed_30_off, 1);
-    }
-    shooter->speed_offset_flash.speed_15mm_offset = speed_15_off;
-    shooter->speed_offset_flash.speed_18mm_offset = speed_18_off;
-    shooter->speed_offset_flash.speed_30mm_offset = speed_30_off;
-    Shooter_GetShootSpeedOffset();
-}
+//     if (speed_15_off > 300) {
+//         speed_15_off = 150;
+//         Flash_EraseAddress(SHOOT_15M_SPEED_ADDRESS, 1);
+//         Flash_WriteSingleAddress(SHOOT_15M_SPEED_ADDRESS, &speed_15_off, 1);
+//         Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &speed_15_off, 1);
+//     }
+//     if (speed_18_off > 300) {
+//         speed_18_off = 150;
+//         Flash_EraseAddress(SHOOT_18M_SPEED_ADDRESS, 1);
+//         Flash_WriteSingleAddress(SHOOT_18M_SPEED_ADDRESS, &speed_18_off, 1);
+//         Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &speed_18_off, 1);
+//     }
+//     if (speed_30_off > 300) {
+//         speed_30_off = 150;
+//         Flash_EraseAddress(SHOOT_30M_SPEED_ADDRESS, 1);
+//         Flash_WriteSingleAddress(SHOOT_30M_SPEED_ADDRESS, &speed_30_off, 1);
+//         Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &speed_30_off, 1);
+//     }
+//     shooter->speed_offset_flash.speed_15mm_offset = speed_15_off;
+//     shooter->speed_offset_flash.speed_18mm_offset = speed_18_off;
+//     shooter->speed_offset_flash.speed_30mm_offset = speed_30_off;
+//     Shooter_GetShootSpeedOffset();
+// }
 
 /**
  * @brief      Get speed offset variable    (150 means offset is 0)
@@ -148,40 +148,40 @@ float Shooter_GetShootSpeedOffset() {
  *                         else: multiple SHOOTER_SPEED_INCREMENT
  * @retval     NULL
  */
-void Shooter_ModifySpeedOffset(int8_t multiple) {
-    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
-    uint32_t offset_speed;
-    switch (buscomm->speed_17mm_limit) {
-        case 15:
-            Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &offset_speed, 1);
-            offset_speed += (SHOOTER_SPEED_INCREMENT * multiple);
-            Flash_EraseAddress(SHOOT_15M_SPEED_ADDRESS, 1);
-            Flash_WriteSingleAddress(SHOOT_15M_SPEED_ADDRESS, &offset_speed, 1);
-            Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &offset_speed, 1);
-            shooter->speed_offset_flash.speed_15mm_offset = offset_speed;
-            break;
-        case 18:
-            Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &offset_speed, 1);
-            offset_speed += (SHOOTER_SPEED_INCREMENT * multiple);
-            Flash_EraseAddress(SHOOT_18M_SPEED_ADDRESS, 1);
-            Flash_WriteSingleAddress(SHOOT_18M_SPEED_ADDRESS, &offset_speed, 1);
-            Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &offset_speed, 1);
-            shooter->speed_offset_flash.speed_18mm_offset = offset_speed;
-            break;
-        case 30:
-            Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &offset_speed, 1);
-            offset_speed += (SHOOTER_SPEED_INCREMENT * multiple);
-            Flash_EraseAddress(SHOOT_30M_SPEED_ADDRESS, 1);
-            Flash_WriteSingleAddress(SHOOT_30M_SPEED_ADDRESS, &offset_speed, 1);
-            Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &offset_speed, 1);
-            shooter->speed_offset_flash.speed_30mm_offset = offset_speed;
-            break;
-        default:
-            break;
-    }
-    Shooter_GetShootSpeedOffset();
-}
+// void Shooter_ModifySpeedOffset(int8_t multiple) {
+//     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+//     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+//     uint32_t offset_speed;
+//     switch (buscomm->speed_17mm_limit) {
+//         case 15:
+//             Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &offset_speed, 1);
+//             offset_speed += (SHOOTER_SPEED_INCREMENT * multiple);
+//             Flash_EraseAddress(SHOOT_15M_SPEED_ADDRESS, 1);
+//             Flash_WriteSingleAddress(SHOOT_15M_SPEED_ADDRESS, &offset_speed, 1);
+//             Flash_ReadData(SHOOT_15M_SPEED_ADDRESS, &offset_speed, 1);
+//             shooter->speed_offset_flash.speed_15mm_offset = offset_speed;
+//             break;
+//         case 18:
+//             Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &offset_speed, 1);
+//             offset_speed += (SHOOTER_SPEED_INCREMENT * multiple);
+//             Flash_EraseAddress(SHOOT_18M_SPEED_ADDRESS, 1);
+//             Flash_WriteSingleAddress(SHOOT_18M_SPEED_ADDRESS, &offset_speed, 1);
+//             Flash_ReadData(SHOOT_18M_SPEED_ADDRESS, &offset_speed, 1);
+//             shooter->speed_offset_flash.speed_18mm_offset = offset_speed;
+//             break;
+//         case 30:
+//             Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &offset_speed, 1);
+//             offset_speed += (SHOOTER_SPEED_INCREMENT * multiple);
+//             Flash_EraseAddress(SHOOT_30M_SPEED_ADDRESS, 1);
+//             Flash_WriteSingleAddress(SHOOT_30M_SPEED_ADDRESS, &offset_speed, 1);
+//             Flash_ReadData(SHOOT_30M_SPEED_ADDRESS, &offset_speed, 1);
+//             shooter->speed_offset_flash.speed_30mm_offset = offset_speed;
+//             break;
+//         default:
+//             break;
+//     }
+//     Shooter_GetShootSpeedOffset();
+// }
 
 /**
  * @brief      Shooter control

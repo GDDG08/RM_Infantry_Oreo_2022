@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Chassis_Control\cha_power_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Chassis_Control\cha_power_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-26 23:42:24
+ * @LastEditTime : 2022-04-04 10:17:13
  */
 
 #include "cha_power_ctrl.h"
@@ -51,7 +51,8 @@ PowerCtrl_Data_t* PowerCtrl_GetPowerDataPtr(void) {
  */
 void Power_ForceChangePowerMode(Power_ControlModeMnum mode) {
     PowerCtrl_Data_t* PowCtr = PowerCtrl_GetPowerDataPtr();
-    PowCtr->PowerCtrl_State = mode;
+    // PowCtr->PowerCtrl_State = mode;
+    PowCtr->PowerCtrl_State = POWER_UNLIMITED;
 }
 
 /**

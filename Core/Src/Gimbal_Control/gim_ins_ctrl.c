@@ -252,7 +252,7 @@ uint8_t Ins_IsIMUOffline() {
  */
 void Ins_DecodeIMUData() {
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
-    MAG_MAGDataTypeDef* mag = MAG_GetMAGDataPtr();
+//    MAG_MAGDataTypeDef* mag = MAG_GetMAGDataPtr();
 #if __FN_IF_ENABLE(__IMU_BMI055)
     BMI055_BMI055DataTypeDef* bmi055 = BMI055_GetBMI055DataPtr();
     imu->speed.pitch = bmi055->gyro.x;
@@ -333,16 +333,16 @@ void Ins_GPIOExitCallback(GPIO_GPIOTypeDef* gpio) {
         }
     }
 
-    else if (gpio == IST8310_DRDY) {
-        if (ins_flag & (1 << INS_INIT_SHIFT)) {
-            if (!(ins_flag & (1 << INS_MAG_FINISH_SHIFT))) {
-                ins_flag |= (1 << INS_MAG_UPDATE_SHIFT);
-                MAG_MAGUpdate();
-                ins_flag &= ~(1 << INS_MAG_UPDATE_SHIFT);
-                ins_flag |= (1 << INS_MAG_FINISH_SHIFT);
-            }
-        }
-    }
+//    else if (gpio == IST8310_DRDY) {
+//        if (ins_flag & (1 << INS_INIT_SHIFT)) {
+//            if (!(ins_flag & (1 << INS_MAG_FINISH_SHIFT))) {
+//                ins_flag |= (1 << INS_MAG_UPDATE_SHIFT);
+//                MAG_MAGUpdate();
+//                ins_flag &= ~(1 << INS_MAG_UPDATE_SHIFT);
+//                ins_flag |= (1 << INS_MAG_FINISH_SHIFT);
+//            }
+//        }
+//    }
 }
 
 /**

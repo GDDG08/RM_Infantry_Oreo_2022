@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Peripheral\miniPC_periph.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Peripheral\miniPC_periph.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-26 13:24:20
+ * @LastEditTime : 2022-04-04 09:39:01
  */
 
 #ifndef MINIPC_PERIPH_H
@@ -57,7 +57,7 @@ extern const uint8_t Const_MiniPC_BIG_BUFF;
 extern const uint8_t Const_MiniPC_LITTLE_BUFF;
 
 extern MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;
-extern UART_HandleTypeDef* Const_MiniPC_UART_HANDLER;
+// extern UART_HandleTypeDef* Const_MiniPC_UART_HANDLER;
 
 void MiniPC_InitMiniPC(void);
 MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr(void);
