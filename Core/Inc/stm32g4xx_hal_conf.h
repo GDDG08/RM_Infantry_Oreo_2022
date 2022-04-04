@@ -1,12 +1,3 @@
-/*
- * @Project      : RM_Infantry_Oreo
- * @FilePath     : \Infantry_Oreo\Core\Inc\stm32g4xx_hal_conf.h
- * @Descripttion :
- * @Author       : GDDG08
- * @Date         : 2022-04-03 22:45:51
- * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:46:36
- */
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************

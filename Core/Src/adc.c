@@ -37,6 +37,7 @@ void MX_ADC2_Init(void) {
     /* USER CODE BEGIN ADC2_Init 1 */
 
     /* USER CODE END ADC2_Init 1 */
+
     /** Common config
      */
     hadc2.Instance = ADC2;
@@ -58,6 +59,7 @@ void MX_ADC2_Init(void) {
     if (HAL_ADC_Init(&hadc2) != HAL_OK) {
         Error_Handler();
     }
+
     /** Configure Regular Channel
      */
     sConfig.Channel = ADC_CHANNEL_4;
@@ -81,6 +83,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle) {
         /* USER CODE BEGIN ADC2_MspInit 0 */
 
         /* USER CODE END ADC2_MspInit 0 */
+
         /** Initializes the peripherals clocks
          */
         PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;

@@ -92,7 +92,6 @@ int main(void) {
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
-    MX_DMA_Init();
     MX_FDCAN1_Init();
     MX_FDCAN2_Init();
     MX_FDCAN3_Init();
@@ -102,7 +101,7 @@ int main(void) {
     MX_TIM15_Init();
     MX_USART1_UART_Init();
     MX_USART2_UART_Init();
-
+    MX_DMA_Init();
     MX_USB_Device_Init();
     MX_USART3_UART_Init();
     MX_TIM3_Init();
@@ -120,6 +119,7 @@ int main(void) {
 
     /* Call init function for freertos objects (in freertos.c) */
     MX_FREERTOS_Init();
+
     /* Start scheduler */
     osKernelStart();
 
@@ -145,6 +145,7 @@ void SystemClock_Config(void) {
     /** Configure the main internal regulator output voltage
      */
     HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
+
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
@@ -154,13 +155,14 @@ void SystemClock_Config(void) {
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV3;
-    RCC_OscInitStruct.PLL.PLLN = 84;
+    RCC_OscInitStruct.PLL.PLLN = 85;
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV4;
     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         Error_Handler();
     }
+
     /** Initializes the CPU, AHB and APB buses clocks
      */
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;

@@ -3,9 +3,9 @@
  * @FilePath     : \Infantry_Oreo\Core\Inc\tim.h
  * @Descripttion :
  * @Author       : GDDG08
- * @Date         : 2022-04-03 22:45:51
+ * @Date         : 2022-04-04 15:42:29
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:46:38
+ * @LastEditTime : 2022-04-04 15:47:19
  */
 /* USER CODE BEGIN Header */
 /**
@@ -42,15 +42,25 @@ extern "C" {
 /* USER CODE END Includes */
 
 extern TIM_HandleTypeDef htim1;
+
 extern TIM_HandleTypeDef htim2;
+
 extern TIM_HandleTypeDef htim3;
+
 extern TIM_HandleTypeDef htim4;
+
 extern TIM_HandleTypeDef htim5;
+
 extern TIM_HandleTypeDef htim6;
+
 extern TIM_HandleTypeDef htim7;
+
 extern TIM_HandleTypeDef htim8;
+
 extern TIM_HandleTypeDef htim15;
+
 extern TIM_HandleTypeDef htim16;
+
 extern TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN Private defines */
