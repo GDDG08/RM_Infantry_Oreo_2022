@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 09:39:01
+ * @LastEditTime : 2022-04-05 14:25:49
  */
 
 #ifndef MINIPC_PERIPH_H
@@ -64,7 +64,7 @@ MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr(void);
 void MiniPC_SendHeartPacket(void);
 void MiniPC_SendDataPacket(void);
 uint8_t MiniPC_IsMiniPCOffline(void);
-void MiniPC_RXCallback(UART_HandleTypeDef* huart);
+// void MiniPC_RXCallback(UART_HandleTypeDef* huart);                                                                         
 void MiniPC_DecodeMiniPCPacket(uint8_t* buff, uint16_t rxdatalen);
 void MiniPC_HeartPacketDecode(uint8_t* buff, uint16_t rxdatalen);
 void MiniPC_ArmorPacketDecode(uint8_t* buff, uint16_t rxdatalen);

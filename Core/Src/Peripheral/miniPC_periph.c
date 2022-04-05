@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:56:18
+ * @LastEditTime : 2022-04-05 14:25:24
  */
 
 #include "minipc_periph.h"
@@ -125,9 +125,9 @@ void MiniPC_SendHeartPacket() {
 
     heart_count = HAL_GetTick();
 
-//    if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
-//        return;  // tx busy
-//    Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, size);
+    //    if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
+    //        return;  // tx busy
+    //    Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, size);
 }
 
 /**
@@ -210,7 +210,7 @@ void MiniPC_SendDataPacket() {
         return;  // tx busy
     Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, Const_MiniPC_TX_DATA_FRAME_LEN);
     */
-    CDC_Transmit_FS((uint8_t*)&buff, sizeof(buff));
+    CDC_Transmit_FS(buff, Const_MiniPC_TX_DATA_FRAME_LEN);
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
     GPIO_Reset(PC_CAM);
@@ -230,25 +230,25 @@ uint8_t MiniPC_IsMiniPCOffline() {
     return (now - minipc->last_update_time) > Const_MiniPC_MINIPC_OFFLINE_TIME;
 }
 
-/**
- * @brief      Minipc serial port callback function
- * @param      huart: Pointer to serial port handle
- * @retval     NULL
- */
-void MiniPC_RXCallback(UART_HandleTypeDef* huart) {
-    /* clear DMA transfer complete flag */
-    __HAL_DMA_DISABLE(huart->hdmarx);
+// /**
+//  * @brief      Minipc serial port callback function
+//  * @param      huart: Pointer to serial port handle
+//  * @retval     NULL
+//  */
+// void MiniPC_RXCallback(UART_HandleTypeDef* huart) {
+//     /* clear DMA transfer complete flag */
+//     __HAL_DMA_DISABLE(huart->hdmarx);
 
-    /* handle dbus data dbus_buf from DMA */
-    uint16_t rxdatalen = Const_MiniPC_RX_BUFF_LEN - Uart_DMACurrentDataCounter(huart->hdmarx);
+//     /* handle dbus data dbus_buf from DMA */
+//     uint16_t rxdatalen = Const_MiniPC_RX_BUFF_LEN - Uart_DMACurrentDataCounter(huart->hdmarx);
 
-    MiniPC_DecodeMiniPCPacket(MiniPC_RxData, rxdatalen);
-    MiniPC_UpdateControlData();
+//     MiniPC_DecodeMiniPCPacket(MiniPC_RxData, rxdatalen);
+//     MiniPC_UpdateControlData();
 
-    /* restart dma transmission */
-    __HAL_DMA_SET_COUNTER(huart->hdmarx, Const_MiniPC_RX_BUFF_LEN);
-    __HAL_DMA_ENABLE(huart->hdmarx);
-}
+//     /* restart dma transmission */
+//     __HAL_DMA_SET_COUNTER(huart->hdmarx, Const_MiniPC_RX_BUFF_LEN);
+//     __HAL_DMA_ENABLE(huart->hdmarx);
+// }
 
 /**
  * @brief      Minipc data packet decoding function

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 11:46:12
+ * @LastEditTime : 2022-04-05 15:04:05
  */
 
 #include "buscomm_cmd.h"
@@ -67,12 +67,15 @@ static void _set_cha_ref(uint8_t buff[]);
 static void _set_cap_state_1(uint8_t buff[]);
 static void _set_cap_state_2(uint8_t buff[]);
 
-BusCmd_TableEntry Buscmd_Receive[7] = {
+BusCmd_TableEntry Buscmd_Receive[5] = {
     {0xff, NULL},
     {CMD_SET_REFEREE_DATA, &_set_referee_data},
     {CMD_SET_CONTROL, &_set_control},
     {CMD_SET_IMU_YAW, &_set_imu_yaw},
-    {CMD_SET_CHA_REF, &_set_cha_ref},
+    {CMD_SET_CHA_REF, &_set_cha_ref}};
+
+BusCmd_TableEntry Capcmd_Receive[3] = {
+    {0xff, NULL},
     {CMD_SET_CAP_STATE_1, &_set_cap_state_1},
     {CMD_SET_CAP_STATE_2, &_set_cap_state_2}};
 
@@ -129,7 +132,7 @@ static void _send_cap_mode(uint8_t buff[]) {
     buff[2] = buscomm->chassis_power_limit;
     buff[3] = buscomm->chassis_power_buffer;
     float2buff(buscomm->chassis_power, buff + 4);
-    FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
+    FDCAN_SendMessage(Const_CapComm_CAN_HANDLER, pheader, buff);
 }
 
 /*************** GIMBAL SEND *****************/

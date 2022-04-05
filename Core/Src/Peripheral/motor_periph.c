@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 11:02:02
+ * @LastEditTime : 2022-04-05 15:29:04
  */
 
 #include "motor_periph.h"
@@ -521,11 +521,12 @@ void Motor_CalcMotorGroupOutput(Motor_MotorGroupTypeDef* pgroup, Motor_MotorPara
  * @retval     NULL
  */
 void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
-    // if (pmotor == NULL)
-    return;
+    if (pmotor == NULL)
+        return;
     if (pmotor->type != Motor_TYPE_PWM_MOTOR)
         return;
-    float output = Motor_GetMotorOutput(pmotor);
+    // float output = Motor_GetMotorOutput(pmotor);
+    float output = Motor_GetMotorRef(pmotor) * 500;
     // satori
     // float duty = output * 0.00011136f + 0.53522f;
     float duty = output * 0.00011136f + 0.47522f;

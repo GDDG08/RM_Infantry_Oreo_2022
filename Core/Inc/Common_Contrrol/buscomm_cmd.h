@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Common_Contrrol\buscomm_cmd.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Common_Contrrol\buscomm_cmd.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-29 21:16:26
+ * @LastEditTime : 2022-04-05 15:01:48
  */
 
 #ifndef BUSCOMM_CMD_H
@@ -44,7 +44,8 @@ typedef struct {
     void (*bus_func)(uint8_t buff[]);
 } BusCmd_TableEntry;
 
-extern BusCmd_TableEntry Buscmd_Receive[7];
+extern BusCmd_TableEntry Buscmd_Receive[5];
+extern BusCmd_TableEntry Capcmd_Receive[3];
 extern BusCmd_TableEntry Buscmd_GimSend[3];
 extern BusCmd_TableEntry Buscmd_ChaSend[2];
 // extern BusCmd_TableEntry Buscmd_CapSend[1];

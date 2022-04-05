@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 22:55:48
+ * @LastEditTime : 2022-04-05 15:00:45
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -26,6 +26,7 @@ extern "C" {
 #include "filter_alg.h"
 
 extern FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER;
+extern FDCAN_HandleTypeDef* Const_CapComm_CAN_HANDLER;
 
 extern const uint8_t Const_BusComm_FRAME_HEADER_SOF;
 //      power limit mode
