@@ -206,7 +206,7 @@ static void _set_referee_data(uint8_t buff[]) {
     buscomm->yaw_relative_angle = ((float)buff2i16(buff + 1)) / 100.0f;
     buscomm->heat_cooling_limit = buff2ui16(buff + 3);
     buscomm->heat_17mm = buff2ui16(buff + 5);
-    buscomm->speed_17mm_limit = buff + 7;
+    buscomm->speed_17mm_limit = (uint16_t) buff + 7;
     buscomm->last_update_time[0] = HAL_GetTick();
 }
 
