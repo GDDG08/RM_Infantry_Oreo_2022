@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 09:34:22
+ * @LastEditTime : 2022-04-05 12:18:35
  */
 
 #include "buscomm_ctrl.h"
@@ -142,11 +142,12 @@ uint8_t BusComm_IsBusCommOffline() {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     // Only consider gimbal offline
-    if (HAL_GetTick() - buscomm->last_update_time[0] > Const_BusComm_OFFLINE_TIME
-        /*|| HAL_GetTick() - buscomm->last_update_time[1] > Const_BusComm_OFFLINE_TIME*/) {
-        buscomm->state = BusComm_STATE_LOST;
-        return 1;
-    }
+    // if (HAL_GetTick() - buscomm->last_update_time[0] > Const_BusComm_OFFLINE_TIME
+    //     /*|| HAL_GetTick() - buscomm->last_update_time[1] > Const_BusComm_OFFLINE_TIME*/) {
+    //     buscomm->state = BusComm_STATE_LOST;
+    //     return 1;
+    // }
+    return 0;
 
 #else
     if (HAL_GetTick() - buscomm->last_update_time[0] > Const_BusComm_OFFLINE_TIME) {

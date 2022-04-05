@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Gimbal_Control\gim_remote_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Gimbal_Control\gim_remote_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-20 12:01:28
+ * @LastEditTime : 2022-04-05 11:19:47
  */
 
 #include "gim_remote_ctrl.h"
@@ -30,7 +30,7 @@ Filter_Bessel_TypeDef Remote_forward_backFilter = {0, 0, 0};
 Filter_Bessel_TypeDef Remote_right_leftFilter = {0, 0, 0};
 Filter_Bessel_TypeDef Remote_mouse_y_Filter = {0, 0, 0};
 
-const float REMOTE_PITCH_ANGLE_TO_REF = 0.0015f;
+const float REMOTE_PITCH_ANGLE_TO_REF = 0.0005f;
 const float REMOTE_YAW_ANGLE_TO_REF = 0.0015f;
 
 /**

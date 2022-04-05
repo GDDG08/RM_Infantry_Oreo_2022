@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 10:45:34
+ * @LastEditTime : 2022-04-05 11:46:12
  */
 
 #include "buscomm_cmd.h"
@@ -106,7 +106,7 @@ static void _send_referee_data(uint8_t buff[]) {
     ratea[0] = 1000 * counta[0] / HAL_GetTick();
     memset(buff, 0, 8);
     buff[0] = (buscomm->main_shooter_power << 7) + buscomm->robot_id;
-    i162buff((int16_t)buscomm->yaw_relative_angle * 100, buff + 1);
+    i162buff((int16_t)(buscomm->yaw_relative_angle * 100), buff + 1);
     ui162buff(buscomm->heat_cooling_limit, buff + 3);
     ui162buff(buscomm->heat_17mm, buff + 5);
     buff[7] = (uint8_t)buscomm->speed_17mm_limit;
@@ -203,10 +203,10 @@ static void _set_referee_data(uint8_t buff[]) {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     buscomm->robot_id = buff[0] & 0x7F;
     buscomm->main_shooter_power = (buff[0] & 0x80) >> 7;
-    buscomm->yaw_relative_angle = ((float)buff2i16(buff + 1)) / 100.0f;
+    buscomm->yaw_relative_angle = ((float)buff2i16(buff + 1)) / 100;
     buscomm->heat_cooling_limit = buff2ui16(buff + 3);
     buscomm->heat_17mm = buff2ui16(buff + 5);
-    buscomm->speed_17mm_limit = (uint16_t) buff + 7;
+    buscomm->speed_17mm_limit = buff[7];
     buscomm->last_update_time[0] = HAL_GetTick();
 }
 
