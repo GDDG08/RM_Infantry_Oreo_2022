@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 22:37:27
+ * @LastEditTime : 2022-04-05 10:40:40
  */
 
 #include "motor_periph.h"
@@ -102,8 +102,8 @@ void shooter_encoder_callback(Motor_MotorTypeDef* pmotor) {
 
 const uint32_t Const_Motor_MOTOR_OFFLINE_TIME = 1000;
 const uint32_t Const_Motor_MOTOR_TX_EXTID = 0x01;
-const uint32_t Const_Motor_MOTOR_TX_DLC = 8;
-const uint32_t Const_Motor_MOTOR_RX_DLC = 8;
+const uint32_t Const_Motor_MOTOR_TX_DLC = FDCAN_DLC_BYTES_8;
+// const uint32_t Const_Motor_MOTOR_RX_DLC = 8;
 
 Motor_MotorGroupTypeDef* Motor_groupHandle[4];
 
@@ -522,7 +522,7 @@ void Motor_CalcMotorGroupOutput(Motor_MotorGroupTypeDef* pgroup, Motor_MotorPara
  */
 void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
     if (pmotor == NULL)
-    return;
+        return;
     if (pmotor->type != Motor_TYPE_PWM_MOTOR)
         return;
     float output = Motor_GetMotorOutput(pmotor);
@@ -544,7 +544,7 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
  * @retval     NULL
  */
 void Motor_SendMotorGroupOutput(Motor_MotorGroupTypeDef* pgroup) {
-    // if (pgroup == NULL)
+    if (pgroup == NULL)
         return;
     if (pgroup->type == Motor_TYPE_CAN_MOTOR) {
         uint8_t txdata[8];

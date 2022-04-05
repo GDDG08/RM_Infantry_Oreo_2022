@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 23:07:03
+ * @LastEditTime : 2022-04-05 10:40:06
  */
 
 #include "buscomm_cmd.h"
@@ -105,11 +105,11 @@ static void _send_referee_data(uint8_t buff[]) {
     counta[0]++;
     ratea[0] = 1000 * counta[0] / HAL_GetTick();
     memset(buff, 0, 8);
-    buff[0] = buscomm->robot_id;
-    buff[1] = buscomm->main_shooter_power;
-    ui162buff(buscomm->heat_cooling_limit, buff + 2);
-    ui162buff(buscomm->heat_17mm, buff + 4);
-    ui162buff(buscomm->speed_17mm_limit, buff + 6);
+    buff[0] = (buscomm->main_shooter_power << 7) + buscomm->robot_id;
+    i162buff((int16_t)buscomm->yaw_relative_angle * 100, buff + 1);
+    ui162buff(buscomm->heat_cooling_limit, buff + 3);
+    ui162buff(buscomm->heat_17mm, buff + 5);
+    ui82buff((uint8_t)buscomm->speed_17mm_limit, buff + 7);
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
 }
 
@@ -146,9 +146,7 @@ static void _send_control(uint8_t buff[]) {
     memset(buff, 0, 8);
     buff[0] = (buscomm->gimbal_yaw_mode << 4) + (buscomm->chassis_mode << 2) + buscomm->power_limit_mode;
     buff[1] = (buscomm->infantry_code << 4) + (buscomm->ui_cmd << 2) + (buscomm->cap_mode_user << 1) + buscomm->cap_boost_mode_user;
-
-    i162buff((int16_t)buscomm->yaw_relative_angle * 100, buff + 2);
-    float2buff(buscomm->gimbal_yaw_ref, buff + 4);
+    float2buff(buscomm->gimbal_yaw_ref, buff + 2);
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
 }
 
@@ -203,11 +201,12 @@ static void _set_referee_data(uint8_t buff[]) {
     countb[0]++;
     rateb[0] = 1000 * countb[0] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-    buscomm->robot_id = buff[0];
-    buscomm->main_shooter_power = buff[1];
-    buscomm->heat_cooling_limit = buff2ui16(buff + 2);
-    buscomm->heat_17mm = buff2ui16(buff + 4);
-    buscomm->speed_17mm_limit = buff2ui16(buff + 6);
+    buscomm->robot_id = buff[0] & 0x7F;
+    buscomm->main_shooter_power = (buff[0] & 0x80) >> 7;
+    buscomm->yaw_relative_angle = ((float)buff2i16(buff + 1)) / 100.0f;
+    buscomm->heat_cooling_limit = buff2ui16(buff + 3);
+    buscomm->heat_17mm = buff2ui16(buff + 5);
+    buscomm->speed_17mm_limit = buff2ui8(buff + 7);
     buscomm->last_update_time[0] = HAL_GetTick();
 }
 
@@ -222,14 +221,13 @@ static void _set_control(uint8_t buff[]) {
     }
 
     buscomm->gimbal_yaw_mode = buff[0] >> 4;
-    buscomm->chassis_mode = (buff[0] & 0x0C )>> 2;
+    buscomm->chassis_mode = (buff[0] & 0x0C) >> 2;
     buscomm->power_limit_mode = buff[0] & 0x03;
     buscomm->infantry_code = buff[1] >> 4;
     buscomm->ui_cmd = buff[1] & 0x04 >> 2;
     buscomm->cap_mode_user = (buff[1] & 0x02) >> 1;
     buscomm->cap_boost_mode_user = buff[1] & 0x01;
-    buscomm->yaw_relative_angle = ((float)buff2i16(buff + 2)) / 100.0f;
-    buscomm->gimbal_yaw_ref = buff2float(buff + 4);
+    buscomm->gimbal_yaw_ref = buff2float(buff + 2);
     _cmd_mode_control();
 
     buscomm->last_update_time[1] = HAL_GetTick();
