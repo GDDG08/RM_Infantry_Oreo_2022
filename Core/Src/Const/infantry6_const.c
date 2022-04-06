@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 12:21:09
+ * @LastEditTime : 2022-04-06 21:02:09
  */
 
 #include "configure.h"
@@ -18,8 +18,8 @@ Const_ConstTypeDef Infantry_6_Const;
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
 static const float Const_chassisMotorParam_infantry_6[4][3][4][5] = {
     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{75, 0, 0.5, 0, 13000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},   // Chassis_chassisMotorParamStop
-    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{75, 0, 0.5, 0, 11000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},     // Chassis_chassisMotorParamNormal
-    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{20, 0, 0.5, 0, 13000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},     // Chassis_chassisMotorParamGyro
+    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{75, 0, 0.5, 0, 11000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},   // Chassis_chassisMotorParamNormal
+    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{20, 0, 0.5, 0, 13000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},   // Chassis_chassisMotorParamGyro
     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{10, 0.01, 0, 1000, 400}, {-1, -1}, {0, 0}, {-1, -1}}}  // Chassis_followPIDParam
     //  {           Current  PID                          }   {                 SPEED PID                       }  {                    POSITION PID                 }
     //  {Kp, Ki, Kd, SumMax, OutMax}, {d_fil,delta_fil},{kf_1,kf_2}, {kf1_fil_param,kf2_fil_param};
@@ -134,9 +134,12 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
     x->ShooterSlowSpeed = 150.0f;
     x->ShooterFastSpeed = 230.0f;
 
-    x->Shooter15mpers = 105.0f;
-    x->Shooter18mpers = 115.0f;
-    x->Shooter30mpers = 175.0f;
+    x->Shooter15mpers = 15.0f;
+    x->Shooter18mpers = 18.0f;
+    x->Shooter30mpers = 30.0f;
+    // x->Shooter15mpers = 105.0f;
+    // x->Shooter18mpers = 115.0f;
+    // x->Shooter30mpers = 175.0f;
 
     x->FeederSlowSpeed = 50.0f;
     x->FeederFastSpeed = 100.0f;

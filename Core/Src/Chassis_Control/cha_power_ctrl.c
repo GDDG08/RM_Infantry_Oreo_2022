@@ -51,8 +51,8 @@ PowerCtrl_Data_t* PowerCtrl_GetPowerDataPtr(void) {
  */
 void Power_ForceChangePowerMode(Power_ControlModeMnum mode) {
     PowerCtrl_Data_t* PowCtr = PowerCtrl_GetPowerDataPtr();
-    // PowCtr->PowerCtrl_State = mode;
-    PowCtr->PowerCtrl_State = POWER_UNLIMITED;
+    PowCtr->PowerCtrl_State = mode;
+    // PowCtr->PowerCtrl_State = POWER_UNLIMITED;
 }
 
 /**

@@ -250,12 +250,37 @@
           <WinNumber>1</WinNumber>
           <ItemText>MiniPC_MiniPCData</ItemText>
         </Ww>
+        <Ww>
+          <count>19</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Shooter_ShooterControl</ItemText>
+        </Ww>
+        <Ww>
+          <count>20</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Motor_shooterMotorLeft</ItemText>
+        </Ww>
+        <Ww>
+          <count>21</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>pfdhcan</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>GimbalYaw_gimbalYawMotorParamArmor</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
           <count>0</count>
           <WinNumber>2</WinNumber>
           <ItemText>\\Infantry_Oreo\../Core/Src/Chassis_Control/cha_chassis_ctrl.c\Chassis_chassisMotorParamNormal</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>PowerCtrl_Data</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
