@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Chassis_Control\cha_chassis_ctrl.c
+ * @FilePath     : \Infantry_Oreo\Core\Src\Chassis_Control\cha_chassis_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-23 21:22:51
+ * @LastEditTime : 2022-04-08 14:13:37
  */
 
 #include "cha_chassis_ctrl.h"
@@ -225,23 +225,24 @@ void Chassis_CalcGyroRef() {
     float speed_ref = (float)sqrt(sqr(chassis->raw_speed_ref.forward_back_ref) + sqr(chassis->raw_speed_ref.left_right_ref));
     float min_vro, power_exp;
 
-    if (buscomm->cap_state == SUPERCAP_MODE_ON && buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
-        chassis->raw_speed_ref.rotate_ref = 750.0f - speed_ref * 1.2f;
-        if (chassis->raw_speed_ref.rotate_ref < 400)
-            chassis->raw_speed_ref.rotate_ref = 400;
-        return;
-    }
+    // if (buscomm->cap_state == SUPERCAP_MODE_ON && buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
+    //     chassis->raw_speed_ref.rotate_ref = 750.0f - speed_ref * 1.2f;
+    //     if (chassis->raw_speed_ref.rotate_ref < 400)
+    //         chassis->raw_speed_ref.rotate_ref = 400;
+    //     return;
+    // }
 
-    if (referee->max_chassis_power <= 45) {
-        min_vro = 360.0f;
-        power_exp = 130000.0f;
-    } else if (referee->max_chassis_power <= 50) {
-        min_vro = 370.0f;
-        power_exp = 140000.0f;
-    } else {
-        min_vro = 380.0f;
-        power_exp = 150000.0f;
-    }
+    // if (referee->max_chassis_power <= 45) {
+    //     min_vro = 360.0f;
+    //     power_exp = 130000.0f;
+    // } else if (referee->max_chassis_power <= 50) {
+    min_vro = 370.0f;
+    power_exp = 140000.0f;
+    // }
+    // else {
+    //     min_vro = 380.0f;
+    //     power_exp = 150000.0f;
+    // }
     chassis->raw_speed_ref.rotate_ref = (float)sqrt(power_exp - sqr(speed_ref));
     if (chassis->raw_speed_ref.rotate_ref < min_vro)
         chassis->raw_speed_ref.rotate_ref = min_vro;

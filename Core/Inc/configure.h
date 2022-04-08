@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-06 22:29:39
+ * @LastEditTime : 2022-04-08 14:34:54
  */
 
 // Note:
@@ -43,7 +43,7 @@ extern "C" {
 #define __IMU_NINE_AXIS_TYPE 9
 
 /*      ******************DEBUG********************      */
-#define __FN_DEBUG_NOREFEREEHW __FN_ENABLE
+#define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
 #define __FN_DEBUG_BTLOG __FN_ENABLE
 #define __FN_MINIPC_CAPT __FN_DISABLE
 
