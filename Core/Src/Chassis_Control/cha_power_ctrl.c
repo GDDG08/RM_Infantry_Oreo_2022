@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 10:17:13
+ * @LastEditTime : 2022-04-08 16:40:33
  */
 
 #include "cha_power_ctrl.h"
@@ -64,7 +64,8 @@ void Power_ForceChangePowerMode(Power_ControlModeMnum mode) {
 void PowerCtrl_Init(Power_ControlModeMnum Ctrl_state, Motor_MotorGroupTypeDef* Mecanum) {
     PowerCtrl_Data_t* PowCtr = PowerCtrl_GetPowerDataPtr();
 
-    PowCtr->PowerCtrl_State = Ctrl_state;
+    PowCtr->PowerCtrl_Ver = POWER_VER_MODERN;
+
     PowCtr->Mecanum_Chassis_Motor = Mecanum;
 
     PID_InitPIDParam(&Chassis_SpeedCWPIDParam, CWPIDParam_temp[0][0], CWPIDParam_temp[0][1], CWPIDParam_temp[0][2], CWPIDParam_temp[0][3], CWPIDParam_temp[0][4], CWPIDParam_temp[1][0], CWPIDParam_temp[1][1], CWPIDParam_temp[2][0], CWPIDParam_temp[2][1], CWPIDParam_temp[3][0], CWPIDParam_temp[3][1], PID_POSITION);
@@ -363,116 +364,120 @@ void PowerCtrl(void) {
  * @note	None
  */
 void Output_Control(void) {
-    Motor_ModeControl();  //电机运动状态解算
-    PowerCtrl();
+    if (PowerCtrl_Data.PowerCtrl_Ver == POWER_VER_MODERN) {
+        Motor_ModeControl();  //电机运动状态解算
+        PowerCtrl();
+    } else {
+        Power_PowerControl(&Motor_chassisMotors);
+    }
 }
 
 //@OLD Version
-// Power_DataTypeDef Power_data;
+Power_DataTypeDef Power_data;
 // Power_ControlModeMnum Power_ControlMode;
 
+/**
+ * @brief      Power control initialization
+ * @param      NULL
+ * @retval     NULL
+ */
+void Power_InitPower(Power_ControlModeMnum mode) {
+    Power_data.power_limit = 40.0f;
+    Power_data.warning_power = 30.0f;
+    Power_data.warning_power_buff = 40.0f;
+
+    Power_data.no_judge_total_current_limit = 64000.0f;
+    Power_data.buffer_total_current_limit = 16000.0f;
+    Power_data.power_total_current_limit = 20000.0f;
+
+    PowerCtrl_Data.PowerCtrl_State = mode;
+}
+
+/**
+ * @brief      Gets the pointer to the power control data object
+ * @param      NULL
+ * @retval     Pointer to power control data object
+ */
+Power_DataTypeDef* Power_GetPowerDataPty() {
+    return &Power_data;
+}
+
 // /**
-//   * @brief      Power control initialization
-//   * @param      NULL
-//   * @retval     NULL
-//   */
-// void Power_InitPower() {
-//     Power_data.power_limit = 40.0f;
-//     Power_data.warning_power = 30.0f;
-//     Power_data.warning_power_buff = 40.0f;
-
-//     Power_data.no_judge_total_current_limit = 64000.0f;
-//     Power_data.buffer_total_current_limit = 16000.0f;
-//     Power_data.power_total_current_limit = 20000.0f;
-
-//     Power_ControlMode = POWER_LIMIT;
-// }
-
-// /**
-//   * @brief      Gets the pointer to the power control data object
-//   * @param      NULL
-//   * @retval     Pointer to power control data object
-//   */
-// Power_DataTypeDef* Power_GetPowerDataPty() {
-//     return &Power_data;
-// }
-
-// /**
-//   * @brief      Force change power contorl mode
-//   * @param      NULL
-//   * @retval     NULL
-//   */
+//  * @brief      Force change power contorl mode
+//  * @param      NULL
+//  * @retval     NULL
+//  */
 // void Power_ForceChangePowerMode(Power_ControlModeMnum mode) {
 //     Power_ControlMode = mode;
 // }
 
-// /**
-//   * @brief      Set limit power (linear model)
-//   * @param      NULL
-//   * @retval     NULL
-//   */
-// void Power_SetLimitPower() {
-//     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
+/**
+ * @brief      Set limit power (linear model)
+ * @param      NULL
+ * @retval     NULL
+ */
+void Power_SetLimitPower() {
+    Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
 
-//     Power_data.power_limit = (float)referee->max_chassis_power;
-//     Power_data.warning_power = Power_data.power_limit * 0.5f;
-//     Power_data.warning_power_buff = 40.0f;
+    Power_data.power_limit = (float)referee->max_chassis_power;
+    Power_data.warning_power = Power_data.power_limit * 0.5f;
+    Power_data.warning_power_buff = 40.0f;
 
-//     Power_data.now_power = (float)referee->chassis_power;
-//     Power_data.now_power_buff = (float)referee->chassis_power_buffer;
-//     Power_data.total_current = 0.0f;
-// }
+    Power_data.now_power = (float)referee->chassis_power;
+    Power_data.now_power_buff = (float)referee->chassis_power_buffer;
+    Power_data.total_current = 0.0f;
+}
 
-// /**
-//   * @brief      Power control
-//   * @param      chassis: Pointer to chassis motor group struct
-//   * @retval     NULL
-//   */
-// void Power_PowerControl(Motor_MotorGroupTypeDef* chassis) {
-//     if (Power_ControlMode != POWER_LIMIT) {
-//         return;
-//     }
+/**
+ * @brief      Power control
+ * @param      chassis: Pointer to chassis motor group struct
+ * @retval     NULL
+ */
+void Power_PowerControl(Motor_MotorGroupTypeDef* chassis) {
+    if (PowerCtrl_Data.PowerCtrl_State != POWER_LIMIT) {
+        return;
+    }
 
-//     Power_SetLimitPower();
+    Power_SetLimitPower();
 
-//     if (Power_data.now_power_buff < Power_data.warning_power_buff) {
-//         float power_scale;
-//         if (Power_data.now_power_buff > 5.0f) {
-//             //scale down WARNING_POWER_BUFF
-//             power_scale = Power_data.now_power_buff / Power_data.warning_power_buff;
-//         } else {
-//             //only left 0% of WARNING_POWER_BUFF
-//             power_scale = 0.0f / Power_data.warning_power_buff;
-//         }
-//         Power_data.total_current_limit = Power_data.buffer_total_current_limit * power_scale;
-//     }  //scale down
-//     else {
-//         //power > WARNING_POWER
-//         if (Power_data.now_power > Power_data.warning_power) {
-//             float power_scale;
-//             //power < limited
-//             if (Power_data.now_power < Power_data.power_limit) {
-//                 //scale down
-//                 power_scale = (Power_data.power_limit - Power_data.now_power) / (Power_data.power_limit - Power_data.warning_power);
-//             } else {
-//                 power_scale = 0.0f;
-//             }  //power > limited
-//             Power_data.total_current_limit = Power_data.buffer_total_current_limit + Power_data.power_total_current_limit * power_scale;
-//         } else {
-//             Power_data.total_current_limit = Power_data.buffer_total_current_limit + Power_data.power_total_current_limit;
-//         }  //power < WARNING_POWER
-//     }
-//     //calculate the original motor current set
-//     for (uint8_t i = 0; i < 4; i++) {
-//         Power_data.total_current += fabs(chassis->motor_handle[i]->pid_spd.output);
-//     }
-//     if (Power_data.total_current > Power_data.total_current_limit) {
-//         float current_scale = Power_data.total_current_limit / Power_data.total_current;
-//         chassis->motor_handle[0]->pid_spd.output *= current_scale;
-//         chassis->motor_handle[1]->pid_spd.output *= current_scale;
-//         chassis->motor_handle[2]->pid_spd.output *= current_scale;
-//         chassis->motor_handle[3]->pid_spd.output *= current_scale;
-//     }
-// }
+    if (Power_data.now_power_buff < Power_data.warning_power_buff) {
+        float power_scale;
+        if (Power_data.now_power_buff > 5.0f) {
+            // scale down WARNING_POWER_BUFF
+            power_scale = Power_data.now_power_buff / Power_data.warning_power_buff;
+        } else {
+            // only left 0% of WARNING_POWER_BUFF
+            power_scale = 0.0f / Power_data.warning_power_buff;
+        }
+        Power_data.total_current_limit = Power_data.buffer_total_current_limit * power_scale;
+    }  // scale down
+    else {
+        // power > WARNING_POWER
+        if (Power_data.now_power > Power_data.warning_power) {
+            float power_scale;
+            // power < limited
+            if (Power_data.now_power < Power_data.power_limit) {
+                // scale down
+                power_scale = (Power_data.power_limit - Power_data.now_power) / (Power_data.power_limit - Power_data.warning_power);
+            } else {
+                power_scale = 0.0f;
+            }  // power > limited
+            Power_data.total_current_limit = Power_data.buffer_total_current_limit + Power_data.power_total_current_limit * power_scale;
+        } else {
+            Power_data.total_current_limit = Power_data.buffer_total_current_limit + Power_data.power_total_current_limit;
+        }  // power < WARNING_POWER
+    }
+    // calculate the original motor current set
+    for (uint8_t i = 0; i < 4; i++) {
+        Power_data.total_current += fabs(chassis->motor_handle[i]->pid_spd.output);
+    }
+    if (Power_data.total_current > Power_data.total_current_limit) {
+        float current_scale = Power_data.total_current_limit / Power_data.total_current;
+        chassis->motor_handle[0]->pid_spd.output *= current_scale;
+        chassis->motor_handle[1]->pid_spd.output *= current_scale;
+        chassis->motor_handle[2]->pid_spd.output *= current_scale;
+        chassis->motor_handle[3]->pid_spd.output *= current_scale;
+    }
+}
 
 #endif

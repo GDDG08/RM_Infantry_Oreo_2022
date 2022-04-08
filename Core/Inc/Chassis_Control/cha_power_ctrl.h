@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Chassis_Control\cha_power_ctrl.h
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Chassis_Control\cha_power_ctrl.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-19 16:47:10
+ * @LastEditTime : 2022-04-08 16:38:29
  */
 
 #ifndef CHA_POWER_CTRL_H
@@ -39,9 +39,15 @@ typedef enum {
     POWER_LIMIT = 0X01,
 } Power_ControlModeMnum;
 
+typedef enum {
+    POWER_VER_CLASSISC = 0X00,
+    POWER_VER_MODERN = 0X01,
+} Power_ControlVerMnum;
+
 typedef struct
 {
     Power_ControlModeMnum PowerCtrl_State;  //功率控制状态
+    Power_ControlVerMnum PowerCtrl_Ver;
 
     Motor_MotorGroupTypeDef* Mecanum_Chassis_Motor;
 
@@ -73,32 +79,32 @@ void Motor_ModeControl(void);
 PowerCtrl_Data_t* PowerCtrl_GetPowerDataPty(void);
 void PowerCtrl_Init(uint8_t Ctrl_state, Motor_MotorGroupTypeDef* Mecanum);
 
-//@OLD Version
-// typedef struct {
-//     float power_limit;
-//     float warning_power;
-//     float warning_power_buff;
+// @OLD Version
+typedef struct {
+    float power_limit;
+    float warning_power;
+    float warning_power_buff;
 
-//     float no_judge_total_current_limit;
-//     float buffer_total_current_limit;
-//     float power_total_current_limit;
+    float no_judge_total_current_limit;
+    float buffer_total_current_limit;
+    float power_total_current_limit;
 
-//     float now_power;
-//     float now_power_buff;
+    float now_power;
+    float now_power_buff;
 
-//     float total_current_limit;
-//     float total_current;
-// } Power_DataTypeDef;
+    float total_current_limit;
+    float total_current;
+} Power_DataTypeDef;
 
-// extern Power_DataTypeDef Power_data;
+extern Power_DataTypeDef Power_data;
 // extern Power_ControlModeMnum Power_ControlMode;
 
-// void Power_InitPower(void);
-// Power_DataTypeDef* Power_GetPowerDataPty(void);
-// void Power_SetLimitPower(void);
+void Power_InitPower(Power_ControlModeMnum mode);
+Power_DataTypeDef* Power_GetPowerDataPty(void);
+void Power_SetLimitPower(void);
 // void Power_ForceChangePowerMode(Power_ControlModeMnum mode);
-// void Power_ChangePowerMode(Power_ControlModeMnum mode);
-// void Power_PowerControl(Motor_MotorGroupTypeDef* chassis);
+void Power_ChangePowerMode(Power_ControlModeMnum mode);
+void Power_PowerControl(Motor_MotorGroupTypeDef* chassis);
 
 #ifdef __cplusplus
 }

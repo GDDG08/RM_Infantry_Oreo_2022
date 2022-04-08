@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-06 22:29:53
+ * @LastEditTime : 2022-04-08 14:48:29
  */
 
 #include "debug_BTlog.h"
@@ -36,7 +36,7 @@
 UART_HandleTypeDef* Const_BTlog_UART_HANDLER = &huart2;
 const uint8_t Const_BTlog_ID = 0x01;
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
-UART_HandleTypeDef* Const_BTlog_UART_HANDLER = &huart2;
+UART_HandleTypeDef* Const_BTlog_UART_HANDLER = &huart1;
 const uint8_t Const_BTlog_ID = 0x02;
 #elif __FN_IF_ENABLE(__FN_SUPER_CAP)
 #endif

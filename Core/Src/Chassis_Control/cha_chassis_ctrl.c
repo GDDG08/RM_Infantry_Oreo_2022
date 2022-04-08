@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-08 14:13:37
+ * @LastEditTime : 2022-04-08 16:39:20
  */
 
 #include "cha_chassis_ctrl.h"
@@ -72,6 +72,9 @@ void Chassis_InitChassis() {
     // Initialization of motor parameters (including PID parameters)
     Const_SetChasisMotorParam();
 
+    // OLD Power Control
+    Power_InitPower(POWER_UNLIMIT);
+    // NEW Power Control
     PowerCtrl_Init(POWER_UNLIMIT, &Motor_chassisMotors);
     chassis->pending_state = 0;
 }
@@ -363,12 +366,12 @@ void Chassis_Control() {
     Chassis_CalcMecanumRef();
 
     // // Calculation of control quantity
-    // Motor_CalcMotorGroupOutput(&Motor_chassisMotors, chassis->current_param);
+    Motor_CalcMotorGroupOutput(&Motor_chassisMotors, chassis->current_param);
 
     // // Power control
-    // PowerCtrl();
 
     // Output Control
+    // New Power control
     Output_Control();
 }
 

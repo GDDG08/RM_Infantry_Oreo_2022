@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 15:04:05
+ * @LastEditTime : 2022-04-08 17:12:53
  */
 
 #include "buscomm_cmd.h"
@@ -51,7 +51,7 @@ const uint32_t CMD_GIMBAL_SEND_PACK_3 = 0xB3;
 /*const*/ uint32_t Const_Send_Period_IMU_Yaw = 0;
 /*const*/ uint32_t Const_Send_Period_Cha_ref = 5;
 /*const*/ uint32_t Const_Send_Period_Referee = 20;
-/*const*/ uint32_t Const_Send_Period_Cap_Mode = 40;
+/*const*/ uint32_t Const_Send_Period_Cap_Mode = 5;
 
 static void _send_referee_data(uint8_t buff[]);
 static void _send_control(uint8_t buff[]);
