@@ -160,10 +160,12 @@ void Remote_RemoteShooterModeSet() {
             /* left switch down is slow shooting   */
             Shooter_ChangeShooterMode(Shoot_REFEREE);
             // Shooter_ChangeFeederMode(Feeder_LOW_CONTINUE);
-            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
-                Shooter_ChangeFeederMode(Feeder_REFEREE);
-            } else
-                Shooter_ChangeFeederMode(Feeder_FINISH);
+					  Shooter_ChangeFeederMode(Feeder_REFEREE);
+					
+//            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
+//                Shooter_ChangeFeederMode(Feeder_REFEREE);
+//            } else
+//                Shooter_ChangeFeederMode(Feeder_FINISH);
             break;
         }
         default:

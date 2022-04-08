@@ -471,7 +471,7 @@ void Shooter_ShootControl() {
         case Shoot_REFEREE:
             //            GPIO_Set(LASER);
             GPIO_Set(BULLET_CHARGING);
-            Shooter_SetShooterSpeed(Shooter_GetRefereeSpeed() + Shooter_GetShootSpeedOffset());
+            Shooter_SetShooterSpeed(Shooter_GetRefereeSpeed() /*+ Shooter_GetShootSpeedOffset()*/);
             break;
         default:
             break;
