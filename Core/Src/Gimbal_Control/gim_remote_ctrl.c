@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 11:19:47
+ * @LastEditTime : 2022-04-09 23:01:16
  */
 
 #include "gim_remote_ctrl.h"
@@ -160,12 +160,12 @@ void Remote_RemoteShooterModeSet() {
             /* left switch down is slow shooting   */
             Shooter_ChangeShooterMode(Shoot_REFEREE);
             // Shooter_ChangeFeederMode(Feeder_LOW_CONTINUE);
-					  Shooter_ChangeFeederMode(Feeder_REFEREE);
-					
-//            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
-//                Shooter_ChangeFeederMode(Feeder_REFEREE);
-//            } else
-//                Shooter_ChangeFeederMode(Feeder_FINISH);
+            Shooter_ChangeFeederMode(Feeder_REFEREE);
+
+            //            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
+            //                Shooter_ChangeFeederMode(Feeder_REFEREE);
+            //            } else
+            //                Shooter_ChangeFeederMode(Feeder_FINISH);
             break;
         }
         default:
@@ -191,12 +191,14 @@ void Remote_RemoteProcess() {
         Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
 
     if (data->remote.ch[4] >= 500.0f)
-        Servo_SetServoAngle(&Servo_ammoContainerCapServo, 300);
+        // Servo_SetServoAngle(&Servo_ammoContainerCapServo, 300);
+        buscomm->cap_boost_mode_user = SUPERCAP_BOOST;
 
     if (data->remote.ch[4] <= 500.0f)
-        Servo_SetServoAngle(&Servo_ammoContainerCapServo, -30);
+        // Servo_SetServoAngle(&Servo_ammoContainerCapServo, -30);
+        buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
 
-    buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
+    // buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
     /*      remote chassis reference value bessel filter    */
     float yaw_ref,
         pitch_ref;
@@ -529,7 +531,9 @@ void Remote_GestureFunction_2() {
  */
 void Remote_GestureFunction_3() {
     // super cap power control
-    Servo_SetServoAngle(&Servo_ammoContainerCapServo, 0);
+    // Servo_SetServoAngle(&Servo_ammoContainerCapServo, 0);
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    buscomm->cap_mode_user = SUPERCAP_CTRL_ON;
 }
 
 /**
@@ -538,8 +542,10 @@ void Remote_GestureFunction_3() {
  * @retval     NULL
  */
 void Remote_GestureFunction_4() {
-    Servo_SetServoAngle(&Servo_ammoContainerCapServo, 90);
-    Login_LoginOn();
+    // Servo_SetServoAngle(&Servo_ammoContainerCapServo, 90);
+    // Login_LoginOn();
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
 }
 
 #endif

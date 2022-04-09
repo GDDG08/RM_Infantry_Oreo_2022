@@ -88,11 +88,11 @@ int main(void) {
 
     /* USER CODE BEGIN SysInit */
     // DMA and usart;
+    MX_DMA_Init();
     /* USER CODE END SysInit */
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
-    MX_DMA_Init();
     MX_FDCAN1_Init();
     MX_FDCAN2_Init();
     MX_FDCAN3_Init();
@@ -100,6 +100,7 @@ int main(void) {
     MX_TIM1_Init();
     MX_TIM2_Init();
     MX_TIM15_Init();
+    MX_DMA_Init();
     MX_USART1_UART_Init();
     MX_USART2_UART_Init();
     MX_USB_Device_Init();

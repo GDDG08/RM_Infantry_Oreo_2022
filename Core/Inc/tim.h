@@ -1,12 +1,3 @@
-/*
- * @Project      : RM_Infantry_Oreo
- * @FilePath     : \Infantry_Oreo\Core\Inc\tim.h
- * @Descripttion :
- * @Author       : GDDG08
- * @Date         : 2022-04-04 15:42:29
- * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 15:47:19
- */
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************

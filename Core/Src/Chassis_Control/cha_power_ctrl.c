@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-08 20:35:25
+ * @LastEditTime : 2022-04-09 19:45:28
  */
 
 #include "cha_power_ctrl.h"
@@ -32,7 +32,7 @@ PID_PIDParamTypeDef Chassis_SpeedCCWPIDParam;
 PID_PIDParamTypeDef PowerCtrl_CurrentParam = {.kp = 1.3, .ki = 0.1, .kd = 130, .sum_max = 5000, .output_max = 16000};
 PID_PIDParamTypeDef PowerCtrl_PIDParam = {.kp = 0.0045, .ki = 0.00057, .kd = 0, .sum_max = 1700, .output_max = 1};
 
-float Power_ref = 50.0f;
+float Power_ref = -1.0f;
 
 /**
  * @brief   获取功率控制数据

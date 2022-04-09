@@ -1,12 +1,3 @@
-/*
- * @Project      : RM_Infantry_Oreo
- * @FilePath     : \Infantry_Oreo\Core\Inc\fdcan.h
- * @Descripttion :
- * @Author       : GDDG08
- * @Date         : 2022-04-04 15:41:43
- * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 15:46:50
- */
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************

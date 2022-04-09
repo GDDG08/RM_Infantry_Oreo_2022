@@ -1,3 +1,12 @@
+/*
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Src\app_freertos.c
+ * @Descripttion :
+ * @Author       : GDDG08
+ * @Date         : 2022-04-04 17:16:50
+ * @LastEditors  : GDDG08
+ * @LastEditTime : 2022-04-09 23:04:14
+ */
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************

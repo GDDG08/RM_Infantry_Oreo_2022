@@ -1,12 +1,3 @@
-/*
- * @Project      : RM_Infantry_Oreo
- * @FilePath     : \Infantry_Oreo\Core\Inc\usart.h
- * @Descripttion :
- * @Author       : GDDG08
- * @Date         : 2022-04-04 15:42:24
- * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-04 15:47:29
- */
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************

@@ -91,7 +91,7 @@ void MiniPC_ControlInit() {
 
     minipc->enable_aim_output = 1;
 
-    Filter_LowPassInit(0.8, &minipc->yaw_fil_param);
+    Filter_LowPassInit(0.4, &minipc->yaw_fil_param);
     Filter_LowPassInit(0.5, &minipc->pitch_fil_param);
     Filter_LowPassInit(0.1, &minipc->yaw_cvkf_fil_param);
     Filter_LowPassInit(0.01, &minipc->distance_fil_param);
