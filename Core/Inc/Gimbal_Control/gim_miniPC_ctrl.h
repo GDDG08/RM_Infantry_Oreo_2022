@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Gimbal_Control\gim_miniPC_ctrl.h
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Gimbal_Control\gim_miniPC_ctrl.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-07-27 15:19:09

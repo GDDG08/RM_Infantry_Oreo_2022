@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Inc\Const\infantry8_const.h
  * @Descripttion :
  * @Author       : GDDG08

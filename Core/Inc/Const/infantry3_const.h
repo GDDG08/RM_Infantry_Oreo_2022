@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Inc\Const\infantry3_const.h
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Const\infantry3_const.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14

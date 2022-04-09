@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Gimbal_Control\gim_gimbal_ctrl.c
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Src\Gimbal_Control\gim_gimbal_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51

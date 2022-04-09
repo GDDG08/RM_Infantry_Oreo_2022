@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Inc\Common_Contrrol\buscomm_ctrl.h
  * @Descripttion :
  * @Author       : GDDG08

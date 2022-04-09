@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Src\Common_Contrrol\watchdog_ctrl.c
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Src\Common_Contrrol\watchdog_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08

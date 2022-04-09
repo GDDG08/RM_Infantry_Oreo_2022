@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Inc\Gimbal_Control\gim_client_ctrl.h
  * @Descripttion :
  * @Author       : GDDG08

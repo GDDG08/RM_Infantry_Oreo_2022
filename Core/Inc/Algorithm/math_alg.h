@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Inc\Algorithm\math_alg.h
  * @Descripttion :
  * @Author       : GDDG08

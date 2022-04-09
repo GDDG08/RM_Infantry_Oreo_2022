@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Chassis_Control\cha_referee_ctrl.c
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Src\Chassis_Control\cha_referee_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14

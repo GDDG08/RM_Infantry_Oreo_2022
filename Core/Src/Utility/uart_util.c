@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Src\Utility\uart_util.c
  * @Descripttion :
  * @Author       : GDDG08

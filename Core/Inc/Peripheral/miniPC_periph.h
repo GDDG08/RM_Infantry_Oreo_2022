@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Inc\Peripheral\miniPC_periph.h
  * @Descripttion :
  * @Author       : GDDG08
@@ -64,7 +64,7 @@ MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr(void);
 void MiniPC_SendHeartPacket(void);
 void MiniPC_SendDataPacket(void);
 uint8_t MiniPC_IsMiniPCOffline(void);
-// void MiniPC_RXCallback(UART_HandleTypeDef* huart);                                                                         
+// void MiniPC_RXCallback(UART_HandleTypeDef* huart);
 void MiniPC_DecodeMiniPCPacket(uint8_t* buff, uint16_t rxdatalen);
 void MiniPC_HeartPacketDecode(uint8_t* buff, uint16_t rxdatalen);
 void MiniPC_ArmorPacketDecode(uint8_t* buff, uint16_t rxdatalen);

@@ -1,11 +1,11 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Src\Chassis_Control\cha_power_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-09 19:45:28
+ * @LastEditTime : 2022-04-09 23:08:45
  */
 
 #include "cha_power_ctrl.h"

@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Common_Contrrol\debug_BTlog.h
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Common_Contrrol\debug_BTlog.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:17:07

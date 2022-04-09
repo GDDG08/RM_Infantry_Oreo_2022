@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Src\Gimbal_Control\gim_remote_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08

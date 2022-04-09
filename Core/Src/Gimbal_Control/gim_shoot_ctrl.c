@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Src\Gimbal_Control\gim_shoot_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08

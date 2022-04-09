@@ -1,5 +1,5 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
+ * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Src\Common_Contrrol\init_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08

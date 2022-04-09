@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Algorithm\kalman_alg.h
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Algorithm\kalman_alg.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08

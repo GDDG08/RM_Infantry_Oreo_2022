@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune
- * @FilePath     : \infantry_-neptune\Core\Src\Utility\pwm_util.c
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Src\Utility\pwm_util.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
@@ -25,8 +25,8 @@ void PWM_InitPWM(PWM_PWMHandleTypeDef* pwm, TIM_HandleTypeDef* htim, uint32_t ch
     pwm->state = PWM_OFF;
     pwm->duty = 0.0;
     pwm->clk = 170000000;  // APB1 //APB1&&APB2
-//    if (pwm->htim == &htim1 || pwm->htim == &htim8)
-//        pwm->clk = 168000000;  // APB2: TIM1, 8~11
+                           //    if (pwm->htim == &htim1 || pwm->htim == &htim8)
+                           //        pwm->clk = 168000000;  // APB2: TIM1, 8~11
     pwm->period = 99;
 
     pwm->conf.OCMode = TIM_OCMODE_PWM1;

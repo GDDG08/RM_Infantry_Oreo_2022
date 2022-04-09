@@ -1,6 +1,6 @@
 /*
- * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Chassis_Control\cha_gimbal_ctrl.h
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Inc\Chassis_Control\cha_gimbal_ctrl.h
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
