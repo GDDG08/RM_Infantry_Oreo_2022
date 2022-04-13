@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 20:02:41
+ * @LastEditTime : 2022-04-10 15:38:29
  */
 
 #include "supercap_ctrl.h"
@@ -85,8 +85,8 @@ void Cap_Update(void) {
     capctrl->cap_mode_Remote = buscomm->cap_mode_user;
     capctrl->cap_boost_mode = buscomm->cap_boost_mode_user;
 
-    buscomm->cap_mode_fnl = (capctrl->cap_mode_Remote | capctrl->cap_mode_Stall | capctrl->cap_mode_Starting);
     buscomm->cap_boost_mode_fnl = PowCtr->ChassisStarting_flag << 2 | PowCtr->ChassisDown_flag << 1 | capctrl->cap_boost_mode;
+    buscomm->cap_mode_fnl = buscomm->cap_boost_mode_fnl | capctrl->cap_mode_Remote | capctrl->cap_mode_Stall | capctrl->cap_mode_Starting;
     buscomm->chassis_power_limit = referee->max_chassis_power;
     buscomm->chassis_power_buffer = (uint8_t)referee->chassis_power_buffer;
     buscomm->chassis_power = referee->chassis_power;

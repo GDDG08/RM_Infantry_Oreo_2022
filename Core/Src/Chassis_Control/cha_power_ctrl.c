@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-09 23:08:45
+ * @LastEditTime : 2022-04-13 21:13:22
  */
 
 #include "cha_power_ctrl.h"
@@ -288,16 +288,17 @@ void PowerOffset_Cal(void) {
 
     PowerCtrl_Data_t* PowCtr = PowerCtrl_GetPowerDataPtr();
 
-    if (referee->chassis_power >= referee->max_chassis_power - 0.5) {
-        if (referee->chassis_power_buffer <= 20) {
-            PowCtr->Power_offset += 3.0f;
-        } else {
-            PowCtr->Power_offset += 0.5f;
-        }
-    } else if (referee->chassis_power <= referee->max_chassis_power - 8.0) {
-        PowCtr->Power_offset -= 0.5f;
-    }
-    LimitMaxMin(PowCtr->Power_offset, 20.0f, 10.0f);
+    // if (referee->chassis_power >= referee->max_chassis_power - 0.5) {
+    //     if (referee->chassis_power_buffer <= 20) {
+    //         PowCtr->Power_offset += 3.0f;
+    //     } else {
+    //         PowCtr->Power_offset += 0.5f;
+    //     }
+    // } else if (referee->chassis_power <= referee->max_chassis_power - 8.0) {
+    //     PowCtr->Power_offset -= 0.5f;
+    // }
+    // LimitMaxMin(PowCtr->Power_offset, 20.0f, 10.0f);
+    PowCtr->Power_offset = 5.0f;
 }
 
 /**
@@ -334,7 +335,7 @@ void PowerCtrl(void) {
 
         if (capctrl->cap_boost_mode == 1 || capctrl->cap_mode_Starting == 1)  //三种模式 急速、加速、普通匀速
         {
-            PowerPID_Cal((Power_ref >= 0) ? Power_ref : 100.0f, capctrl->Sum_PowerReally);  //即功率期望极大
+            PowerPID_Cal((Power_ref >= 0) ? Power_ref : 500.0f, capctrl->Sum_PowerReally);  //即功率期望极大
         } else if ((capctrl->cap_mode_Remote | capctrl->cap_mode_Stall) == 1) {
             PowerPID_Cal((Power_ref >= 0) ? Power_ref : ((float)referee->max_chassis_power + 20.0f), capctrl->Sum_PowerReally);
         } else {
@@ -368,14 +369,14 @@ void PowerCtrl(void) {
  */
 void Output_Control(void) {
     if (PowerCtrl_Data.PowerCtrl_Ver == POWER_VER_MODERN) {
-        Motor_ModeControl();  //电机运动状态解算
+        Motor_ModeControl();  //电机运动状态解算cc
         PowerCtrl();
     } else {
         Power_PowerControl(&Motor_chassisMotors);
     }
 }
 
-//@OLD Version
+//@OLD Version*******************************//
 Power_DataTypeDef Power_data;
 // Power_ControlModeMnum Power_ControlMode;
 

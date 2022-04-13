@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-08 16:39:20
+ * @LastEditTime : 2022-04-10 18:30:24
  */
 
 #include "cha_chassis_ctrl.h"
@@ -228,24 +228,23 @@ void Chassis_CalcGyroRef() {
     float speed_ref = (float)sqrt(sqr(chassis->raw_speed_ref.forward_back_ref) + sqr(chassis->raw_speed_ref.left_right_ref));
     float min_vro, power_exp;
 
-    // if (buscomm->cap_state == SUPERCAP_MODE_ON && buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
-    //     chassis->raw_speed_ref.rotate_ref = 750.0f - speed_ref * 1.2f;
-    //     if (chassis->raw_speed_ref.rotate_ref < 400)
-    //         chassis->raw_speed_ref.rotate_ref = 400;
-    //     return;
-    // }
+    if (/*buscomm->cap_state == SUPERCAP_MODE_ON && */ buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
+        chassis->raw_speed_ref.rotate_ref = 750.0f - speed_ref * 1.2f;
+        if (chassis->raw_speed_ref.rotate_ref < 400)
+            chassis->raw_speed_ref.rotate_ref = 400;
+        return;
+    }
 
-    // if (referee->max_chassis_power <= 45) {
-    //     min_vro = 360.0f;
-    //     power_exp = 130000.0f;
-    // } else if (referee->max_chassis_power <= 50) {
-    min_vro = 370.0f;
-    power_exp = 140000.0f;
-    // }
-    // else {
-    //     min_vro = 380.0f;
-    //     power_exp = 150000.0f;
-    // }
+    if (referee->max_chassis_power <= 45) {
+        min_vro = 360.0f;
+        power_exp = 130000.0f;
+    } else if (referee->max_chassis_power <= 50) {
+        min_vro = 370.0f;
+        power_exp = 140000.0f;
+    } else {
+        min_vro = 380.0f;
+        power_exp = 150000.0f;
+    }
     chassis->raw_speed_ref.rotate_ref = (float)sqrt(power_exp - sqr(speed_ref));
     if (chassis->raw_speed_ref.rotate_ref < min_vro)
         chassis->raw_speed_ref.rotate_ref = min_vro;
@@ -264,6 +263,11 @@ float Chassis_Gyro_compensate[4] = {1.11f, 1.0f, 1.0304f, 1.0096f};
 
 void Chassis_CalcMecanumRef() {
     Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
+
+    chassis->lastMotor_ref[0] = Motor_chassisMotor1.pid_spd.ref;
+    chassis->lastMotor_ref[1] = Motor_chassisMotor2.pid_spd.ref;
+    chassis->lastMotor_ref[2] = Motor_chassisMotor3.pid_spd.ref;
+    chassis->lastMotor_ref[3] = Motor_chassisMotor4.pid_spd.ref;
 
     if (chassis->power_ref.forward_back_ref > 5.0f || chassis->power_ref.left_right_ref > 5.0f) {
         Motor_SetMotorRef(&Motor_chassisMotor1,
@@ -284,11 +288,6 @@ void Chassis_CalcMecanumRef() {
         Motor_SetMotorRef(&Motor_chassisMotor4,
                           Gyro_compensate_4 * (chassis->power_ref.forward_back_ref * Const_Chassis_MOVE_REF_TO_MOTOR_REF - chassis->power_ref.left_right_ref * Const_Chassis_MOVE_REF_TO_MOTOR_REF + chassis->power_ref.rotate_ref * Const_Chassis_ROTATE_REF_TO_MOTOR_REF));
     }
-
-    chassis->lastMotor_ref[0] = Motor_chassisMotor1.pid_spd.ref;
-    chassis->lastMotor_ref[1] = Motor_chassisMotor2.pid_spd.ref;
-    chassis->lastMotor_ref[2] = Motor_chassisMotor3.pid_spd.ref;
-    chassis->lastMotor_ref[3] = Motor_chassisMotor4.pid_spd.ref;
 }
 
 /**

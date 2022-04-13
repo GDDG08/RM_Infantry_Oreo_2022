@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 15:00:45
+ * @LastEditTime : 2022-04-10 15:20:23
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -74,6 +74,14 @@ typedef enum {
     BusComm_STATE_ERROR = 3,
     BusComm_STATE_PENDING = 4
 } BusComm_BusCommStateEnum;
+
+// typedef enum {
+//     BusComm_REFEREE_DATA = 0,
+//     BusComm_CTED =,
+//     BusComm_ = 2,
+//     BusComm_ = 3,
+//     BusComm_NG = 4
+// } BusComm_BusCommStateEnum;
 
 typedef struct {
     BusComm_BusCommStateEnum state;

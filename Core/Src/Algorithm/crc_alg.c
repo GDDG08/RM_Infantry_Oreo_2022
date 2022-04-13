@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:59:22
+ * @LastEditTime : 2022-04-13 21:12:41
  */
 
 #include "crc_alg.h"
@@ -141,7 +141,7 @@ uint16_t CRC_GetCRC16CheckSum(uint8_t* pchMessage, uint32_t dwLength, uint16_t w
  */
 uint32_t CRC_VerifyCRC16CheckSum(uint8_t* pchMessage, uint32_t dwLength) {
     uint16_t wExpected = 0;
-    if ((pchMessage == NULL) || (dwLength <= 2))
+    if ((pchMessage == NULL) || (dwLength <= 2) || (pchMessage == 0))
         return 0;
     wExpected = CRC_GetCRC16CheckSum(pchMessage, dwLength - 2, CRC16_INIT);
     return ((wExpected & 0xff) == pchMessage[dwLength - 2] &&
@@ -155,12 +155,12 @@ uint32_t CRC_VerifyCRC16CheckSum(uint8_t* pchMessage, uint32_t dwLength) {
  * @retvel   NULL
  */
 void CRC_AppendCRC16CheckSum(uint8_t* pchMessage, uint32_t dwLength) {
-    uint16_t wCRC = 0;
-    if ((pchMessage == NULL) || (dwLength <= 2))
-        return;
-    wCRC = CRC_GetCRC16CheckSum((unsigned char*)pchMessage, dwLength - 2, CRC16_INIT);
-    pchMessage[dwLength - 2] = (uint8_t)(wCRC & 0x00ff);
-    pchMessage[dwLength - 1] = (uint8_t)((wCRC >> 8) & 0x00ff);
+        uint16_t wCRC = 0;
+        if ((pchMessage == NULL) || (dwLength <= 2))
+            return;
+        wCRC = CRC_GetCRC16CheckSum((unsigned char*)pchMessage, dwLength - 2, CRC16_INIT);
+        pchMessage[dwLength - 2] = (uint8_t)(wCRC & 0x00ff);
+        pchMessage[dwLength - 1] = (uint8_t)((wCRC >> 8) & 0x00ff);
 }
 
 /**
@@ -171,17 +171,17 @@ void CRC_AppendCRC16CheckSum(uint8_t* pchMessage, uint32_t dwLength) {
  *            1    Match
  */
 CRC_MatchEnum CRC_VerifyIMU_HI229(uint8_t* buff) {
-    uint16_t imu_crc = 0,
-             tmp,
-             datalen;
-    datalen = buff[2] + (buff[3] << 8);
-    crc16_verify(&imu_crc, buff, 4);
-    crc16_verify(&imu_crc, buff + 6, datalen);
-    tmp = (buff[5] << 8) | buff[4];
-    if (tmp != imu_crc) {
-        return NOT_MATCH;
-    } else
-        return MATCH;
+        uint16_t imu_crc = 0,
+                 tmp,
+                 datalen;
+        datalen = buff[2] + (buff[3] << 8);
+        crc16_verify(&imu_crc, buff, 4);
+        crc16_verify(&imu_crc, buff + 6, datalen);
+        tmp = (buff[5] << 8) | buff[4];
+        if (tmp != imu_crc) {
+            return NOT_MATCH;
+        } else
+            return MATCH;
 }
 
 /**
@@ -191,19 +191,19 @@ CRC_MatchEnum CRC_VerifyIMU_HI229(uint8_t* buff) {
  * @retvel   NULL
  */
 void crc16_verify(uint16_t* currectCrc, const uint8_t* src, uint32_t lengthInBytes) {
-    uint32_t crc = *currectCrc;
-    uint32_t j;
-    for (j = 0; j < lengthInBytes; ++j) {
-        uint32_t i;
-        uint32_t byte = src[j];
-        crc ^= byte << 8;
-        for (i = 0; i < 8; ++i) {
-            uint32_t temp = crc << 1;
-            if (crc & 0x8000) {
-                temp ^= 0x1021;
+        uint32_t crc = *currectCrc;
+        uint32_t j;
+        for (j = 0; j < lengthInBytes; ++j) {
+            uint32_t i;
+            uint32_t byte = src[j];
+            crc ^= byte << 8;
+            for (i = 0; i < 8; ++i) {
+                uint32_t temp = crc << 1;
+                if (crc & 0x8000) {
+                    temp ^= 0x1021;
+                }
+                crc = temp;
             }
-            crc = temp;
         }
-    }
-    *currectCrc = crc;
+        *currectCrc = crc;
 }

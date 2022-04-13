@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-09 19:52:28
+ * @LastEditTime : 2022-04-10 16:52:16
  */
 
 #include "debug_BTlog.h"
@@ -163,8 +163,9 @@ void BTlog_Init() {
     ADD_SEND_DATA(buscomm->chassis_power_limit, uInt8, "REFEREE_power_limit");
     ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
     ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
-    ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
+    // ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
     ADD_SEND_DATA(PowCtr->Power_scale, Float, "Power_scale");
+    ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
     // ADD_SEND_DATA(referee->bullet_speed, Float, "bullet_speed");
     // ADD_SEND_DATA(buscomm->cap_mode_user, uInt8, "cap_mode_user");
     // ADD_SEND_DATA(buscomm->cap_boost_mode_user, uInt8, "cap_boost_mode_user");
