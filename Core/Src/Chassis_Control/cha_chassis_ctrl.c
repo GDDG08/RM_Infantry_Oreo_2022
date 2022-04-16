@@ -218,9 +218,10 @@ void Chassis_CalcFollowRef() {
  * @param      NULL
  * @retval     NULL
  */
-inline float sqr(float x) {
+float sqr(float x) {
     return x * x;
 }
+
 void Chassis_CalcGyroRef() {
     Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();

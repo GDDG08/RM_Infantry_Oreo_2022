@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-10 14:35:24
+ * @LastEditTime : 2022-04-16 16:56:08
  */
 
 #include "buscomm_ctrl.h"
@@ -38,7 +38,7 @@ FDCAN_HandleTypeDef* Const_CapComm_CAN_HANDLER = &hfdcan3;
 /*      infantry communication functions      */
 const uint16_t Const_BusComm_TX_BUFF_LEN = 64;
 const uint16_t Const_BusComm_RX_BUFF_LEN = 64;
-const uint16_t Const_BusComm_OFFLINE_TIME = 500;
+const uint16_t Const_BusComm_OFFLINE_TIME = 200;
 
 const uint32_t Const_BusComm_SIZE = FDCAN_DLC_BYTES_8;
 const uint8_t Const_BusComm_GIMBAL_BUFF_SIZE = 3;
@@ -139,24 +139,13 @@ BusComm_BusCommDataTypeDef* BusComm_GetBusDataPtr() {
  * @param      NULL
  * @retval     NULL
  */
-uint8_t BusComm_IsBusCommOffline() {
+uint8_t BusComm_IsBusCommOffline(uint8_t index) {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
-#if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
-    // Only consider gimbal offline
-    // if (HAL_GetTick() - buscomm->last_update_time[0] > Const_BusComm_OFFLINE_TIME
-    //     /*|| HAL_GetTick() - buscomm->last_update_time[1] > Const_BusComm_OFFLINE_TIME*/) {
-    //     buscomm->state = BusComm_STATE_LOST;
-    //     return 1;
-    // }
-    return 0;
-
-#else
-    if (HAL_GetTick() - buscomm->last_update_time[0] > Const_BusComm_OFFLINE_TIME) {
-        buscomm->state = BusComm_STATE_LOST;
+    if (HAL_GetTick() - buscomm->last_update_time[index] > Const_BusComm_OFFLINE_TIME) {
+        // buscomm->state = BusComm_STATE_LOST;
         return 1;
     }
-#endif
 
     return 0;
 }
