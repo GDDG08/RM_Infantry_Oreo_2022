@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-10 15:20:23
+ * @LastEditTime : 2022-04-16 10:30:40
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -65,8 +65,6 @@ extern FDCAN_TxHeaderTypeDef BusComm_CapMode;
 extern FDCAN_TxHeaderTypeDef BusComm_CapState_1;
 extern FDCAN_TxHeaderTypeDef BusComm_CapState_2;
 
-extern int yyy_love;
-
 typedef enum {
     BusComm_STATE_NULL = 0,
     BusComm_STATE_CONNECTED = 1,
@@ -75,13 +73,14 @@ typedef enum {
     BusComm_STATE_PENDING = 4
 } BusComm_BusCommStateEnum;
 
-// typedef enum {
-//     BusComm_REFEREE_DATA = 0,
-//     BusComm_CTED =,
-//     BusComm_ = 2,
-//     BusComm_ = 3,
-//     BusComm_NG = 4
-// } BusComm_BusCommStateEnum;
+typedef enum {
+    BusComm_PKG_REFEREE = 0,
+    BusComm_PKG_CTRL = 1,
+    BusComm_PKG_IMU = 2,
+    BusComm_PKG_CHA_REF = 3,
+    BusComm_PKG_CAP_1 = 4,
+    BusComm_PKG_CAP_2 = 5
+} BusComm_BusCommPkgEnum;
 
 typedef struct {
     BusComm_BusCommStateEnum state;
@@ -134,7 +133,7 @@ extern osMessageQId BusCommSend_QueueHandle;
 void BusComm_Task(void const* argument);
 void BusComm_InitBusComm(void);
 BusComm_BusCommDataTypeDef* BusComm_GetBusDataPtr(void);
-uint8_t BusComm_IsBusCommOffline(void);
+uint8_t BusComm_IsBusCommOffline(uint8_t);
 void BusComm_SendBusCommData(void);
 void BusComm_CANRxCallback(FDCAN_HandleTypeDef* phcan, uint32_t stdid, uint8_t rxdata[], uint32_t len);
 void BusComm_DecodeBusCommData(uint8_t buff[], uint32_t stdid, uint16_t rxdatalen);

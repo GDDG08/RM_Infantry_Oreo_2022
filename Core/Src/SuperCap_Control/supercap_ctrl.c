@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-10 15:38:29
+ * @LastEditTime : 2022-04-13 22:54:30
  */
 
 #include "supercap_ctrl.h"
@@ -82,6 +82,7 @@ void Cap_Update(void) {
     capctrl->Sum_PowerReally = buscomm->Cap_power;
     capctrl->Chassis_voltage = buscomm->Cap_voltage;
     capctrl->Sum_CurrentReally = buscomm->Cap_current;
+    capctrl->Cap_rest_energy = buscomm->cap_rest_energy;
     capctrl->cap_mode_Remote = buscomm->cap_mode_user;
     capctrl->cap_boost_mode = buscomm->cap_boost_mode_user;
 

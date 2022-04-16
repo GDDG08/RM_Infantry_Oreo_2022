@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-20 12:00:45
+ * @LastEditTime : 2022-04-13 22:53:27
  */
 
 #ifndef SUPERCAP_CTRL_H
@@ -36,6 +36,7 @@ typedef struct {
     float Sum_PowerReally;    //底盘总功率
     float Sum_CurrentReally;  //底盘总电流
     float Chassis_voltage;    //底盘电压
+    uint8_t Cap_rest_energy;    
 
     uint32_t last_update_time;  //上次更新时间
 } CAP_CtrlDataTypeDef;
