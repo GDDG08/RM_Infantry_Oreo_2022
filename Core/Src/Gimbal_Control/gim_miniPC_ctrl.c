@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-26 13:17:57
+ * @LastEditTime : 2022-04-17 20:06:46
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -92,7 +92,7 @@ void MiniPC_ControlInit() {
     minipc->enable_aim_output = 1;
 
     Filter_LowPassInit(0.4, &minipc->yaw_fil_param);
-    Filter_LowPassInit(0.5, &minipc->pitch_fil_param);
+    Filter_LowPassInit(0.2, &minipc->pitch_fil_param);
     Filter_LowPassInit(0.1, &minipc->yaw_cvkf_fil_param);
     Filter_LowPassInit(0.01, &minipc->distance_fil_param);
 
@@ -327,62 +327,65 @@ void MiniPC_SetAutoAimRef() {
     float cvkf_yaw_angle = 0.0f;
     float cvkf_pitch_angle = 0.0f;
 
-    if ((minipc->cvkf_control.output == 1) && (minipc->cvkf_control.total == 1) && (minipc->cvkf_control.basicprocess == 1)) {
-        MiniPC_KalmanPrediction();
+    // if ((minipc->cvkf_control.output == 1) && (minipc->cvkf_control.total == 1) && (minipc->cvkf_control.basicprocess == 1)) {
+    //     MiniPC_KalmanPrediction();
 
-        after_predict_yaw = Kalman_Predict_nT(&minipc->cvkf_yaw, CVKF_NT_YAW);
-        after_predict_pitch = Kalman_Predict_nT(&minipc->cvkf_pitch, CVKF_NT_PITCH);
+    //     after_predict_yaw = Kalman_Predict_nT(&minipc->cvkf_yaw, CVKF_NT_YAW);
+    //     after_predict_pitch = Kalman_Predict_nT(&minipc->cvkf_pitch, CVKF_NT_PITCH);
 
-        if (minipc->cvkf_control.predict == 1) {
-            cvkf_yaw_angle = after_predict_yaw;
-            cvkf_pitch_angle = after_predict_pitch;
-        } else {
-            cvkf_yaw_angle = minipc->cvkf_yaw.angle;
-            cvkf_pitch_angle = minipc->cvkf_pitch.angle;
-        }
+    //     if (minipc->cvkf_control.predict == 1) {
+    //         cvkf_yaw_angle = after_predict_yaw;
+    //         cvkf_pitch_angle = after_predict_pitch;
+    //     } else {
+    //         cvkf_yaw_angle = minipc->cvkf_yaw.angle;
+    //         cvkf_pitch_angle = minipc->cvkf_pitch.angle;
+    //     }
 
-        static float ref_cvkf_yaw_angle = 0.0f;
-        static float ref_cvkf_pitch_angle = 0.0f;
+    //     static float ref_cvkf_yaw_angle = 0.0f;
+    //     static float ref_cvkf_pitch_angle = 0.0f;
 
-        if (minipc->cvkf_control.dead_domain_delta_ref == 1) {
-            if (fabs(ref_cvkf_yaw_angle - cvkf_yaw_angle) > autoaim_yaw_dead) {
-                ref_cvkf_yaw_angle = cvkf_yaw_angle;
-            }
-            if (fabs(ref_cvkf_pitch_angle - cvkf_pitch_angle) > autoaim_pitch_dead) {
-                ref_cvkf_pitch_angle = cvkf_pitch_angle;
-            }
-        } else {
-            ref_cvkf_yaw_angle = cvkf_yaw_angle;
-            ref_cvkf_pitch_angle = cvkf_pitch_angle;
-        }
+    //     if (minipc->cvkf_control.dead_domain_delta_ref == 1) {
+    //         if (fabs(ref_cvkf_yaw_angle - cvkf_yaw_angle) > autoaim_yaw_dead) {
+    //             ref_cvkf_yaw_angle = cvkf_yaw_angle;
+    //         }
+    //         if (fabs(ref_cvkf_pitch_angle - cvkf_pitch_angle) > autoaim_pitch_dead) {
+    //             ref_cvkf_pitch_angle = cvkf_pitch_angle;
+    //         }
+    //     } else {
+    //         ref_cvkf_yaw_angle = cvkf_yaw_angle;
+    //         ref_cvkf_pitch_angle = cvkf_pitch_angle;
+    //     }
 
-        if (minipc->cvkf_control.offset == 1) {
-            pitch_angle = gimbal->pitch_position_fdb + minipc->pitch_angle;
+    //     if (minipc->cvkf_control.offset == 1) {
+    //         pitch_angle = gimbal->pitch_position_fdb + minipc->pitch_angle;
 
-            if (pitch_angle >= 0.7f)
-                autoaim_pitch_offset = -5.0f;
-            else if (pitch_angle < -0.7f && pitch_angle >= -1.3f)
-                autoaim_pitch_offset = -6.7f;
-            else if (pitch_angle < -1.3f && pitch_angle >= -5.0f)
-                autoaim_pitch_offset = -8.0f;
-            else if (pitch_angle < -5.0f && pitch_angle >= -15.0f)
-                autoaim_pitch_offset = -5.0f;  // shoot for sentry in Round High
-            else if (pitch_angle < -15.0f)
-                autoaim_pitch_offset = -3.0f;  // shoot for sentry in ~~ROAD
+    //         if (pitch_angle >= 0.7f)
+    //             autoaim_pitch_offset = -5.0f;
+    //         else if (pitch_angle < -0.7f && pitch_angle >= -1.3f)
+    //             autoaim_pitch_offset = -6.7f;
+    //         else if (pitch_angle < -1.3f && pitch_angle >= -5.0f)
+    //             autoaim_pitch_offset = -8.0f;
+    //         else if (pitch_angle < -5.0f && pitch_angle >= -15.0f)
+    //             autoaim_pitch_offset = -5.0f;  // shoot for sentry in Round High
+    //         else if (pitch_angle < -15.0f)
+    //             autoaim_pitch_offset = -3.0f;  // shoot for sentry in ~~ROAD
 
-            delta_predict = after_predict_yaw - minipc->cvkf_yaw.angle;
-            if (delta_predict >= 2.0f)
-                autoaim_yaw_offset = 2.0f;
-            else if (delta_predict <= -2.0f)
-                autoaim_yaw_offset = -2.0f;
-        }
+    //         delta_predict = after_predict_yaw - minipc->cvkf_yaw.angle;
+    //         if (delta_predict >= 2.0f)
+    //             autoaim_yaw_offset = 2.0f;
+    //         else if (delta_predict <= -2.0f)
+    //             autoaim_yaw_offset = -2.0f;
+    //     }
 
-        Gimbal_SetYawAutoRef(ref_cvkf_yaw_angle + autoaim_yaw_offset);
-        Gimbal_SetPitchAutoRef(ref_cvkf_pitch_angle + autoaim_pitch_offset);
-    } else {
-        Gimbal_SetYawAutoRef(/*-imu->angle.yaw + */ minipc->yaw_ref_filtered);
-        Gimbal_SetPitchAutoRef(/*imu->angle.pitch + */ minipc->pitch_ref_filtered);
-    }
+    //     Gimbal_SetYawAutoRef(ref_cvkf_yaw_angle + autoaim_yaw_offset);
+    //     Gimbal_SetPitchAutoRef(ref_cvkf_pitch_angle + autoaim_pitch_offset);
+    // } else {
+    Gimbal_SetYawAutoRef(/*-imu->angle.yaw + */ minipc->yaw_ref_filtered);
+    Gimbal_SetPitchAutoRef(/*imu->angle.pitch + */ minipc->pitch_ref_filtered);
+
+    // Gimbal_SetYawAutoRef(-imu->angle.yaw + minipc->yaw_ref_filtered);
+    // Gimbal_SetPitchAutoRef(imu->angle.pitch + minipc->pitch_ref_filtered);
+    // }
 }
 
 /**
