@@ -137,7 +137,7 @@ extern int GLOBAL_INIT_FLAG;
 // Enable serial port
 #define __FN_UTIL_PWM __FN_ENABLE
 // Enable PWM
-#define __FN_UTIL_USB __FN_DISABLE
+#define __FN_UTIL_USB __FN_ENABLE
 // Enable USB
 #define __FN_UTIL_FLASH __FN_DISABLE
 // Enable Flash
@@ -147,6 +147,8 @@ extern int GLOBAL_INIT_FLAG;
 // Enable I2C
 #define __FN_UTIL_SPI __FN_DISABLE
 // Enable SPI
+#define __FN_UTIL_ADC __FN_ENABLE
+// Enable ADC
 
 /* Peripheral Configuration */
 #define __FN_PERIPH_MOTOR __FN_ENABLE

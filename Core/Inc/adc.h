@@ -49,3 +49,4 @@ void MX_ADC2_Init(void);
 #endif
 
 #endif /* __ADC_H__ */
+

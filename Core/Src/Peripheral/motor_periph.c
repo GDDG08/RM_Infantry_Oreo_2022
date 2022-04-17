@@ -222,8 +222,8 @@ void Motor_InitAllMotors() {
 
     Motor_groupHandle[3] = &Motor_shooterMotors;
     Motor_InitMotorGroup(&Motor_shooterMotors, Motor_TYPE_PWM_MOTOR, 2, NULL, 0);
-    Motor_InitMotor(&Motor_shooterMotorLeft, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim2, TIM_CHANNEL_1, &htim3, shooter_encoder_callback);
-    Motor_InitMotor(&Motor_shooterMotorRight, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim16, TIM_CHANNEL_1, &htim5, shooter_encoder_callback);
+    Motor_InitMotor(&Motor_shooterMotorLeft, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05,  &htim3, TIM_CHANNEL_1, &htim1, shooter_encoder_callback);
+    Motor_InitMotor(&Motor_shooterMotorRight, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim3, TIM_CHANNEL_2, &htim2, shooter_encoder_callback);
     Motor_shooterMotors.motor_handle[0] = &Motor_shooterMotorLeft;
     Motor_shooterMotors.motor_handle[1] = &Motor_shooterMotorRight;
 }

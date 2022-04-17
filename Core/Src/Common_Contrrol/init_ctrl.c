@@ -22,6 +22,8 @@
 #include "magnetic_periph.h"
 #include "key_periph.h"
 
+#include "adc_util.h"
+
 #include "cha_chassis_ctrl.h"
 #include "cha_power_ctrl.h"
 #include "cha_gimbal_ctrl.h"
@@ -83,7 +85,7 @@ void Init_Task(void const* argument) {
 
     Ins_InsInit();
     MiniPC_InitMiniPC();
-
+		Adc_Init();
     Motor_InitAllMotors();
     BusComm_InitBusComm();
     FDCAN_IntFilterAndStart(&hfdcan1);
