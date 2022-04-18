@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-17 22:42:08
+ * @LastEditTime : 2022-04-18 20:53:01
  */
 
 #include "minipc_periph.h"
@@ -155,11 +155,12 @@ void MiniPC_SendDataPacket() {
 #endif
 
     //		COMM DEBUG
-    uint32_t time = HAL_GetTick();
-    int16_t pitch = 50 * sin(time / 50.0f);// + 50 * sin(time / 100.0f);
-    sin_gen = ((float)pitch) / 100.0f;
+    // uint32_t time = HAL_GetTick();
+    // int16_t pitch = 50 * sin(time / 50.0f);// + 50 * sin(time / 100.0f);
+    // sin_gen = ((float)pitch) / 100.0f;
+
     int16_t yaw = imu->angle.yaw * 100;
-    // int16_t pitch = imu->angle.pitch * 100;
+    int16_t pitch = imu->angle.pitch * 100;
     int16_t row = imu->angle.row * 100;
 
     int16_t yaw_speed = imu->speed.yaw * 100;

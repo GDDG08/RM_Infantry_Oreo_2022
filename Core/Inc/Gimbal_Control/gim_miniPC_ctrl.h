@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-27 15:19:09
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-23 21:38:59
+ * @LastEditTime : 2022-04-18 20:37:25
  */
 
 #ifndef GIM_MINIPC_CTRL_H
@@ -34,6 +34,11 @@ typedef enum {
     MiniPC_BIG_BUFF = 1u,
     MiniPC_SMALL_BUFF = 2u
 } MiniPC_AutoAimModeEnum;
+
+typedef enum {
+    MiniPC_ABSOLUTE = 0u,
+    MiniPC_RELATIVE = 1u
+} MiniPC_AutoControlModeEnum;
 
 typedef struct {
     uint8_t enable_aim_output;
@@ -64,6 +69,7 @@ typedef struct {
 
     uint32_t get_target_time;
     MiniPC_AutoAimModeEnum aim_mode;
+    MiniPC_AutoControlModeEnum control_mode;
     MiniPC_TargetFollowModeEnum target_state;
 } MiniPC_MiniPCControlTypeDef;
 

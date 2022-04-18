@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-17 20:06:46
+ * @LastEditTime : 2022-04-18 22:33:17
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -90,6 +90,7 @@ void MiniPC_ControlInit() {
     MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
 
     minipc->enable_aim_output = 1;
+    minipc->control_mode = MiniPC_RELATIVE;
 
     Filter_LowPassInit(0.4, &minipc->yaw_fil_param);
     Filter_LowPassInit(0.2, &minipc->pitch_fil_param);
@@ -324,8 +325,8 @@ void MiniPC_SetAutoAimRef() {
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
 
-    float cvkf_yaw_angle = 0.0f;
-    float cvkf_pitch_angle = 0.0f;
+    // float cvkf_yaw_angle = 0.0f;
+    // float cvkf_pitch_angle = 0.0f;
 
     // if ((minipc->cvkf_control.output == 1) && (minipc->cvkf_control.total == 1) && (minipc->cvkf_control.basicprocess == 1)) {
     //     MiniPC_KalmanPrediction();
@@ -380,11 +381,13 @@ void MiniPC_SetAutoAimRef() {
     //     Gimbal_SetYawAutoRef(ref_cvkf_yaw_angle + autoaim_yaw_offset);
     //     Gimbal_SetPitchAutoRef(ref_cvkf_pitch_angle + autoaim_pitch_offset);
     // } else {
-    Gimbal_SetYawAutoRef(/*-imu->angle.yaw + */ minipc->yaw_ref_filtered);
-    Gimbal_SetPitchAutoRef(/*imu->angle.pitch + */ minipc->pitch_ref_filtered);
-
-    // Gimbal_SetYawAutoRef(-imu->angle.yaw + minipc->yaw_ref_filtered);
-    // Gimbal_SetPitchAutoRef(imu->angle.pitch + minipc->pitch_ref_filtered);
+    if (minipc->control_mode == MiniPC_ABSOLUTE) {
+        Gimbal_SetYawAutoRef(/*imu->angle.yaw + */ minipc->yaw_ref_filtered);
+        Gimbal_SetPitchAutoRef(/*imu->angle.pitch + */ minipc->pitch_ref_filtered);
+    } else {
+        Gimbal_SetYawAutoRef(imu->angle.yaw + minipc->yaw_ref_filtered);
+        Gimbal_SetPitchAutoRef(imu->angle.pitch + minipc->pitch_ref_filtered);
+    }
     // }
 }
 
