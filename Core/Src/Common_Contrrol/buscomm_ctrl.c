@@ -5,7 +5,8 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-16 16:56:08
+ * @LastEditTime : 2022-04-18 20:25:49
+ * 
  */
 
 #include "buscomm_ctrl.h"
@@ -32,7 +33,11 @@
 #endif
 
 #define BUSCOMM_TASK_PERIOD 1
+#if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
+FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER = &hfdcan3;
+#elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
 FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER = &hfdcan2;
+#endif
 FDCAN_HandleTypeDef* Const_CapComm_CAN_HANDLER = &hfdcan3;
 
 /*      infantry communication functions      */
