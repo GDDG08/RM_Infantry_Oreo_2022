@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 14:25:24
+ * @LastEditTime : 2022-04-17 22:42:08
  */
 
 #include "minipc_periph.h"
@@ -135,7 +135,7 @@ void MiniPC_SendHeartPacket() {
  * @param      NULL
  * @retval     NULL
  */
-
+float sin_gen;
 void MiniPC_SendDataPacket() {
     static uint32_t data_count = 0;
 
@@ -155,10 +155,11 @@ void MiniPC_SendDataPacket() {
 #endif
 
     //		COMM DEBUG
-    //		int16_t pitch = 50 * sin(HAL_GetTick()/200.0f);
-    //		sin_gen = pitch;
+    uint32_t time = HAL_GetTick();
+    int16_t pitch = 50 * sin(time / 50.0f);// + 50 * sin(time / 100.0f);
+    sin_gen = ((float)pitch) / 100.0f;
     int16_t yaw = imu->angle.yaw * 100;
-    int16_t pitch = imu->angle.pitch * 100;
+    // int16_t pitch = imu->angle.pitch * 100;
     int16_t row = imu->angle.row * 100;
 
     int16_t yaw_speed = imu->speed.yaw * 100;

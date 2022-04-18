@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-05 14:25:49
+ * @LastEditTime : 2022-04-17 20:56:20
  */
 
 #ifndef MINIPC_PERIPH_H
@@ -58,6 +58,7 @@ extern const uint8_t Const_MiniPC_LITTLE_BUFF;
 
 extern MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;
 // extern UART_HandleTypeDef* Const_MiniPC_UART_HANDLER;
+extern float sin_gen;
 
 void MiniPC_InitMiniPC(void);
 MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr(void);

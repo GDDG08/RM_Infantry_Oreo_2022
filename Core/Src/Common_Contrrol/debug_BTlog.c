@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-10 16:52:16
+ * @LastEditTime : 2022-04-17 20:54:30
  */
 
 #include "debug_BTlog.h"
@@ -136,15 +136,16 @@ void BTlog_Init() {
     // Log Data Send
     ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-    ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
-    ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
-    // ADD_SEND_DATA(imu->angle.row, Float, "imu->angle.row");
-    // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
+    // ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
+    // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
+    // // ADD_SEND_DATA(imu->angle.row, Float, "imu->angle.row");
+    // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
 
-    ADD_SEND_DATA(minipc_data->state, uInt8, "minipcD->state");
+    // ADD_SEND_DATA(minipc_data->state, uInt8, "minipcD->state");
+    ADD_SEND_DATA(sin_gen, Float, "sin_gen");
     ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
-    ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
-    ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
+    // ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
+    // ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
     // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
     // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 

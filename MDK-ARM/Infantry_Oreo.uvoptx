@@ -295,6 +295,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>PowerCtrl_PIDParam</ItemText>
         </Ww>
+        <Ww>
+          <count>28</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>MiniPC_MiniPCContrlData</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
