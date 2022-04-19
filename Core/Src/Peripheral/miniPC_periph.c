@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-18 20:53:01
+ * @LastEditTime : 2022-04-19 20:46:37
  */
 
 #include "minipc_periph.h"
@@ -155,11 +155,13 @@ void MiniPC_SendDataPacket() {
 #endif
 
     //		COMM DEBUG
-    // uint32_t time = HAL_GetTick();
-    // int16_t pitch = 50 * sin(time / 50.0f);// + 50 * sin(time / 100.0f);
+    uint32_t time = HAL_GetTick();
+    // int16_t pitch = 50 * sin(time / 50.0f);  // + 50 * sin(time / 100.0f);
     // sin_gen = ((float)pitch) / 100.0f;
+    float yaw = 50.0f * sin(time / 50.0f);  // + 50 * sin(time / 100.0f);
+    sin_gen = yaw;
 
-    int16_t yaw = imu->angle.yaw * 100;
+    // float yaw = imu->angle.yaw;
     int16_t pitch = imu->angle.pitch * 100;
     int16_t row = imu->angle.row * 100;
 
@@ -180,17 +182,17 @@ void MiniPC_SendDataPacket() {
     buff[6] = 0;
     buff[7] = 0;
     buff[8] = 0x01;  // game_status_tower
-    i162buff(yaw, buff + 9);
-    i162buff(pitch, buff + 11);
-    i162buff(row, buff + 13);
-    i162buff(yaw_speed, buff + 15);
-    i162buff(shooter_speed, buff + 17);
-    i162buff(pitch_speed, buff + 19);
-    buff[21] = minipc->team_color;
-    buff[22] = minipc->mode;
+    float2buff(yaw, buff + 9);
+    i162buff(pitch, buff + 13);
+    i162buff(row, buff + 15);
+    i162buff(yaw_speed, buff + 17);
+    i162buff(shooter_speed, buff + 19);
+    i162buff(pitch_speed, buff + 21);
+    buff[23] = minipc->team_color;
+    buff[24] = minipc->mode;
 
     // Must be even
-    buff[23] = 0x00;
+    buff[25] = 0x00;
 
     uint16_t checksum = 0;
     if (size % 2) {
@@ -308,9 +310,9 @@ void MiniPC_ArmorPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
 
     minipc->is_get_target = buff[8];
 
-    minipc->yaw_angle = (float)buff2i16(buff + 9) / 100.0f;
-    minipc->pitch_angle = (float)buff2i16(buff + 11) / 100.0f;
-    minipc->distance = (float)buff2i16(buff + 13);
+    minipc->yaw_angle = buff2float(buff + 9);
+    minipc->pitch_angle = (float)buff2i16(buff + 13) / 100.0f;
+    minipc->distance = (float)buff2i16(buff + 15);
 
     minipc->state = MiniPC_CONNECTED;
 }
