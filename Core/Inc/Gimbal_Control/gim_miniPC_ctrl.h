@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-27 15:19:09
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-18 20:19:33
+ * @LastEditTime : 2022-04-19 22:23:00
  */
 
 #ifndef GIM_MINIPC_CTRL_H

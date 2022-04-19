@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-18 20:21:00
+ * @LastEditTime : 2022-04-18 22:33:17
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -382,10 +382,10 @@ void MiniPC_SetAutoAimRef() {
     //     Gimbal_SetPitchAutoRef(ref_cvkf_pitch_angle + autoaim_pitch_offset);
     // } else {
     if (minipc->control_mode == MiniPC_ABSOLUTE) {
-        Gimbal_SetYawAutoRef(/*-imu->angle.yaw + */ minipc->yaw_ref_filtered);
+        Gimbal_SetYawAutoRef(/*imu->angle.yaw + */ minipc->yaw_ref_filtered);
         Gimbal_SetPitchAutoRef(/*imu->angle.pitch + */ minipc->pitch_ref_filtered);
     } else {
-        Gimbal_SetYawAutoRef(-imu->angle.yaw + minipc->yaw_ref_filtered);
+        Gimbal_SetYawAutoRef(imu->angle.yaw + minipc->yaw_ref_filtered);
         Gimbal_SetPitchAutoRef(imu->angle.pitch + minipc->pitch_ref_filtered);
     }
     // }

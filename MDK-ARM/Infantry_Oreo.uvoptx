@@ -295,6 +295,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>PowerCtrl_PIDParam</ItemText>
         </Ww>
+        <Ww>
+          <count>28</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Motor_shooterMotorRight</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -371,6 +376,11 @@
           <count>14</count>
           <WinNumber>2</WinNumber>
           <ItemText>INS_IMUData</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>MiniPC_MiniPCContrlData</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
