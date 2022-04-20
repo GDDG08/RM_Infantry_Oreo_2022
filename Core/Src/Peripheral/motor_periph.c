@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-08 17:16:07
+ * @LastEditTime : 2022-04-20 21:37:06
  */
 
 #include "motor_periph.h"
@@ -222,7 +222,7 @@ void Motor_InitAllMotors() {
 
     Motor_groupHandle[3] = &Motor_shooterMotors;
     Motor_InitMotorGroup(&Motor_shooterMotors, Motor_TYPE_PWM_MOTOR, 2, NULL, 0);
-    Motor_InitMotor(&Motor_shooterMotorLeft, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05,  &htim3, TIM_CHANNEL_1, &htim1, shooter_encoder_callback);
+    Motor_InitMotor(&Motor_shooterMotorLeft, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim3, TIM_CHANNEL_1, &htim1, shooter_encoder_callback);
     Motor_InitMotor(&Motor_shooterMotorRight, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim3, TIM_CHANNEL_2, &htim2, shooter_encoder_callback);
     Motor_shooterMotors.motor_handle[0] = &Motor_shooterMotorLeft;
     Motor_shooterMotors.motor_handle[1] = &Motor_shooterMotorRight;
@@ -532,7 +532,7 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
     // float duty = output * 0.00011136f + 0.47522f;
 
     float ref = Motor_GetMotorRef(pmotor);
-    float duty = 0.0080f * ref + 0.5f;
+    float duty = 0.0074f * ref + 0.5f;
 
     pmotor->duty = duty;
     // if (duty < 0.58f) duty = 0.58f;
