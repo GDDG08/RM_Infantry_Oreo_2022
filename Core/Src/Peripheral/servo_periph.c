@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:47:51
+ * @LastEditTime : 2022-04-23 20:40:59
  */
 
 #include "servo_periph.h"
@@ -24,7 +24,7 @@ Servo_ServoTypeDef Servo_ammoContainerCapServo;
  * @retval     NULL
  */
 void Servo_InitAllServos() {
-    Servo_InitServo(&Servo_ammoContainerCapServo, &htim1, TIM_CHANNEL_1);
+    Servo_InitServo(&Servo_ammoContainerCapServo, &htim15, TIM_CHANNEL_1);
 }
 
 /**
