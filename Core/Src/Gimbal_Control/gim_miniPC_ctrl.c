@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-18 22:33:17
+ * @LastEditTime : 2022-04-25 11:23:57
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -90,7 +90,7 @@ void MiniPC_ControlInit() {
     MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
 
     minipc->enable_aim_output = 1;
-    minipc->control_mode = MiniPC_RELATIVE;
+    minipc->control_mode = MiniPC_ABSOLUTE;
 
     Filter_LowPassInit(0.4, &minipc->yaw_fil_param);
     Filter_LowPassInit(0.2, &minipc->pitch_fil_param);

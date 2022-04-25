@@ -140,7 +140,7 @@ void BTlog_Init() {
     // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
 
     ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
-    ADD_SEND_DATA(sin_gen, Float, "sin_gen");
+    // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
     ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
     ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
     ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");

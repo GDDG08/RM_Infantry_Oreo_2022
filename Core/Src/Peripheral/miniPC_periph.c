@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-19 20:46:37
+ * @LastEditTime : 2022-04-24 20:51:19
  */
 
 #include "minipc_periph.h"
@@ -34,7 +34,7 @@ const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;           // miniPC Receive buffe
 const uint16_t Const_MiniPC_TX_BUFF_LEN = 200;           // miniPC Transmit buffer length
 const uint16_t Const_MiniPC_MINIPC_OFFLINE_TIME = 1000;  // miniPC offline time
 const uint16_t Const_MiniPC_TX_HEART_FRAME_LEN = 10;     // miniPC heart transmit frame length
-const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 24;      // miniPC data transmit frame length
+const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 26;      // miniPC data transmit frame length
 
 const uint8_t Const_MiniPC_SLAVE_COMPUTER = 0x00;
 const uint8_t Const_MiniPC_INFANTRY_3 = 0x03;
@@ -56,7 +56,7 @@ const uint8_t Const_MiniPC_ARMOR_PACKET = 0x02;
 const uint8_t Const_MiniPC_DATA_PACKET = 0x08;
 
 const uint8_t Const_MiniPC_Heart_PACKET_DATA_LEN = 2;
-const uint8_t Const_MiniPC_Data_PACKET_DATA_LEN = 16;
+const uint8_t Const_MiniPC_Data_PACKET_DATA_LEN = 18;
 
 MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;  // miniPC data
 
@@ -155,13 +155,13 @@ void MiniPC_SendDataPacket() {
 #endif
 
     //		COMM DEBUG
-    uint32_t time = HAL_GetTick();
+    // uint32_t time = HAL_GetTick();
     // int16_t pitch = 50 * sin(time / 50.0f);  // + 50 * sin(time / 100.0f);
     // sin_gen = ((float)pitch) / 100.0f;
-    float yaw = 50.0f * sin(time / 50.0f);  // + 50 * sin(time / 100.0f);
-    sin_gen = yaw;
+    // float yaw = 50.0f * sin(time / 50.0f);  // + 50 * sin(time / 100.0f);
+    // sin_gen = yaw;
 
-    // float yaw = imu->angle.yaw;
+    float yaw = imu->angle.yaw;
     int16_t pitch = imu->angle.pitch * 100;
     int16_t row = imu->angle.row * 100;
 
@@ -185,9 +185,9 @@ void MiniPC_SendDataPacket() {
     float2buff(yaw, buff + 9);
     i162buff(pitch, buff + 13);
     i162buff(row, buff + 15);
-    i162buff(yaw_speed, buff + 17);
-    i162buff(shooter_speed, buff + 19);
-    i162buff(pitch_speed, buff + 21);
+    ui162buff(yaw_speed, buff + 17);
+    ui162buff(shooter_speed, buff + 19);
+    ui162buff(pitch_speed, buff + 21);
     buff[23] = minipc->team_color;
     buff[24] = minipc->mode;
 
