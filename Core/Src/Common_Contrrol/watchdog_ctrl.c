@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-16 16:44:17
+ * @LastEditTime : 2022-04-26 20:03:42
  */
 
 #include "watchdog_ctrl.h"
@@ -38,33 +38,33 @@ void WatchDog_Task(void const* argument) {
 }
 
 void WatchDog_FeedDog() {
-    // static uint8_t firstout = 1;
+    static uint8_t firstout[5] = 1;
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
 
     if (BusComm_IsBusCommOffline(BusComm_PKG_CTRL)) {
     }
     if (BusComm_IsBusCommOffline(BusComm_PKG_IMU)) {
+        firstout[BusComm_PKG_IMU] = 1;
+        GimbalYaw_SetGimbalYawControlState(0);
+        GimbalYaw_SetGimbalYawOutputState(0);
+    } else {
+        if (firstout[BusComm_PKG_IMU]) {
+            firstout[BusComm_PKG_IMU] = 0;
+            GimbalYaw_ReSetYawRef();
+        }
+        GimbalYaw_SetGimbalYawControlState(1);
+        GimbalYaw_SetGimbalYawOutputState(1);
     }
     if (BusComm_IsBusCommOffline(BusComm_PKG_CHA_REF)) {
+        Chassis_SetMode(Chassis_MODE_STOP);
+
+    } else {
+        Chassis_SetChassisControlState(1);
+        Chassis_SetChassisOutputState(1);
     }
     if (BusComm_IsBusCommOffline(BusComm_PKG_CAP_1)) {
     }
     if (BusComm_IsBusCommOffline(BusComm_PKG_CAP_2)) {
-        // firstout = 1;
-        // GimbalYaw_SetGimbalYawControlState(0);
-        // GimbalYaw_SetGimbalYawOutputState(0);
-        // Chassis_SetMode(Chassis_MODE_STOP);
-    } else {
-        // if (firstout) {
-        //     firstout = 0;
-        //     GimbalYaw_ReSetYawRef();
-        // }
-
-        // GimbalYaw_SetGimbalYawControlState(1);
-        // GimbalYaw_SetGimbalYawOutputState(1);
-
-        // Chassis_SetChassisControlState(1);
-        // Chassis_SetChassisOutputState(1);
     }
 
 #elif __FN_IF_ENABLE(__FN_INFANRTY_GIMBAL)

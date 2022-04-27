@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-08 17:12:53
+ * @LastEditTime : 2022-04-26 20:00:13
  */
 
 #include "buscomm_cmd.h"
@@ -201,8 +201,8 @@ static void _send_chassis_ref(uint8_t buff[]) {
 int countb[6];
 float rateb[6];
 static void _set_referee_data(uint8_t buff[]) {
-    countb[0]++;
-    rateb[0] = 1000 * countb[0] / HAL_GetTick();
+    countb[BusComm_PKG_REFEREE]++;
+    rateb[BusComm_PKG_REFEREE] = 1000 * countb[BusComm_PKG_REFEREE] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     buscomm->robot_id = buff[0] & 0x7F;
     buscomm->main_shooter_power = (buff[0] & 0x80) >> 7;
@@ -214,8 +214,8 @@ static void _set_referee_data(uint8_t buff[]) {
 }
 
 static void _set_control(uint8_t buff[]) {
-    countb[1]++;
-    rateb[1] = 1000 * countb[1] / HAL_GetTick();
+    countb[BusComm_PKG_CTRL]++;
+    rateb[BusComm_PKG_CTRL] = 1000 * countb[BusComm_PKG_CTRL] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
     // Todo
@@ -233,26 +233,26 @@ static void _set_control(uint8_t buff[]) {
     buscomm->gimbal_yaw_ref = buff2float(buff + 2);
     _cmd_mode_control();
 
-    buscomm->last_update_time[1] = HAL_GetTick();
+    buscomm->last_update_time[BusComm_PKG_REFEREE] = HAL_GetTick();
 }
 
 static void _set_imu_yaw(uint8_t buff[]) {
-    countb[2]++;
-    rateb[2] = 1000 * countb[2] / HAL_GetTick();
+    countb[BusComm_PKG_IMU]++;
+    rateb[BusComm_PKG_IMU] = 1000 * countb[BusComm_PKG_IMU] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     buscomm->gimbal_imu_spd = buff2float(buff);
     buscomm->gimbal_imu_pos = buff2float(buff + 4);
-    buscomm->last_update_time[2] = HAL_GetTick();
+    buscomm->last_update_time[BusComm_PKG_IMU] = HAL_GetTick();
 }
 
 static void _set_cha_ref(uint8_t buff[]) {
-    countb[3]++;
-    rateb[3] = 1000 * countb[3] / HAL_GetTick();
+    countb[BusComm_PKG_CHA_REF]++;
+    rateb[BusComm_PKG_CHA_REF] = 1000 * countb[BusComm_PKG_CHA_REF] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     buscomm->chassis_fb_ref = buff2float(buff);
     buscomm->chassis_lr_ref = buff2float(buff + 4);
 
-    buscomm->last_update_time[3] = HAL_GetTick();
+    buscomm->last_update_time[BusComm_PKG_CHA_REF] = HAL_GetTick();
 }
 // int count7;
 // float rate7;
@@ -267,23 +267,23 @@ static void _set_cha_ref(uint8_t buff[]) {
 // }
 
 static void _set_cap_state_1(uint8_t buff[]) {
-    countb[4]++;
-    rateb[4] = 1000 * countb[4] / HAL_GetTick();
+    countb[BusComm_PKG_CAP_1]++;
+    rateb[BusComm_PKG_CAP_1] = 1000 * countb[BusComm_PKG_CAP_1] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
     buscomm->Cap_power = buff2float(buff);
     buscomm->cap_rest_energy = buff[4];
 
-    buscomm->last_update_time[4] = HAL_GetTick();
+    buscomm->last_update_time[BusComm_PKG_CAP_1] = HAL_GetTick();
 }
 
 static void _set_cap_state_2(uint8_t buff[]) {
-    countb[5]++;
-    rateb[5] = 1000 * countb[5] / HAL_GetTick();
+    countb[BusComm_PKG_CAP_2]++;
+    rateb[BusComm_PKG_CAP_2] = 1000 * countb[BusComm_PKG_CAP_2] / HAL_GetTick();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
     buscomm->Cap_voltage = buff2float(buff);
     buscomm->Cap_current = buff2float(buff + 4);
 
-    buscomm->last_update_time[5] = HAL_GetTick();
+    buscomm->last_update_time[BusComm_PKG_CAP_2] = HAL_GetTick();
 }
