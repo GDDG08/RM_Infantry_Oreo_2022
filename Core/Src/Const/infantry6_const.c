@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-25 12:34:43
+ * @LastEditTime : 2022-04-29 10:22:04
  */
 
 #include "configure.h"
@@ -61,6 +61,10 @@ static const float Const_ShooterMotorParam_infantry_6[2][3][4][5] = {
 static const float Const_FeederMotorParam_infantry_6[1][3][4][5] = {
     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{500, 0.01, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{8.35, 0, 0.11, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}}  // feeder motor
 };
+
+// static const float Const_FeederMotorParam_infantry_6[1][3] = {
+
+// };
 #endif
 
 void Const_Infantry_6_Init(Const_ConstTypeDef* x) {

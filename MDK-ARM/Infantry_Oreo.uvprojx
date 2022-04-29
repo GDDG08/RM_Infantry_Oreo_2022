@@ -809,11 +809,6 @@
               <FilePath>..\Core\Src\Common_Contrrol\init_ctrl.c</FilePath>
             </File>
             <File>
-              <FileName>tempCodeRunnerFile.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\Common_Contrrol\tempCodeRunnerFile.c</FilePath>
-            </File>
-            <File>
               <FileName>watchdog_ctrl.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\Common_Contrrol\watchdog_ctrl.c</FilePath>

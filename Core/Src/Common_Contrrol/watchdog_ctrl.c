@@ -38,9 +38,9 @@ void WatchDog_Task(void const* argument) {
 }
 
 void WatchDog_FeedDog() {
-    static uint8_t firstout[5] = 1;
+    
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
-
+static uint8_t firstout[5] = 1;
     if (BusComm_IsBusCommOffline(BusComm_PKG_CTRL)) {
     }
     if (BusComm_IsBusCommOffline(BusComm_PKG_IMU)) {
