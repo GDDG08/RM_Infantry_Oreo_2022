@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 10:53:03
+ * @LastEditTime : 2022-04-30 13:05:57
  */
 
 #include "gim_shoot_ctrl.h"
@@ -216,11 +216,11 @@ void Shooter_ChangeShooterMode(Shoot_ShooterModeEnum mode) {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
-// TODO
+    // TODO
     // if (buscomm->main_shooter_power == 1)
-        shooter->shooter_mode = mode;
+    shooter->shooter_mode = mode;
     // else
-        // shooter->shooter_mode = Shoot_NULL;
+    // shooter->shooter_mode = Shoot_NULL;
 }
 
 /**
@@ -478,14 +478,13 @@ void Shooter_ShootControl() {
             break;
     }
 
-    // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
-    // Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
-
-    // Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);
-    // Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
-
-    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.right_shoot_speed);
+    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
     Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
+    
+#if __FN_IF_ENABLE(__FN_SHOOTER_PID)
+    Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);
+    Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
+#endif
 }
 
 /**
