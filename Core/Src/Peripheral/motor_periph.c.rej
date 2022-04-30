@@ -1,0 +1,10 @@
+diff a/Core/Src/Peripheral/motor_periph.c b/Core/Src/Peripheral/motor_periph.c	(rejected hunks)
+@@ -5,7 +5,7 @@
+  * @Author       : GDDG08
+  * @Date         : 2021-12-22 22:06:02
+  * @LastEditors  : GDDG08
+- * @LastEditTime : 2022-04-29 16:16:15
++ * @LastEditTime : 2022-04-30 12:21:47
+  */
+ 
+ #include "motor_periph.h"

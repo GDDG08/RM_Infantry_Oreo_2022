@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 13:06:41
+ * @LastEditTime : 2022-04-30 13:17:41
  */
 
 #include "motor_periph.h"
@@ -223,7 +223,7 @@ void Motor_InitAllMotors() {
     Motor_groupHandle[3] = &Motor_shooterMotors;
     Motor_InitMotorGroup(&Motor_shooterMotors, Motor_TYPE_PWM_MOTOR, 2, NULL, 0);
     Motor_InitMotor(&Motor_shooterMotorLeft, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim3, TIM_CHANNEL_1, &htim1, shooter_encoder_callback);
-    Motor_InitMotor(&Motor_shooterMotorRight, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim3, TIM_CHANNEL_4, &htim2, shooter_encoder_callback);
+    Motor_InitMotor(&Motor_shooterMotorRight, Motor_TYPE_PWM_MOTOR, 1, 0, 0.05, &htim3, TIM_CHANNEL_2, &htim2, shooter_encoder_callback);
     Motor_shooterMotors.motor_handle[0] = &Motor_shooterMotorLeft;
     Motor_shooterMotors.motor_handle[1] = &Motor_shooterMotorRight;
 }
@@ -527,8 +527,8 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
         return;
     float output = Motor_GetMotorOutput(pmotor);
 
-// satori
-// float duty = output * 0.00011136f + 0.53522f;
+    // satori
+    // float duty = output * 0.00011136f + 0.53522f;
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     float duty = output * 0.00011136f + 0.47522f;
