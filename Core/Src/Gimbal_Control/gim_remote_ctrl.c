@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-23 20:53:39
+ * @LastEditTime : 2022-04-09 23:01:16
  */
 
 #include "gim_remote_ctrl.h"
@@ -162,10 +162,10 @@ void Remote_RemoteShooterModeSet() {
             // Shooter_ChangeFeederMode(Feeder_LOW_CONTINUE);
             Shooter_ChangeFeederMode(Feeder_REFEREE);
 
-            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
-                Shooter_ChangeFeederMode(Feeder_REFEREE);
-            } else
-                Shooter_ChangeFeederMode(Feeder_FINISH);
+            //            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
+            //                Shooter_ChangeFeederMode(Feeder_REFEREE);
+            //            } else
+            //                Shooter_ChangeFeederMode(Feeder_FINISH);
             break;
         }
         default:

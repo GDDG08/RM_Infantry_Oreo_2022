@@ -26,15 +26,13 @@ CAN电机通讯：FDCAN1
 
 板间通讯：FDCAN2
 
-SNAIL_L输出：TIM3CH1（500HZ）
+SNAIL_L输出：TIM2CH1（500HZ）
 
-SNAIL_R输出：TIM3CH2（500HZ）
+SNAIL_R输出：TIM16CH1（500HZ）
 
-ENCODER_L反馈：TIM1CH3/TIM1CH2 
+ENCODER_L反馈：TIM3CH3/TIM3CH4 （当前版本的PCB下不能使用编码器模式，下一版本修正）
 
-ENCODER_R反馈：TIM2CH1/TIM2CH2
-
-SNIAL上电指示：ADC2IN17
+ENCODER_R反馈：TIM5CH1/TIM5CH2
 
 视觉通讯：USB
 
@@ -67,3 +65,14 @@ CAN电机通讯：FDCAN1
 ##### 视觉通信协议
 
 待补充
+
+
+
+### TODOLIST(20220402)
+
+移植并调整代码，删除旧代码中冗余功能
+
+测试代码可用性与稳定性，扩展功能：板间通信
+
+开发新功能：ADC获取小发射电压
+

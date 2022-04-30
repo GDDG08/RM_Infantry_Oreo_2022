@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-29 10:22:04
+ * @LastEditTime : 2022-04-30 13:22:22
  */
 
 #include "configure.h"
@@ -54,7 +54,7 @@ static const float Const_gimbalPitchMotorParam_infantry_6[5][3][4][5] = {
 };
 
 static const float Const_ShooterMotorParam_infantry_6[2][3][4][5] = {
-    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{40, 0.25, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},  // Left shooter motor
+    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{18, 0.18, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},  // Left shooter motor
     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{18, 0.22, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}}   // Right shooter motor
 };
 
@@ -138,12 +138,12 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
     x->ShooterSlowSpeed = 150.0f;
     x->ShooterFastSpeed = 230.0f;
 
-    // x->Shooter15mpers = 15.0f;
-    // x->Shooter18mpers = 18.0f;
-    // x->Shooter30mpers = 30.0f;
-    x->Shooter15mpers = 135.0f;
-    x->Shooter18mpers = 180.0f;
-    x->Shooter30mpers = 265.0f;
+    x->Shooter15mpers = 15.0f;
+    x->Shooter18mpers = 18.0f;
+    x->Shooter30mpers = 30.0f;
+    // x->Shooter15mpers = 105.0f;
+    // x->Shooter18mpers = 115.0f;
+    // x->Shooter30mpers = 175.0f;
 
     x->FeederSlowSpeed = 50.0f;
     x->FeederFastSpeed = 100.0f;

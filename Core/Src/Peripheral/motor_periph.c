@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-23 20:48:18
+ * @LastEditTime : 2022-04-20 21:37:06
  */
 
 #include "motor_periph.h"
@@ -525,14 +525,14 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
         return;
     if (pmotor->type != Motor_TYPE_PWM_MOTOR)
         return;
-    float output = Motor_GetMotorOutput(pmotor);
+    // float output = Motor_GetMotorOutput(pmotor);
 
-        // satori
-    // float duty = output * 0.00011136f + 0.53522f;
-    float duty = output * 0.00011136f + 0.47522f;
+    //     // satori
+    // // float duty = output * 0.00011136f + 0.53522f;
+    // float duty = output * 0.00011136f + 0.47522f;
 
-    // float ref = Motor_GetMotorRef(pmotor);
-    // float duty = 0.0074f * ref + 0.5f;
+    float ref = Motor_GetMotorRef(pmotor);
+    float duty = 0.0074f * ref + 0.5f;
 
     pmotor->duty = duty;
     // if (duty < 0.58f) duty = 0.58f;
