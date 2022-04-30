@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-19 21:29:31
+ * @LastEditTime : 2022-04-29 18:11:27
  */
 
 #include "debug_BTlog.h"
@@ -27,8 +27,8 @@
 #include "supercap_ctrl.h"
 #endif
 
-#define ADD_SEND_DATA(x, y, z) AddSendData(&x, sizeof(x), y, z)
-#define ADD_RECV_DATA(x, y) AddRecvData(&x, sizeof(x), y)
+#define ADD_SEND_DATA(x, y, z) AddSendData(&(x), sizeof(x), y, z)
+#define ADD_RECV_DATA(x, y) AddRecvData(&(x), sizeof(x), y)
 
 #if __FN_IF_ENABLE(__FN_DEBUG_BTLOG)
 
@@ -122,6 +122,8 @@ void BTlog_Init() {
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
     MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
+
+    Remote_RemoteDataTypeDef* remoteData = Remote_GetRemoteDataPtr();
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     GimbalYaw_GimbalYawTypeDef* gimbal = GimbalYaw_GetGimbalYawPtr();
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
@@ -146,8 +148,8 @@ void BTlog_Init() {
     ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
     ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
     ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
-    ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
-    ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
+    // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
+    // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
@@ -177,6 +179,24 @@ void BTlog_Init() {
 
 // Customize Remote Control Receive
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
+    ADD_RECV_DATA(remoteData->remote.s[0], uInt8);
+    ADD_RECV_DATA(remoteData->remote.s[1], uInt8);
+    ADD_RECV_DATA(remoteData->key.w, uInt8);
+    ADD_RECV_DATA(remoteData->key.a, uInt8);
+    ADD_RECV_DATA(remoteData->key.s, uInt8);
+    ADD_RECV_DATA(remoteData->key.d, uInt8);
+    ADD_RECV_DATA(remoteData->mouse.l, uInt8);
+    ADD_RECV_DATA(remoteData->mouse.r, uInt8);
+
+    ADD_RECV_DATA(remoteData->remote.ch[0], Int16);
+    ADD_RECV_DATA(remoteData->remote.ch[1], Int16);
+    ADD_RECV_DATA(remoteData->remote.ch[2], Int16);
+    ADD_RECV_DATA(remoteData->remote.ch[3], Int16);
+    ADD_RECV_DATA(remoteData->remote.ch[4], Int16);
+
+    ADD_RECV_DATA(remoteData->mouse.x, Int16);
+    ADD_RECV_DATA(remoteData->mouse.y, Int16);
+    ADD_RECV_DATA(remoteData->mouse.z, Int16);
 
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     ADD_RECV_DATA(Chassis_Gyro_compensate[0], Float);

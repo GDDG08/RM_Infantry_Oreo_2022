@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-16 16:54:13
+ * @LastEditTime : 2022-04-30 11:00:01
  */
 
 #ifndef REFEREE_PERIPH_H
@@ -294,6 +294,23 @@ typedef struct {
     uint16_t shooter_heat0_speed_limit;
     uint16_t shooter_heat1_speed_limit;
     uint16_t mobile_shooter_heat2;
+
+    uint16_t red_1_robot_HP;
+    uint16_t red_2_robot_HP;
+    uint16_t red_3_robot_HP;
+    uint16_t red_4_robot_HP;
+    uint16_t red_5_robot_HP;
+    uint16_t red_7_robot_HP;
+    uint16_t red_outpost_HP;
+    uint16_t red_base_HP;
+    uint16_t blue_1_robot_HP;
+    uint16_t blue_2_robot_HP;
+    uint16_t blue_3_robot_HP;
+    uint16_t blue_4_robot_HP;
+    uint16_t blue_5_robot_HP;
+    uint16_t blue_7_robot_HP;
+    uint16_t blue_outpost_HP;
+    uint16_t blue_base_HP;
 
     uint8_t shooter_id;
     uint8_t bullet_freq;

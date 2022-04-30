@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-23 20:56:02
+ * @LastEditTime : 2022-04-30 10:53:03
  */
 
 #include "gim_shoot_ctrl.h"
@@ -124,13 +124,13 @@ float Shooter_GetShootSpeedOffset() {
     shooter->shoot_speed_offset.speed_30mm_offset = ((((float)(shooter->speed_offset_flash.speed_30mm_offset)) - 150.0f)) / 10.0f;
 
     switch (buscomm->speed_17mm_limit) {
-        case 15:
+        case REFEREE_SHOOTER_SPEED_15:
             offset_speed = shooter->shoot_speed_offset.speed_15mm_offset;
             break;
-        case 18:
+        case REFEREE_SHOOTER_SPEED_18:
             offset_speed = shooter->shoot_speed_offset.speed_18mm_offset;
             break;
-        case 30:
+        case REFEREE_SHOOTER_SPEED_30:
             offset_speed = shooter->shoot_speed_offset.speed_30mm_offset;
             break;
         default:
@@ -216,10 +216,11 @@ void Shooter_ChangeShooterMode(Shoot_ShooterModeEnum mode) {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
-    if (buscomm->main_shooter_power == 1)
+// TODO
+    // if (buscomm->main_shooter_power == 1)
         shooter->shooter_mode = mode;
-    else
-        shooter->shooter_mode = Shoot_NULL;
+    // else
+        // shooter->shooter_mode = Shoot_NULL;
 }
 
 /**
@@ -277,13 +278,13 @@ float Shooter_GetRefereeSpeed() {
 
     float speed;
     switch (buscomm->speed_17mm_limit) {
-        case 15:
+        case REFEREE_SHOOTER_SPEED_15:
             speed = shooter->shooter_speed_15mpers;
             break;
-        case 18:
+        case REFEREE_SHOOTER_SPEED_18:
             speed = shooter->shooter_speed_18mpers;
             break;
-        case 30:
+        case REFEREE_SHOOTER_SPEED_30:
             speed = shooter->shooter_speed_30mpers;
             break;
         default:
@@ -477,14 +478,14 @@ void Shooter_ShootControl() {
             break;
     }
 
-    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
-    Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
-
-    Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);
-    Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
-
-    // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.right_shoot_speed);
+    // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
     // Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
+
+    // Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);
+    // Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
+
+    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.right_shoot_speed);
+    Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
 }
 
 /**

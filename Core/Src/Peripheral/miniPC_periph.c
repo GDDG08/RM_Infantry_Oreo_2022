@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-24 20:51:19
+ * @LastEditTime : 2022-04-29 21:01:07
  */
 
 #include "minipc_periph.h"
@@ -167,7 +167,23 @@ void MiniPC_SendDataPacket() {
 
     int16_t yaw_speed = imu->speed.yaw * 100;
     int16_t pitch_speed = imu->speed.pitch * 100;
-    uint16_t shooter_speed = buscomm->speed_17mm_limit * 100;
+
+    uint16_t shooter_speed = 15;
+    switch (buscomm->speed_17mm_limit) {
+        case REFEREE_SHOOTER_SPEED_15:
+            shooter_speed = 15;
+            break;
+        case REFEREE_SHOOTER_SPEED_18:
+            shooter_speed = 18;
+            break;
+        case REFEREE_SHOOTER_SPEED_30:
+            shooter_speed = 30;
+            break;
+        default:
+            shooter_speed = 15;
+            break;
+    }
+    shooter_speed *= 100;
 
     minipc->state = MiniPC_PENDING;
 

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-16 10:30:40
+ * @LastEditTime : 2022-04-30 11:08:13
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -29,29 +29,41 @@ extern FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER;
 extern FDCAN_HandleTypeDef* Const_CapComm_CAN_HANDLER;
 
 extern const uint8_t Const_BusComm_FRAME_HEADER_SOF;
+
 //      power limit mode
-extern const uint8_t POWER_LIMITED;
-extern const uint8_t POWER_UNLIMIT;
+#define POWER_LIMITED 0x01
+#define POWER_UNLIMIT 0x02
 //      gimbal yaw mode
-extern const uint8_t GIMBAL_YAW_CTRL_BIG_ENERGY;
-extern const uint8_t GIMBAL_YAW_CTRL_SMALL_ENERGY;
-extern const uint8_t GIMBAL_YAW_CTRL_ARMOR;
-extern const uint8_t GIMBAL_YAW_CTRL_IMU_DEBUG;
-extern const uint8_t GIMBAL_YAW_CTRL_NO_AUTO;
+#define GIMBAL_YAW_CTRL_NO_AUTO 0x03
+#define GIMBAL_YAW_CTRL_ARMOR 0x04
+#define GIMBAL_YAW_CTRL_IMU_DEBUG 0x05
+#define GIMBAL_YAW_CTRL_BIG_ENERGY 0x06
+#define GIMBAL_YAW_CTRL_SMALL_ENERGY 0x07
 //      chassis mode
-extern const uint8_t CHASSIS_CTRL_STOP;
-extern const uint8_t CHASSIS_CTRL_NORMAL;
-extern const uint8_t CHASSIS_CTRL_GYRO;
+#define CHASSIS_CTRL_STOP 0x01
+#define CHASSIS_CTRL_NORMAL 0x02
+#define CHASSIS_CTRL_GYRO 0x03
 //      cap mode
-extern const uint8_t SUPERCAP_CTRL_OFF;
-extern const uint8_t SUPERCAP_CTRL_ON;
+#define SUPERCAP_CTRL_OFF 0x00
+#define SUPERCAP_CTRL_ON 0x01
 //      cap boost mode
-extern const uint8_t SUPERCAP_BOOST;
-extern const uint8_t SUPERCAP_UNBOOST;
+#define SUPERCAP_UNBOOST 0x00
+#define SUPERCAP_BOOST 0x01
 //      cap state
-extern const uint8_t SUPERCAP_MODE_OFF;
-extern const uint8_t SUPERCAP_MODE_ON;
-extern const uint8_t SUPERCAP_MODE_ERROR;
+#define SUPERCAP_MODE_OFF 0x51
+#define SUPERCAP_MODE_ON 0x52
+#define SUPERCAP_MODE_ERROR 0x53
+//      referee state
+#define REFEREE_SHOOTER_SPEED_15 0x0
+#define REFEREE_SHOOTER_SPEED_18 0x1
+#define REFEREE_SHOOTER_SPEED_22 0x2
+#define REFEREE_SHOOTER_SPEED_30 0x3
+
+#define REFEREE_SHOOTER_SPEED_NORMAL = 0x0
+#define REFEREE_SHOOTER_SPEED_OVER = 0x1
+
+#define REFEREE_GAME_OUTPOST_ALIVE = 0x0
+#define REFEREE_GAME_OUTPOST_DEAD = 0x1
 
 extern FDCAN_TxHeaderTypeDef BusComm_GimControl;
 extern FDCAN_TxHeaderTypeDef BusComm_GimGimbalData;
@@ -92,13 +104,14 @@ typedef struct {
     uint8_t power_limit;       // Super capacitor state
     uint16_t heat_17mm;        // Heat transfer of 17mm launching mechanism
     uint16_t heat_cooling_limit;
-    // uint16_t speed_17mm;
-    uint16_t speed_17mm_limit;
-    uint8_t main_shooter_power;
+    uint8_t speed_17mm_fdb; //1bit
+    uint8_t speed_17mm_limit;  // speed enum 2bit
+    // uint8_t main_shooter_power;
     uint8_t cap_mode_fnl;
     uint8_t cap_boost_mode_fnl;
     uint8_t chassis_power_limit;
     uint8_t chassis_power_buffer;
+    uint8_t game_outpost_alive;
     float chassis_power;
 
     // Gimbal up stream

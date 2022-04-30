@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-10 14:17:16
+ * @LastEditTime : 2022-04-30 11:01:20
  */
 
 #include "referee_periph.h"
@@ -91,7 +91,24 @@ uint8_t P_ext_game_result(Referee_RefereeDataTypeDef* referee, void* data_ptr) {
 }
 
 uint8_t P_ext_game_robot_HP(Referee_RefereeDataTypeDef* referee, void* data_ptr) {
-    // ext_game_robot_HP_t *struct_ptr = data_ptr;
+    ext_game_robot_HP_t* struct_ptr = data_ptr;
+
+    referee->red_1_robot_HP = struct_ptr->red_1_robot_HP;
+    referee->red_2_robot_HP = struct_ptr->red_2_robot_HP;
+    referee->red_3_robot_HP = struct_ptr->red_3_robot_HP;
+    referee->red_4_robot_HP = struct_ptr->red_4_robot_HP;
+    referee->red_5_robot_HP = struct_ptr->red_5_robot_HP;
+    referee->red_7_robot_HP = struct_ptr->red_7_robot_HP;
+    referee->red_outpost_HP = struct_ptr->red_outpost_HP;
+    referee->red_base_HP = struct_ptr->red_base_HP;
+    referee->blue_1_robot_HP = struct_ptr->blue_1_robot_HP;
+    referee->blue_2_robot_HP = struct_ptr->blue_2_robot_HP;
+    referee->blue_3_robot_HP = struct_ptr->blue_3_robot_HP;
+    referee->blue_4_robot_HP = struct_ptr->blue_4_robot_HP;
+    referee->blue_5_robot_HP = struct_ptr->blue_5_robot_HP;
+    referee->blue_7_robot_HP = struct_ptr->blue_7_robot_HP;
+    referee->blue_outpost_HP = struct_ptr->blue_outpost_HP;
+    referee->blue_base_HP = struct_ptr->blue_base_HP;
 
     return PARSE_SUCCEEDED;
 }

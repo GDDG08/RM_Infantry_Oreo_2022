@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-19 22:26:40
+ * @LastEditTime : 2022-04-30 11:04:55
  *
  */
 
@@ -51,30 +51,6 @@ const uint8_t Const_BusComm_CHASSIS_BUFF_SIZE = 2;
 // const uint8_t Const_BusComm_SUPERCAP_BUFF_SIZE = 1;
 const uint8_t Const_BusComm_RECEIVE_SIZE = 5;
 const uint8_t Const_CapComm_RECEIVE_SIZE = 3;
-
-//      power limit mode
-const uint8_t POWER_LIMITED = 0x01;
-const uint8_t POWER_UNLIMIT = 0x02;
-//      gimbal yaw mode
-const uint8_t GIMBAL_YAW_CTRL_NO_AUTO = 0x03;
-const uint8_t GIMBAL_YAW_CTRL_ARMOR = 0x04;
-const uint8_t GIMBAL_YAW_CTRL_IMU_DEBUG = 0x05;
-const uint8_t GIMBAL_YAW_CTRL_BIG_ENERGY = 0x06;
-const uint8_t GIMBAL_YAW_CTRL_SMALL_ENERGY = 0x07;
-//      chassis mode
-const uint8_t CHASSIS_CTRL_STOP = 0x01;
-const uint8_t CHASSIS_CTRL_NORMAL = 0x02;
-const uint8_t CHASSIS_CTRL_GYRO = 0x03;
-//      cap mode
-const uint8_t SUPERCAP_CTRL_OFF = 0x00;
-const uint8_t SUPERCAP_CTRL_ON = 0x01;
-//      cap boost mode
-const uint8_t SUPERCAP_UNBOOST = 0x00;
-const uint8_t SUPERCAP_BOOST = 0x01;
-//      cap state
-const uint8_t SUPERCAP_MODE_OFF = 0x51;
-const uint8_t SUPERCAP_MODE_ON = 0x52;
-const uint8_t SUPERCAP_MODE_ERROR = 0x53;
 
 // Dual bus communication protocol
 
@@ -294,8 +270,9 @@ void BusComm_ResetBusCommData() {
     // buscomm->speed_17mm = 0;
     buscomm->heat_cooling_limit = 0;
     buscomm->speed_17mm_limit = 0;
-    buscomm->main_shooter_power = 0;
+    // buscomm->main_shooter_power = 0;
     buscomm->cap_rest_energy_display = 0;
+    buscomm->game_outpost_alive = 1;
 #endif
 
 // Gimbal stream
@@ -338,14 +315,26 @@ void BusComm_Update() {
     GimbalYaw_GimbalYawTypeDef* gimbal = GimbalYaw_GetGimbalYawPtr();
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
 
-    data->speed_17mm_limit = referee->shooter_heat0_speed_limit;
     uint8_t mode = 0;
-    if (referee->shooter_heat0_speed_limit == 15)
-        mode = 0;
-    if (referee->shooter_heat0_speed_limit == 18)
-        mode = 1;
-    if (referee->shooter_heat0_speed_limit == 30)
-        mode = 2;
+    uint8_t spd_id = 0;
+    switch (referee->shooter_heat0_speed_limit) {
+        default:
+        case 15:
+            mode = 0;
+            spd_id = REFEREE_SHOOTER_SPEED_15;
+            break;
+        case 18:
+            mode = 1;
+            spd_id = REFEREE_SHOOTER_SPEED_18;
+            break;
+        case 22:
+            spd_id = REFEREE_SHOOTER_SPEED_22;
+            break;
+        case 30:
+            mode = 2;
+            spd_id = REFEREE_SHOOTER_SPEED_30;
+            break;
+    }
     Referee_SetAimMode(mode);
 
     Referee_SetCapState(data->cap_rest_energy);
@@ -372,13 +361,28 @@ void BusComm_Update() {
     data->power_limit = referee->max_chassis_power;
     data->heat_17mm = referee->shooter_heat0;
 
-    // data->speed_17mm = referee->bullet_speed;
+    data->speed_17mm_fdb = referee->bullet_speed > referee->shooter_heat0_speed_limit;
     data->heat_cooling_limit = referee->shooter_heat0_cooling_limit;
-    data->speed_17mm_limit = referee->shooter_heat0_speed_limit;
-    data->main_shooter_power = referee->mains_power_shooter_output;
+    data->speed_17mm_limit = spd_id;
+    // data->main_shooter_power = referee->mains_power_shooter_output;
+    switch (referee->robot_id) {
+        case 3:
+        case 4:
+        case 5:
+            data->game_outpost_alive = referee->blue_outpost_HP > 0;
+            break;
+        case 103:
+        case 104:
+        case 105:
+            data->game_outpost_alive = referee->red_outpost_HP > 0;
+            break;
+        default:
+            break;
+    }
+
 #endif
 
-    // Gimbal stream
+        // Gimbal stream
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();

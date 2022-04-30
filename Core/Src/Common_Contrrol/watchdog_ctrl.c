@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-26 20:03:42
+ * @LastEditTime : 2022-04-29 15:14:22
  */
 
 #include "watchdog_ctrl.h"
@@ -38,9 +38,8 @@ void WatchDog_Task(void const* argument) {
 }
 
 void WatchDog_FeedDog() {
-    
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
-static uint8_t firstout[5] = 1;
+    static uint8_t firstout[5] = {0};
     if (BusComm_IsBusCommOffline(BusComm_PKG_CTRL)) {
     }
     if (BusComm_IsBusCommOffline(BusComm_PKG_IMU)) {
@@ -50,7 +49,7 @@ static uint8_t firstout[5] = 1;
     } else {
         if (firstout[BusComm_PKG_IMU]) {
             firstout[BusComm_PKG_IMU] = 0;
-            GimbalYaw_ReSetYawRef();
+            // GimbalYaw_ReSetYawRef();
         }
         GimbalYaw_SetGimbalYawControlState(1);
         GimbalYaw_SetGimbalYawOutputState(1);
