@@ -73,8 +73,6 @@ void Error_Handler(void);
 #define Snail_Right_GPIO_Port GPIOA
 #define USB_ID_Pin GPIO_PIN_2
 #define USB_ID_GPIO_Port GPIOB
-#define TRIGGER_Pin GPIO_PIN_14
-#define TRIGGER_GPIO_Port GPIOB
 #define EncoderA_Left_Pin GPIO_PIN_8
 #define EncoderA_Left_GPIO_Port GPIOA
 #define EncoderB_Left_Pin GPIO_PIN_9
