@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 13:06:41
+ * @LastEditTime : 2022-04-30 20:08:52
  */
 
 #include "motor_periph.h"
@@ -527,8 +527,8 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
         return;
     float output = Motor_GetMotorOutput(pmotor);
 
-// satori
-// float duty = output * 0.00011136f + 0.53522f;
+    // satori
+    // float duty = output * 0.00011136f + 0.53522f;
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     float duty = output * 0.00011136f + 0.47522f;
