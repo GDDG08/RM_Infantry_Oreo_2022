@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 22:13:22
+ * @LastEditTime : 2022-05-01 19:53:03
  */
 
 #include "gim_gimbal_ctrl.h"
@@ -227,7 +227,8 @@ void Gimbal_SetPitchRef(float ref) {
  */
 // float AutoControl_ratio_pitch = 1.8f;
 // float AutoControl_offset_pitch = -0.4f;
-float AutoControl_offset_pitch = -0.54f;
+// float AutoControl_offset_pitch = -0.54f;
+float AutoControl_offset_pitch = 0.0f;
 void Gimbal_SetPitchAutoRef(float ref) {
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
@@ -331,7 +332,8 @@ void Gimbal_SetYawRefDelta(float ref) {
 
 // float AutoControl_ratio_yaw = 80.0f;
 // float AutoControl_offset_yaw = -0.65f;
-float AutoControl_offset_yaw = -0.544f;
+// float AutoControl_offset_yaw = -0.544f;
+float AutoControl_offset_yaw = 0.0f;
 void Gimbal_SetYawAutoRef(float ref /*, int isDelta*/) {
     // if (isDelta) {
     //     ref+=

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:59:55
+ * @LastEditTime : 2022-05-01 20:59:04
  */
 
 #include "const.h"
@@ -18,6 +18,7 @@
 #include "cha_gimbal_ctrl.h"
 #include "gim_shoot_ctrl.h"
 #include "key_periph.h"
+#include "gim_miniPC_ctrl.h"
 
 #include "infantry3_const.h"
 #include "infantry4_const.h"
@@ -83,6 +84,8 @@ float Const_gimbalPitchMotorParam[5][3][4][5];
 float Const_ShooterMotorParam[2][3][4][5];
 float Const_FeederMotorParam[1][3][4][5];
 
+float Const_AutoAimOffset[4][2];
+
 void Const_SetChasisMotorParam() {
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     Motor_InitMotorParam(&Chassis_chassisMotorParamStop, Const_chassisMotorParam[0], PID_POSITION, PID_POSITION, PID_POSITION);
@@ -119,6 +122,12 @@ void Const_SetShooterPIDParam() {
     Motor_InitMotorParam(&Shooter_shooterLeftMotorParam, Const_ShooterMotorParam[0], PID_POSITION, PID_POSITION, PID_POSITION);
     Motor_InitMotorParam(&Shooter_shooterRightMotorParam, Const_ShooterMotorParam[1], PID_POSITION, PID_POSITION, PID_POSITION);
     Motor_InitMotorParam(&Shooter_feederMotorParam, Const_FeederMotorParam[0], PID_POSITION, PID_POSITION, PID_POSITION);
+#endif
+}
+
+void Const_SetAutoAimOffset() {
+#if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
+    MiniPC_InitOffsetParam(Const_AutoAimOffset);
 #endif
 }
 
@@ -182,6 +191,8 @@ static void Const_Copy() {
     memcpy(Const_gimbalPitchMotorParam, Const_Infantry.gimbalPitchMotorParam, sizeof(Const_Infantry.gimbalPitchMotorParam));
     memcpy(Const_ShooterMotorParam, Const_Infantry.ShooterMotorParam, sizeof(Const_Infantry.ShooterMotorParam));
     memcpy(Const_FeederMotorParam, Const_Infantry.FeederMotorParam, sizeof(Const_Infantry.FeederMotorParam));
+    
+    memcpy(Const_AutoAimOffset, Const_Infantry.AutoAimOffset, sizeof(Const_Infantry.AutoAimOffset));
 
     /*          Gimbal pitch limit                  */
     Const_PITCH_UMAXANGLE = Const_Infantry.PITCH_UMAXANGLE;
