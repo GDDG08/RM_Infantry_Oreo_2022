@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 11:10:24
+ * @LastEditTime : 2022-05-01 10:40:48
  */
 
 #include "buscomm_cmd.h"
@@ -209,8 +209,8 @@ static void _set_referee_data(uint8_t buff[]) {
     buscomm->yaw_relative_angle = ((float)buff2i16(buff + 1)) / 100;
     buscomm->heat_cooling_limit = buff2ui16(buff + 3);
     buscomm->heat_17mm = buff2ui16(buff + 5);
-    buscomm->speed_17mm_limit = (buff[7] & 0x80) >> 7;
-    buscomm->speed_17mm_fdb = (buff[7] & 0x60) >> 5;
+    buscomm->speed_17mm_fdb = (buff[7] & 0x80) >> 7;
+    buscomm->speed_17mm_limit = (buff[7] & 0x60) >> 5;
     buscomm->last_update_time[0] = HAL_GetTick();
 }
 
