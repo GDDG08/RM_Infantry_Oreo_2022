@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:57:40
+ * @LastEditTime : 2022-05-01 22:10:58
  */
 
 #ifndef GIM_SHOOT_CTRL_H
@@ -91,7 +91,7 @@ typedef struct {
     float shooter_speed_15mpers;
     float shooter_speed_18mpers;
     float shooter_speed_30mpers;
-	
+
     float last_shoot_speed_ref;
     float slope_output;
     float speed_limit;
