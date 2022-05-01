@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-29 21:01:07
+ * @LastEditTime : 2022-05-01 21:51:57
  */
 
 #include "minipc_periph.h"
@@ -25,9 +25,9 @@
 /*const*/ uint32_t Const_MiniPC_DATA_SENT_PERIOD = 10;     // (ms)
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
-/*const*/ uint32_t Const_MiniPC_CAPT_PRE = 10;  // (ms)
-/*const*/ uint32_t Const_MiniPC_CAPT_DUR = 2;   // (ms)
-/*const*/ uint32_t Const_MiniPC_CAPT_AFT = 7;   // (ms)
+/*const*/ uint32_t Const_MiniPC_CAPT_PRE = 5;  // (ms)
+/*const*/ uint32_t Const_MiniPC_CAPT_DUR = 0;  // (ms)
+/*const*/ uint32_t Const_MiniPC_CAPT_AFT = 0;  // (ms)
 #endif
 
 const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;           // miniPC Receive buffer length

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:59:59
+ * @LastEditTime : 2022-05-01 20:31:58
  */
 
 #include "configure.h"
@@ -61,6 +61,14 @@ static const float Const_ShooterMotorParam_infantry_3[2][3][4][5] = {
 static const float Const_FeederMotorParam_infantry_3[1][3][4][5] = {
     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{750, 0.01, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{8.35, 0, 0.11, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}}  // feeder motor
 };
+
+static const float Const_AutoAimOffset_infantry_3[4][2] = {
+    {0.0f, 0.0f},  // Armor
+    {0.0f, 0.0f},  // Buff_Small
+    {0.0f, 0.0f},  // Buff_Big
+    {0.0f, 0.0f}   // Sentry
+    // pitch, yaw
+};
 #endif
 
 void Const_Infantry_3_Init(Const_ConstTypeDef* x) {
@@ -112,7 +120,10 @@ void Const_Infantry_3_Init(Const_ConstTypeDef* x) {
     memcpy(x->gimbalPitchMotorParam, Const_gimbalPitchMotorParam_infantry_3, sizeof(Const_gimbalPitchMotorParam_infantry_3));
     memcpy(x->ShooterMotorParam, Const_ShooterMotorParam_infantry_3, sizeof(Const_ShooterMotorParam_infantry_3));
     memcpy(x->FeederMotorParam, Const_FeederMotorParam_infantry_3, sizeof(Const_FeederMotorParam_infantry_3));
-    /*          Gimbal pitch limit                  */
+    
+    memcpy(x->AutoAimOffset, Const_AutoAimOffset_infantry_3, sizeof(Const_AutoAimOffset_infantry_3));
+
+/*          Gimbal pitch limit                  */
     x->PITCH_UMAXANGLE = 10.0f;
     x->PITCH_UMAXANGLE_GRYO = 8.0f;
     x->PITCH_DMAXANGLE = -31.5f;

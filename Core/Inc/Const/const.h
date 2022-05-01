@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:49:59
+ * @LastEditTime : 2022-05-01 20:27:42
  */
 
 #ifndef CONST_H
@@ -61,6 +61,8 @@ typedef struct {
     float gimbalPitchMotorParam[5][3][4][5];
     float ShooterMotorParam[2][3][4][5];
     float FeederMotorParam[1][3][4][5];
+
+    float AutoAimOffset[4][2];
 
     /*          Gimbal pitch limit                  */
     float PITCH_UMAXANGLE;
@@ -196,6 +198,7 @@ void Const_SetChasisMotorParam(void);
 void Const_SetGimbalYawMotorParam(void);
 void Const_SetGimbalPitchMotorParam(void);
 void Const_SetShooterPIDParam(void);
+void Const_SetAutoAimOffset(void);
 
 #endif
 
