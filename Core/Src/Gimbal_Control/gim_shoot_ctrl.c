@@ -26,6 +26,7 @@ Motor_MotorParamTypeDef Shooter_shooterRightMotorParam;
 Motor_MotorParamTypeDef Shooter_feederMotorParam;
 
 Shoot_StatusTypeDef Shooter_ShooterControl;
+float slope_step=1000.0f,dertaRef;
 
 /**
  * @brief          Shooter task
@@ -66,6 +67,11 @@ void Shooter_InitShooter() {
     shooter->shooter_speed_18mpers = Const_Shooter18mpers;
     shooter->shooter_speed_30mpers = Const_Shooter30mpers;
     // Shooter_SpeedOffsetFlashInit();
+	
+		shooter->change_shooter_mode_complete=1;
+		shooter->slope_output=0;
+		shooter->speed_limit=0;
+	
     Shooter_InitShooterMotor();
 
     Const_SetShooterPIDParam();
@@ -294,6 +300,11 @@ float Shooter_GetRefereeSpeed() {
 
     return speed;
 }
+uint8_t Shooter_GetRefereeOverSpeed()
+{
+		BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+		return buscomm->speed_17mm_fdb;
+}
 
 /**
  * @brief      Updata control data
@@ -477,9 +488,27 @@ void Shooter_ShootControl() {
         default:
             break;
     }
-
-    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
-    Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
+		if(shooter->last_shoot_speed_ref>shooter->shoot_speed.left_shoot_speed)
+		{
+				shooter->change_shooter_mode_complete=0;
+				dertaRef=shooter->shoot_speed.left_shoot_speed-shooter->last_shoot_speed_ref;	
+				shooter->slope_output=dertaRef;
+		}
+		if(shooter->change_shooter_mode_complete)
+		{
+				Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed-shooter->speed_limit);
+				Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed-shooter->speed_limit);
+		}
+		else
+		{
+				Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed+shooter->slope_output-shooter->speed_limit);
+				Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed+shooter->slope_output-shooter->speed_limit);
+				shooter->slope_output-=dertaRef/slope_step;
+				if(shooter->slope_output>0) shooter->change_shooter_mode_complete=1;
+		}
+		shooter->last_shoot_speed_ref=shooter->shoot_speed.left_shoot_speed;
+   // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
+   // Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
     
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);

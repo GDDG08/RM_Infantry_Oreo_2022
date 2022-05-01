@@ -82,6 +82,7 @@ typedef struct {
     Shoot_FeederModeEnum last_feeder_mode;
 
     uint8_t single_shoot_done;
+    uint8_t change_shooter_mode_complete;
 
     Shoot_ShootSpeedTypeDef shoot_speed;
     Shoot_ShootSpeedOffsetTypeDef shoot_speed_offset;
@@ -90,6 +91,10 @@ typedef struct {
     float shooter_speed_15mpers;
     float shooter_speed_18mpers;
     float shooter_speed_30mpers;
+	
+    float last_shoot_speed_ref;
+    float slope_output;
+    float speed_limit;
 
     Shooter_HeatCtrlTypeDef heat_ctrl;
 } Shoot_StatusTypeDef;
