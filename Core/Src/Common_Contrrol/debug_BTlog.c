@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 21:46:59
+ * @LastEditTime : 2022-05-01 21:11:29
  */
 
 #include "debug_BTlog.h"
@@ -148,6 +148,7 @@ void BTlog_Init() {
     ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
     ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
     ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
+    ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
     // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
     // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 
