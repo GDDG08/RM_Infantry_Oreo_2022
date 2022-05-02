@@ -21,6 +21,7 @@
 #include "gim_ins_ctrl.h"
 #include "key_periph.h"
 #include "minipc_periph.h"
+#include "gim_shoot_ctrl.h"
 #endif
 
 #if __FN_IF_ENABLE(__FN_SUPER_CAP)
@@ -122,6 +123,7 @@ void BTlog_Init() {
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
     MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
+		Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
     Remote_RemoteDataTypeDef* remoteData = Remote_GetRemoteDataPtr();
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
@@ -149,6 +151,10 @@ void BTlog_Init() {
     ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
     ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
     ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
+		ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
+		ADD_SEND_DATA(shooter->slope_output, Float, "slope");
+		ADD_SEND_DATA(shooter->dertaRef, Float, "derta_ref");
+		
     // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
     // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 

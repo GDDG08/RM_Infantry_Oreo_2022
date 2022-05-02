@@ -26,7 +26,6 @@ Motor_MotorParamTypeDef Shooter_shooterRightMotorParam;
 Motor_MotorParamTypeDef Shooter_feederMotorParam;
 
 Shoot_StatusTypeDef Shooter_ShooterControl;
-float slope_step = 1000.0f, dertaRef;
 
 /**
  * @brief          Shooter task
@@ -71,6 +70,8 @@ void Shooter_InitShooter() {
     shooter->change_shooter_mode_complete = 1;
     shooter->slope_output = 0;
     shooter->speed_limit = 0;
+		shooter->slope_step =100.0f;
+		shooter->dertaRef=0;
 
     Shooter_InitShooterMotor();
 
@@ -458,6 +459,17 @@ uint8_t Shooter_HeatCtrl() {
  * @param      NULL
  * @retval     NULL
  */
+void Shooter_CalcRef()
+{
+		Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+		if (shooter->change_shooter_mode_complete) {
+        shooter->ref_output=shooter->shoot_speed.left_shoot_speed - shooter->speed_limit;   
+    }
+		else {
+				shooter->ref_output=shooter->shoot_speed.left_shoot_speed + shooter->slope_output - shooter->speed_limit;   
+				shooter->slope_output -= shooter->dertaRef / shooter->slope_step;
+		}
+}
 void Shooter_ShootControl() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
@@ -487,21 +499,18 @@ void Shooter_ShootControl() {
         default:
             break;
     }
-    if (shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed) {
+		if (shooter->slope_output > 0){
+        shooter->change_shooter_mode_complete = 1;
+    }
+		if(shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed)
+			{
         shooter->change_shooter_mode_complete = 0;
-        dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
-        shooter->slope_output = dertaRef;
+        shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
+        shooter->slope_output = shooter->dertaRef;
     }
-    if (shooter->change_shooter_mode_complete) {
-        Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed - shooter->speed_limit);
-        Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed - shooter->speed_limit);
-    } else {
-        Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed + shooter->slope_output - shooter->speed_limit);
-        Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed + shooter->slope_output - shooter->speed_limit);
-        shooter->slope_output -= dertaRef / slope_step;
-        if (shooter->slope_output > 0)
-            shooter->change_shooter_mode_complete = 1;
-    }
+    Shooter_CalcRef();
+		Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->ref_output);
+    Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->ref_output);
     shooter->last_shoot_speed_ref = shooter->shoot_speed.left_shoot_speed;
     // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
     // Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);

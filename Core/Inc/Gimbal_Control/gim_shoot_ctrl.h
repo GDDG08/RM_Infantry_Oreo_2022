@@ -93,7 +93,12 @@ typedef struct {
     float shooter_speed_30mpers;
 
     float last_shoot_speed_ref;
+		uint8_t slope_direction;
     float slope_output;
+	  float ref_output;
+		float slope_step;
+		float dertaRef;
+	
     float speed_limit;
 
     Shooter_HeatCtrlTypeDef heat_ctrl;
@@ -126,6 +131,7 @@ void Shooter_MotorLockedHandle(void);
 void Shooter_AngleCorrect(void);
 void Shooter_RealAngleCorrect(void);
 uint8_t Shooter_HeatCtrl(void);
+void Shooter_CalcRef(void);
 void Shooter_ShootControl(void);
 void Shooter_SingleShootCtrl(void);
 void Shooter_SingleShootReset(void);
