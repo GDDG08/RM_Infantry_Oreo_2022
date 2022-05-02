@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 20:33:46
+ * @LastEditTime : 2022-05-02 16:30:21
  */
 
 #include "configure.h"
@@ -146,9 +146,15 @@ void Const_Infantry_8_Init(Const_ConstTypeDef* x) {
     x->ShooterSlowSpeed = 150.0f;
     x->ShooterFastSpeed = 230.0f;
 
+#if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     x->Shooter15mpers = 215.0f;
     x->Shooter18mpers = 230.0f;
     x->Shooter30mpers = 330.0f;
+#else
+    x->Shooter15mpers = 15.0f;
+    x->Shooter18mpers = 18.0f;
+    x->Shooter30mpers = 30.0f;
+#endif
 
     x->FeederSlowSpeed = 50.0f;
     x->FeederFastSpeed = 100.0f;
