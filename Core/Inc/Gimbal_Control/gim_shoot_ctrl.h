@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:57:40
+ * @LastEditTime : 2022-05-01 22:10:58
  */
 
 #ifndef GIM_SHOOT_CTRL_H
@@ -82,6 +82,7 @@ typedef struct {
     Shoot_FeederModeEnum last_feeder_mode;
 
     uint8_t single_shoot_done;
+    uint8_t change_shooter_mode_complete;
 
     Shoot_ShootSpeedTypeDef shoot_speed;
     Shoot_ShootSpeedOffsetTypeDef shoot_speed_offset;
@@ -90,6 +91,15 @@ typedef struct {
     float shooter_speed_15mpers;
     float shooter_speed_18mpers;
     float shooter_speed_30mpers;
+
+    float last_shoot_speed_ref;
+		uint8_t slope_direction;
+    float slope_output;
+	  float ref_output;
+		float slope_step;
+		float dertaRef;
+	
+    float speed_limit;
 
     Shooter_HeatCtrlTypeDef heat_ctrl;
 } Shoot_StatusTypeDef;
@@ -121,6 +131,7 @@ void Shooter_MotorLockedHandle(void);
 void Shooter_AngleCorrect(void);
 void Shooter_RealAngleCorrect(void);
 uint8_t Shooter_HeatCtrl(void);
+void Shooter_CalcRef(void);
 void Shooter_ShootControl(void);
 void Shooter_SingleShootCtrl(void);
 void Shooter_SingleShootReset(void);

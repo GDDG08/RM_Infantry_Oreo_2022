@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 13:17:41
+ * @LastEditTime : 2022-05-02 16:37:45
  */
 
 #include "motor_periph.h"
@@ -534,7 +534,7 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
     float duty = output * 0.00011136f + 0.47522f;
 #else
     float ref = Motor_GetMotorRef(pmotor);
-    float duty = 0.007f * ref + 0.5f;
+    float duty = 0.0073f * ref + 0.5f;
 #endif
 
     pmotor->duty = duty;

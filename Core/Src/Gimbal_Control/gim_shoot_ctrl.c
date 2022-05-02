@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 13:05:57
+ * @LastEditTime : 2022-05-02 16:26:09
  */
 
 #include "gim_shoot_ctrl.h"
@@ -66,6 +66,13 @@ void Shooter_InitShooter() {
     shooter->shooter_speed_18mpers = Const_Shooter18mpers;
     shooter->shooter_speed_30mpers = Const_Shooter30mpers;
     // Shooter_SpeedOffsetFlashInit();
+
+    shooter->change_shooter_mode_complete = 1;
+    shooter->slope_output = 0;
+    shooter->speed_limit = 0;
+    shooter->slope_step = 100.0f;
+    shooter->dertaRef = 0;
+
     Shooter_InitShooterMotor();
 
     Const_SetShooterPIDParam();
@@ -294,6 +301,10 @@ float Shooter_GetRefereeSpeed() {
 
     return speed;
 }
+uint8_t Shooter_GetRefereeOverSpeed() {
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    return buscomm->speed_17mm_fdb;
+}
 
 /**
  * @brief      Updata control data
@@ -448,6 +459,15 @@ uint8_t Shooter_HeatCtrl() {
  * @param      NULL
  * @retval     NULL
  */
+void Shooter_CalcRef() {
+    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+    if (shooter->change_shooter_mode_complete) {
+        shooter->ref_output = shooter->shoot_speed.left_shoot_speed - shooter->speed_limit;
+    } else {
+        shooter->ref_output = shooter->shoot_speed.left_shoot_speed + shooter->slope_output - shooter->speed_limit;
+        shooter->slope_output -= shooter->dertaRef / shooter->slope_step;
+    }
+}
 void Shooter_ShootControl() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
@@ -477,10 +497,21 @@ void Shooter_ShootControl() {
         default:
             break;
     }
+    if (shooter->slope_output > 0) {
+        shooter->change_shooter_mode_complete = 1;
+    }
+    if (shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed) {
+        shooter->change_shooter_mode_complete = 0;
+        shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
+        shooter->slope_output = shooter->dertaRef;
+    }
+    Shooter_CalcRef();
+    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->ref_output);
+    Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->ref_output);
+    shooter->last_shoot_speed_ref = shooter->shoot_speed.left_shoot_speed;
+    // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
+    // Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
 
-    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
-    Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
-    
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);
     Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);

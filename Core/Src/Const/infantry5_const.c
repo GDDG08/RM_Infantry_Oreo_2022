@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 20:00:06
+ * @LastEditTime : 2022-05-02 16:29:17
  */
 
 #include "configure.h"
@@ -61,6 +61,14 @@ static const float Const_ShooterMotorParam_infantry_5[2][3][4][5] = {
 static const float Const_FeederMotorParam_infantry_5[1][3][4][5] = {
     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{750, 0.01, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{8.35, 0, 0.11, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}}  // feeder motor
 };
+
+static const float Const_AutoAimOffset_infantry_5[4][2] = {
+    {0.0f, 0.0f},  // Armor
+    {0.0f, 0.0f},  // Buff_Small
+    {0.0f, 0.0f},  // Buff_Big
+    {0.0f, 0.0f}   // Sentry
+    // pitch, yaw
+};
 #endif
 
 void Const_Infantry_5_Init(Const_ConstTypeDef* x) {
@@ -114,6 +122,8 @@ void Const_Infantry_5_Init(Const_ConstTypeDef* x) {
     memcpy(x->ShooterMotorParam, Const_ShooterMotorParam_infantry_5, sizeof(Const_ShooterMotorParam_infantry_5));
     memcpy(x->FeederMotorParam, Const_FeederMotorParam_infantry_5, sizeof(Const_FeederMotorParam_infantry_5));
 
+    memcpy(x->AutoAimOffset, Const_AutoAimOffset_infantry_5, sizeof(Const_AutoAimOffset_infantry_5));
+
     /*          Gimbal pitch limit                  */
     x->PITCH_UMAXANGLE = 10.0f;
     x->PITCH_UMAXANGLE_GRYO = 8.0f;
@@ -135,10 +145,16 @@ void Const_Infantry_5_Init(Const_ConstTypeDef* x) {
 
     x->ShooterSlowSpeed = 150.0f;
     x->ShooterFastSpeed = 230.0f;
-
+    
+#if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     x->Shooter15mpers = 235.0f;
     x->Shooter18mpers = 260.0f;
     x->Shooter30mpers = 360.0f;
+#else
+    x->Shooter15mpers = 15.0f;
+    x->Shooter18mpers = 18.0f;
+    x->Shooter30mpers = 30.0f;
+#endif
 
     x->FeederSlowSpeed = 50.0f;
     x->FeederFastSpeed = 100.0f;

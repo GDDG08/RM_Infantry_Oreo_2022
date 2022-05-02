@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-29 15:14:22
+ * @LastEditTime : 2022-05-02 09:54:57
  */
 
 #include "watchdog_ctrl.h"
@@ -67,9 +67,10 @@ void WatchDog_FeedDog() {
     }
 
 #elif __FN_IF_ENABLE(__FN_INFANRTY_GIMBAL)
-    if (BusComm_IsBusCommOffline(BusComm_PKG_REFEREE)) {
+    if (BusComm_IsBusCommOffline(BusComm_PKG_REFEREE_1)) {
         // if (LOGIN_ON_FLAG == 0) {
         // }
+    } else if (BusComm_IsBusCommOffline(BusComm_PKG_REFEREE_2)) {
     }
 #endif
 }

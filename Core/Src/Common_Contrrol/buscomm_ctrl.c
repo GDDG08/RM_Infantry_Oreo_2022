@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 11:04:55
+ * @LastEditTime : 2022-05-02 10:12:50
  *
  */
 
@@ -47,9 +47,9 @@ const uint16_t Const_BusComm_OFFLINE_TIME = 200;
 
 const uint32_t Const_BusComm_SIZE = FDCAN_DLC_BYTES_8;
 const uint8_t Const_BusComm_GIMBAL_BUFF_SIZE = 3;
-const uint8_t Const_BusComm_CHASSIS_BUFF_SIZE = 2;
+const uint8_t Const_BusComm_CHASSIS_BUFF_SIZE = 3;
 // const uint8_t Const_BusComm_SUPERCAP_BUFF_SIZE = 1;
-const uint8_t Const_BusComm_RECEIVE_SIZE = 5;
+const uint8_t Const_BusComm_RECEIVE_SIZE = 6;
 const uint8_t Const_CapComm_RECEIVE_SIZE = 3;
 
 // Dual bus communication protocol
@@ -64,7 +64,8 @@ FDCAN_TxHeaderTypeDef BusComm_GimControl;
 FDCAN_TxHeaderTypeDef BusComm_GimImuYaw;
 FDCAN_TxHeaderTypeDef BusComm_GimChassisRef;
 
-FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData;
+FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_1;
+FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_2;
 FDCAN_TxHeaderTypeDef BusComm_CapMode;
 
 // FDCAN_TxHeaderTypeDef BusComm_CapState;
@@ -97,7 +98,8 @@ void BusComm_InitBusComm() {
     FDCAN_InitTxHander(&BusComm_GimImuYaw, CMD_SET_IMU_YAW, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
     FDCAN_InitTxHander(&BusComm_GimChassisRef, CMD_SET_CHA_REF, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
 
-    FDCAN_InitTxHander(&BusComm_ChaRefereeData, CMD_SET_REFEREE_DATA, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_ChaRefereeData_1, CMD_SET_REFEREE_DATA_1, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_ChaRefereeData_2, CMD_SET_REFEREE_DATA_2, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
     FDCAN_InitTxHander(&BusComm_CapMode, CMD_SET_CAP_MODE, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
 
     // FDCAN_InitTxHander(&BusComm_CapState, CMD_SEND_CAP_STATE, Const_BusComm_SIZE,FDCAN_BRS_OFF,FDCAN_CLASSIC_CAN);
@@ -361,7 +363,7 @@ void BusComm_Update() {
     data->power_limit = referee->max_chassis_power;
     data->heat_17mm = referee->shooter_heat0;
 
-    data->speed_17mm_fdb = referee->bullet_speed > referee->shooter_heat0_speed_limit;
+    data->speed_17mm_fdb = referee->bullet_speed;
     data->heat_cooling_limit = referee->shooter_heat0_cooling_limit;
     data->speed_17mm_limit = spd_id;
     // data->main_shooter_power = referee->mains_power_shooter_output;

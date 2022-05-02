@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-18 22:54:05
+ * @LastEditTime : 2022-05-01 19:53:03
  */
 
 #include "gim_gimbal_ctrl.h"
@@ -42,7 +42,7 @@ void Gimbal_Task(void const* argument) {
             osDelay(1);
         }
         Remote_ControlCom();
-	Adc_Decode();
+        Adc_Decode();
         MiniPC_CalcAutoAim();
         Gimbal_CtrlPitch();
         Gimbal_CtrlYaw();
@@ -147,7 +147,7 @@ void Gimbal_CtrlPitch() {
 
     // clear pid param before changing mode
     if (gimbal->mode.mode_change_flag == 1) {
-        Motor_ResetMotorPID(&Motor_gimbalMotorPitch);
+        // Motor_ResetMotorPID(&Motor_gimbalMotorPitch);
         gimbal->mode.mode_change_flag = 0;
     }
     switch (gimbal->mode.present_mode) {
@@ -227,7 +227,8 @@ void Gimbal_SetPitchRef(float ref) {
  */
 // float AutoControl_ratio_pitch = 1.8f;
 // float AutoControl_offset_pitch = -0.4f;
-float AutoControl_offset_pitch = -0.54f;
+// float AutoControl_offset_pitch = -0.54f;
+float AutoControl_offset_pitch = 0.0f;
 void Gimbal_SetPitchAutoRef(float ref) {
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
@@ -318,6 +319,8 @@ void Gimbal_SetYawRef(float ref) {
 void Gimbal_SetYawRefDelta(float ref) {
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
 
+    LimitMaxMin(ref, 0.28, -0.28);
+
     gimbal->angle.yaw_angle_ref = Gimbal_LimitYaw(gimbal->angle.yaw_angle_ref - ref);
 }
 
@@ -329,7 +332,8 @@ void Gimbal_SetYawRefDelta(float ref) {
 
 // float AutoControl_ratio_yaw = 80.0f;
 // float AutoControl_offset_yaw = -0.65f;
-float AutoControl_offset_yaw = -0.544f;
+// float AutoControl_offset_yaw = -0.544f;
+float AutoControl_offset_yaw = 0.0f;
 void Gimbal_SetYawAutoRef(float ref /*, int isDelta*/) {
     // if (isDelta) {
     //     ref+=

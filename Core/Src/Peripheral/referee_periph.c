@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 11:01:20
+ * @LastEditTime : 2022-05-02 11:21:37
  */
 
 #include "referee_periph.h"
@@ -247,72 +247,73 @@ uint8_t P_ext_dart_cmd(Referee_RefereeDataTypeDef* referee, void* data_ptr) {
 
 /********** END OF REFEREE CMD PARSER FUNCTION **********/
 
-const uint16_t Const_Referee_FRAME_HEADER_SOF = 0xA5;  // ����ϵͳָ��֡ͷ����
-const Referee_RobotAndClientIDTypeDef                  // ������ID����Ӧ�ͻ���ID��0��ʾ�޶�Ӧ�ͻ���
-    HERO_RED = {1, 0x0101},                            // Ӣ��(��)
-    ENGINEER_RED = {2, 0x0102},                        // ����(��)
-    INFANTRY3_RED = {3, 0x0103},                       // ����3(��)
-    INFANTRY4_RED = {4, 0x0104},                       // ����4(��)
-    INFANTRY5_RED = {5, 0x0105},                       // ����5(��)
-    AERIAL_RED = {6, 0x0106},                          // ����(��)
-    SENTRY_RED = {7, 0},                               // �ڱ�(��)
-    HERO_BLUE = {101, 0x0165},                         // Ӣ��(��)
-    ENGINEER_BLUE = {102, 0x0166},                     // ����(��)
-    INFANTRY3_BLUE = {103, 0x0167},                    // ����3(��)
-    INFANTRY4_BLUE = {104, 0x0168},                    // ����4(��)
-    INFANTRY5_BLUE = {105, 0x0169},                    // ����5(��)
-    AERIAL_BLUE = {106, 0x016A},                       // ����(��)
-    SENTRY_BLUE = {107, 0};                            // �ڱ�(��)
+const uint16_t Const_Referee_FRAME_HEADER_SOF = 0xA5;  // 裁判系统指令帧头长度
+const Referee_RobotAndClientIDTypeDef                  // 机器人ID及对应客户端ID，0表示无对应客户端
+    HERO_RED = {1, 0x0101},                            // 英雄(红)
+    ENGINEER_RED = {2, 0x0102},                        // 工程(红)
+    INFANTRY3_RED = {3, 0x0103},                       // 步兵3(红)
+    INFANTRY4_RED = {4, 0x0104},                       // 步兵4(红)
+    INFANTRY5_RED = {5, 0x0105},                       // 步兵5(红)
+    AERIAL_RED = {6, 0x0106},                          // 空中(红)
+    SENTRY_RED = {7, 0},                               // 哨兵(红)
+    HERO_BLUE = {101, 0x0165},                         // 英雄(蓝)
+    ENGINEER_BLUE = {102, 0x0166},                     // 工程(蓝)
+    INFANTRY3_BLUE = {103, 0x0167},                    // 步兵3(蓝)
+    INFANTRY4_BLUE = {104, 0x0168},                    // 步兵4(蓝)
+    INFANTRY5_BLUE = {105, 0x0169},                    // 步兵5(蓝)
+    AERIAL_BLUE = {106, 0x016A},                       // 空中(蓝)
+    SENTRY_BLUE = {107, 0};                            // 哨兵(蓝)
 
-const uint16_t Const_Referee_CMD_NUM = 20;  // ����ϵͳָ���������������ָ�
+const uint16_t Const_Referee_CMD_NUM = 20;  // 裁判系统指令个数（不含交互指令）
 const Referee_RefereeCmdTypeDef Const_Referee_CMD_LIST[Const_Referee_CMD_NUM] = {
-    // ����ϵͳ��Ϣ����ID�б�
-    {0x0001, 11, &P_ext_game_status},              // ����״̬���ݣ�1Hz ���ڷ���
-    {0x0002, 1, &P_ext_game_result},               // ����������ݣ�������������
-    {0x0003, 32, &P_ext_game_robot_HP},            // ����������Ѫ�����ݣ�1Hz ���ڷ���
-    {0x0004, 3, &P_ext_dart_status},               // ���ڷ���״̬�����ڷ���ʱ����
-    {0x0005, 11, NULL},                            // ��δʹ�ã��˹�������ս���ӳ���ͷ���״̬��1Hz���ڷ���
-    {0x0101, 4, &P_ext_event_data},                // �����¼����ݣ��¼��ı����
-    {0x0102, 4, &P_ext_supply_projectile_action},  // ���ز���վ������ʶ���ݣ������ı����
-    {0x0103, 2, NULL},                             // ���ѷ��������󲹸�վ�������ݣ��ɲ����ӷ��ͣ����� 10Hz����RM �Կ�����δ���ţ�
-    {0x0104, 2, &P_ext_referee_warning},           // ���о������ݣ����淢������
-    {0x0105, 1, &P_ext_dart_remaining_time},       // ���ڷ���ڵ���ʱ��1Hz���ڷ���
-    {0x0201, 27, &P_ext_game_robot_status},        // ������״̬���ݣ�10Hz ���ڷ���
-    {0x0202, 16, &P_ext_power_heat_data},          // ʵʱ�����������ݣ�50Hz ���ڷ���
-    {0x0203, 16, &P_ext_game_robot_pos},           // ������λ�����ݣ�10Hz ����
-    {0x0204, 1, &P_ext_buff},                      // �������������ݣ�1Hz ���ڷ���
-    {0x0205, 2, &P_aerial_robot_energy},           // ���л���������״̬���ݣ�10Hz ���ڷ��ͣ�ֻ�п��л��������ط���
-    {0x0206, 1, &P_ext_robot_hurt},                // �˺�״̬���ݣ��˺���������
-    {0x0207, 7, &P_ext_shoot_data},                // ʵʱ������ݣ��ӵ��������
-    {0x0208, 6, &P_ext_bullet_remaining},          // ����ʣ�෢�����������л����ˣ��ڱ��������Լ�ICRA�����˷��ͣ�1Hz���ڷ���
-    {0x0209, 4, &P_ext_rfid_status},               // ������RFID״̬��1Hz���ڷ���
-    {0x020A, 12, &P_ext_dart_cmd}                  // ���ڻ����˿ͻ���ָ���飬10Hz���ڷ���
+    // 裁判系统消息命令ID列表
+    {0x0001, 11, &P_ext_game_status},    // 比赛状态数据，1Hz 周期发送
+    {0x0002, 1, &P_ext_game_result},     // 比赛结果数据，比赛结束后发送
+    {0x0003, 28, &P_ext_game_robot_HP},  // 比赛机器人血量数据，1Hz 周期发送
+    {0x0004, 3, &P_ext_dart_status},
+    {0x0005, 11, NULL},                            // （未使用）人工智能挑战赛加成与惩罚区状态，1Hz周期发送
+    {0x0101, 4, &P_ext_event_data},                // 场地事件数据，事件改变后发送
+    {0x0102, 4, &P_ext_supply_projectile_action},  // 场地补给站动作标识数据，动作改变后发送
+    {0x0103, 2, NULL},                             // （已废弃）请求补给站补弹数据，由参赛队发送，上限 10Hz。（RM 对抗赛尚未开放）
+    {0x0104, 2, &P_ext_referee_warning},           // 裁判警告数据，警告发生后发送
+    {0x0105, 1, &P_ext_dart_remaining_time},       // 飞镖发射口倒计时，1Hz周期发送
+    {0x0201, 15, &P_ext_game_robot_status},        // 机器人状态数据，10Hz 周期发送
+    {0x0202, 14, &P_ext_power_heat_data},          // 实时功率热量数据，50Hz 周期发送
+    {0x0203, 16, &P_ext_game_robot_pos},           // 机器人位置数据，10Hz 发送
+    {0x0204, 1, &P_ext_buff},                      // 机器人增益数据，1Hz 周期发送
+    {0x0205, 1, &P_aerial_robot_energy},           // 空中机器人能量状态数据，10Hz 周期发送，只有空中机器人主控发送
+    {0x0206, 1, &P_ext_robot_hurt},                // 伤害状态数据，伤害发生后发送
+    {0x0207, 7, &P_ext_shoot_data},                // 实时射击数据，子弹发射后发送
+    {0x0208, 6, &P_ext_bullet_remaining},          // 弹丸剩余发射数，仅空中机器人，哨兵机器人以及ICRA机器人发送，1Hz周期发送
+    {0x0209, 4, &P_ext_rfid_status},               // 机器人RFID状态，1Hz周期发送
+    {0x020A, 12, &P_ext_dart_cmd},                 // 飞镖机器人客户端指令书，10Hz周期发送
 };
 
-const Referee_RefereeCmdTypeDef Const_Referee_CMD_INTERACTIVE = {0x0301, 8, NULL};  // �����˼佻�����ݣ����ͷ���������
-// ע�������6�ǽ�������֡ͷ�ĳ��ȣ���Ϊ��������֡�ǲ�������
-// const uint16_t Const_Referee_DATA_CMD_ID_CLIENT_CUSTOM_DATA       = 0xD180;               // ���ѷ������ͻ����Զ�����������ID
-const uint16_t Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_LBOUND = 0x0200;  // �����˼佻����������ID�½�
-const uint16_t Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_UBOUND = 0x02FF;  // �����˼佻����������ID�Ͻ�
-const uint16_t Const_Referee_DATA_INTERACTIVE_DATA_MAX_LENGTH = 113 - 1;    // �����˼佻������������󳤶�
-const uint16_t Const_Referee_GRAPHIC_BUFFER_MAX_LENGTH = 21;                // ͼ�λ�������󳤶�
+const Referee_RefereeCmdTypeDef Const_Referee_CMD_INTERACTIVE = {0x0301, 8, NULL};  // 机器人间交互数据，发送方触发发送
+// 注：这里的6是交互数据帧头的长度，因为交互数据帧是不定长的
+// const uint16_t Const_Referee_DATA_CMD_ID_CLIENT_CUSTOM_DATA       = 0xD180;               // （已废弃）客户端自定义数据内容ID
+const uint16_t Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_LBOUND = 0x0200;  // 机器人间交互数据内容ID下界
+const uint16_t Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_UBOUND = 0x02FF;  // 机器人间交互数据内容ID上界
+const uint16_t Const_Referee_DATA_INTERACTIVE_DATA_MAX_LENGTH = 113 - 1;    // 机器人间交互数据内容最大长度
+const uint16_t Const_Referee_GRAPHIC_BUFFER_MAX_LENGTH = 21;                // 图形缓冲区最大长度
 const Referee_RefereeCmdTypeDef Const_Referee_DATA_CMD_ID_LIST[6] = {
-    // ����ϵͳ������������ID
-    {0x0100, 2, NULL},    // �ͻ���ɾ��ͼ��
-    {0x0101, 15, NULL},   // �ͻ��˻���һ��ͼ��
-    {0x0102, 30, NULL},   // �ͻ��˻��ƶ���ͼ��
-    {0x0103, 75, NULL},   // �ͻ��˻������ͼ��
-    {0x0104, 105, NULL},  // �ͻ��˻����߸�ͼ��
-    {0x0105, 45, NULL}    // �ͻ��˻����ַ�ͼ��
+    // 裁判系统交互数据内容ID
+    {0x0100, 2, NULL},    // 客户端删除图形
+    {0x0101, 15, NULL},   // 客户端绘制一个图形
+    {0x0102, 30, NULL},   // 客户端绘制二个图形
+    {0x0103, 75, NULL},   // 客户端绘制五个图形
+    {0x0104, 105, NULL},  // 客户端绘制七个图形
+    {0x0105, 45, NULL}    // 客户端绘制字符图形
 };
 
 graphic_data_struct_t Referee_dummyGraphicCmd = {{0x00, 0x00, 0x00}, Draw_OPERATE_NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 /**
- * @brief      ��ʼ������ϵͳ
- * @param      ��
- * @retval     ��
+ * @brief      初始化裁判系统
+ * @param      无
+ * @retval     无
  */
+
 void Referee_InitReferee() {
     Referee_RefereeDataTypeDef* referee = &Referee_RefereeData;
     Referee_ResetRefereeData();
@@ -404,11 +405,11 @@ void Referee_SendClientCustomData() {
 
 /**
  * @brief      �����˼佻�����ݷ��ͺ���
- * @param      data_cmd_id: ��������ID
- * @param      receiver_ID: ������ID
- * @param      data: ����֡
- * @param      data_length: ����֡����
- * @retval     ��
+ * @param      data_cmd_id: 数据内容ID
+ * @param      receiver_ID: 接受者ID
+ * @param      data: 数据帧
+ * @param      data_length: 数据帧长度
+ * @retval     无
  */
 void Referee_SendRobotCustomData(uint16_t data_cmd_id, uint16_t receiver_ID, const uint8_t* data, uint16_t data_length) {
     if (data_cmd_id < Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_LBOUND ||
@@ -947,18 +948,20 @@ uint8_t Referee_ParseRobotCustomData(uint8_t* data, uint16_t data_length) {
 }
 
 /**
- * @brief      ����ϵͳ���ݽ�������
- * @param      cmd_id: ����ID
- * @param      data: ����֡
- * @param      data_length: ����֡����
- * @retval     ���������0Ϊʧ�ܣ�1Ϊ�ɹ���
+ * @brief      裁判系统数据解析函数
+ * @param      cmd_id: 命令ID
+ * @param      data: 数据帧
+ * @param      data_length: 数据帧长度
+ * @retval     解析结果（0为失败，1为成功）
  */
 uint8_t Referee_ParseRefereeCmd(uint16_t cmd_id, uint8_t* data, uint16_t data_length) {
     Referee_RefereeDataTypeDef* referee = &Referee_RefereeData;
 
     if (cmd_id == Const_Referee_CMD_INTERACTIVE.cmd_id)
         return Referee_ParseRobotCustomData(data, data_length);
-
+    if (cmd_id == 0x0207) {
+        int a = 1;
+    }
     for (int i = 0; i < Const_Referee_CMD_NUM; ++i) {
         if (cmd_id == Const_Referee_CMD_LIST[i].cmd_id) {
             // if (data_length != Const_Referee_CMD_LIST[i].data_length) return PARSE_FAILED;  // wrong data length

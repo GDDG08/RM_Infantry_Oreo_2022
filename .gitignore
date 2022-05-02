@@ -7,7 +7,7 @@ Core/.VSCodeCounters
 MDK-ARM/startup_stm32g473xx.s
 MDK-ARM/startup_stm32g473xx.lst
 infantry_-oreo.zip
-.cmsis
 .eide
+.cmsis
 .pack
 build

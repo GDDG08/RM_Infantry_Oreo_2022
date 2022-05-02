@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-29 20:20:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-23 21:38:57
+ * @LastEditTime : 2022-05-01 19:52:02
  */
 
 #ifndef GIM_GIMBAL_CTRL_H
