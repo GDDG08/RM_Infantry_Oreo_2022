@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 11:08:13
+ * @LastEditTime : 2022-05-02 10:14:22
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -70,7 +70,8 @@ extern FDCAN_TxHeaderTypeDef BusComm_GimGimbalData;
 extern FDCAN_TxHeaderTypeDef BusComm_GimImuYaw;
 extern FDCAN_TxHeaderTypeDef BusComm_GimChassisRef;
 
-extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData;
+extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_1;
+extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_2;
 extern FDCAN_TxHeaderTypeDef BusComm_CapMode;
 
 // extern FDCAN_TxHeaderTypeDef BusComm_CapState;
@@ -86,26 +87,27 @@ typedef enum {
 } BusComm_BusCommStateEnum;
 
 typedef enum {
-    BusComm_PKG_REFEREE = 0,
-    BusComm_PKG_CTRL = 1,
-    BusComm_PKG_IMU = 2,
-    BusComm_PKG_CHA_REF = 3,
-    BusComm_PKG_CAP_1 = 4,
-    BusComm_PKG_CAP_2 = 5
+    BusComm_PKG_REFEREE_1 = 0,
+    BusComm_PKG_REFEREE_2,
+    BusComm_PKG_CTRL,
+    BusComm_PKG_IMU,
+    BusComm_PKG_CHA_REF,
+    BusComm_PKG_CAP_1,
+    BusComm_PKG_CAP_2
 } BusComm_BusCommPkgEnum;
 
 typedef struct {
     BusComm_BusCommStateEnum state;
-    uint32_t last_update_time[6];
+    uint32_t last_update_time[7];
 
     // Chassis up stream
-    float yaw_relative_angle;  // Angle of chassis relative to pan tilt
-    uint8_t robot_id;          // Robot ID
-    uint8_t power_limit;       // Super capacitor state
-    uint16_t heat_17mm;        // Heat transfer of 17mm launching mechanism
-    uint16_t heat_cooling_limit;
-    uint8_t speed_17mm_fdb; //1bit
-    uint8_t speed_17mm_limit;  // speed enum 2bit
+    float yaw_relative_angle;     // Angle of chassis relative to pan tilt
+    uint8_t robot_id;             // Robot ID
+    uint8_t power_limit;          // Super capacitor state
+    uint16_t heat_17mm;           // Heat transfer of 17mm launching mechanism
+    uint16_t heat_cooling_limit;  //
+    float speed_17mm_fdb;         // int16_t
+    uint8_t speed_17mm_limit;     // speed enum 2bit
     // uint8_t main_shooter_power;
     uint8_t cap_mode_fnl;
     uint8_t cap_boost_mode_fnl;

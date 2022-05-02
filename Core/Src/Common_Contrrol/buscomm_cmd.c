@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 10:40:48
+ * @LastEditTime : 2022-05-02 10:18:48
  */
 
 #include "buscomm_cmd.h"
@@ -31,7 +31,8 @@ const uint32_t CMD_SET_CONTROL = 0x201;
 const uint32_t CMD_SET_IMU_YAW = 0x203;
 const uint32_t CMD_SET_CHA_REF = 0x204;
 
-const uint32_t CMD_SET_REFEREE_DATA = 0x206;
+const uint32_t CMD_SET_REFEREE_DATA_1 = 0x206;
+const uint32_t CMD_SET_REFEREE_DATA_2 = 0x207;
 
 const uint32_t CMD_SET_CAP_MODE = 0x98;
 // const uint32_t CMD_SEND_CAP_STATE = 0x207;
@@ -40,6 +41,7 @@ const uint32_t CMD_SET_CAP_STATE_2 = 0x298;
 
 const uint32_t CMD_CHASSIS_SEND_PACK_1 = 0xA1;
 const uint32_t CMD_CHASSIS_SEND_PACK_2 = 0xA2;
+const uint32_t CMD_CHASSIS_SEND_PACK_3 = 0xA3;
 
 const uint32_t CMD_GIMBAL_SEND_PACK_1 = 0xB1;
 const uint32_t CMD_GIMBAL_SEND_PACK_2 = 0xB2;
@@ -50,16 +52,19 @@ const uint32_t CMD_GIMBAL_SEND_PACK_3 = 0xB3;
 /*const*/ uint32_t Const_Send_Period_Control = 0;
 /*const*/ uint32_t Const_Send_Period_IMU_Yaw = 0;
 /*const*/ uint32_t Const_Send_Period_Cha_ref = 5;
-/*const*/ uint32_t Const_Send_Period_Referee = 20;
+/*const*/ uint32_t Const_Send_Period_Referee_1 = 5;
+/*const*/ uint32_t Const_Send_Period_Referee_2 = 100;
 /*const*/ uint32_t Const_Send_Period_Cap_Mode = 5;
 
-static void _send_referee_data(uint8_t buff[]);
+static void _send_referee_data_1(uint8_t buff[]);
+static void _send_referee_data_2(uint8_t buff[]);
 static void _send_control(uint8_t buff[]);
 static void _send_imu_yaw(uint8_t buff[]);
 static void _send_chassis_ref(uint8_t buff[]);
 // static void _send_cap_state(uint8_t buff[]);
 static void _send_cap_mode(uint8_t buff[]);
-static void _set_referee_data(uint8_t buff[]);
+static void _set_referee_data_1(uint8_t buff[]);
+static void _set_referee_data_2(uint8_t buff[]);
 static void _set_control(uint8_t buff[]);
 static void _set_imu_yaw(uint8_t buff[]);
 static void _set_cha_ref(uint8_t buff[]);
@@ -67,9 +72,10 @@ static void _set_cha_ref(uint8_t buff[]);
 static void _set_cap_state_1(uint8_t buff[]);
 static void _set_cap_state_2(uint8_t buff[]);
 
-BusCmd_TableEntry Buscmd_Receive[5] = {
+BusCmd_TableEntry Buscmd_Receive[6] = {
     {0xff, NULL},
-    {CMD_SET_REFEREE_DATA, &_set_referee_data},
+    {CMD_SET_REFEREE_DATA_1, &_set_referee_data_1},
+    {CMD_SET_REFEREE_DATA_2, &_set_referee_data_2},
     {CMD_SET_CONTROL, &_set_control},
     {CMD_SET_IMU_YAW, &_set_imu_yaw},
     {CMD_SET_CHA_REF, &_set_cha_ref}};
@@ -84,35 +90,54 @@ BusCmd_TableEntry Buscmd_GimSend[3] = {
     {CMD_GIMBAL_SEND_PACK_2, &_send_imu_yaw},
     {CMD_GIMBAL_SEND_PACK_3, &_send_chassis_ref}};
 
-BusCmd_TableEntry Buscmd_ChaSend[2] = {
-    {CMD_CHASSIS_SEND_PACK_1, &_send_referee_data},
-    {CMD_CHASSIS_SEND_PACK_2, &_send_cap_mode}};
+BusCmd_TableEntry Buscmd_ChaSend[3] = {
+    {CMD_CHASSIS_SEND_PACK_1, &_send_referee_data_1},
+    {CMD_CHASSIS_SEND_PACK_2, &_send_referee_data_2},
+    {CMD_CHASSIS_SEND_PACK_3, &_send_cap_mode}};
 
 // BusCmd_TableEntry Buscmd_CapSend[1] = {
 //     {CMD_SUPERCAP_SEND_PACK_1, &_send_cap_state}};
 
-int counta[5];
-float ratea[5];
+int counta[6];
+float ratea[6];
 
 /*      send functions driver       */
 /*************** CHASSIS SEND *****************/
 
-static void _send_referee_data(uint8_t buff[]) {
+static void _send_referee_data_1(uint8_t buff[]) {
     static uint32_t last_send_time = 0;
-    if ((HAL_GetTick() - last_send_time) <= Const_Send_Period_Referee)
+    if ((HAL_GetTick() - last_send_time) <= Const_Send_Period_Referee_1)
         return;
     last_send_time = HAL_GetTick();
 
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-    FDCAN_TxHeaderTypeDef* pheader = &BusComm_ChaRefereeData;
+    FDCAN_TxHeaderTypeDef* pheader = &BusComm_ChaRefereeData_1;
     counta[0]++;
     ratea[0] = 1000 * counta[0] / HAL_GetTick();
     memset(buff, 0, 8);
+
+    i162buff((int16_t)(buscomm->yaw_relative_angle * 100), buff);
+    i162buff((int16_t)(buscomm->speed_17mm_fdb * 100), buff + 2);
+    ui162buff(buscomm->heat_17mm, buff + 4);
+
+    FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
+}
+
+static void _send_referee_data_2(uint8_t buff[]) {
+    static uint32_t last_send_time = 0;
+    if ((HAL_GetTick() - last_send_time) <= Const_Send_Period_Referee_2)
+        return;
+    last_send_time = HAL_GetTick();
+
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    FDCAN_TxHeaderTypeDef* pheader = &BusComm_ChaRefereeData_2;
+    counta[1]++;
+    ratea[1] = 1000 * counta[1] / HAL_GetTick();
+    memset(buff, 0, 8);
     buff[0] = (buscomm->game_outpost_alive << 7) + buscomm->robot_id;
-    i162buff((int16_t)(buscomm->yaw_relative_angle * 100), buff + 1);
-    ui162buff(buscomm->heat_cooling_limit, buff + 3);
-    ui162buff(buscomm->heat_17mm, buff + 5);
-    buff[7] = (buscomm->speed_17mm_fdb << 7) + (buscomm->speed_17mm_limit << 5);
+    buff[1] = buscomm->speed_17mm_limit << 6;
+    i162buff(buscomm->heat_cooling_limit, buff + 2);
+
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
 }
 
@@ -124,8 +149,8 @@ static void _send_cap_mode(uint8_t buff[]) {
 
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     FDCAN_TxHeaderTypeDef* pheader = &BusComm_CapMode;
-    counta[1]++;
-    ratea[1] = 1000 * counta[1] / HAL_GetTick();
+    counta[2]++;
+    ratea[2] = 1000 * counta[2] / HAL_GetTick();
     memset(buff, 0, 8);
     buff[0] = buscomm->cap_mode_fnl | (0x77 << 1);
     buff[1] = buscomm->cap_boost_mode_fnl | 0x02;  // Todo bit1 error chassis
@@ -144,8 +169,8 @@ static void _send_control(uint8_t buff[]) {
 
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     FDCAN_TxHeaderTypeDef* pheader = &BusComm_GimControl;
-    counta[2]++;
-    ratea[2] = 1000 * counta[2] / HAL_GetTick();
+    counta[3]++;
+    ratea[3] = 1000 * counta[3] / HAL_GetTick();
     memset(buff, 0, 8);
     buff[0] = (buscomm->gimbal_yaw_mode << 4) + (buscomm->chassis_mode << 2) + buscomm->power_limit_mode;
     buff[1] = (buscomm->infantry_code << 4) + (buscomm->ui_cmd << 2) + (buscomm->cap_mode_user << 1) + buscomm->cap_boost_mode_user;
@@ -161,8 +186,8 @@ static void _send_imu_yaw(uint8_t buff[]) {
 
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     FDCAN_TxHeaderTypeDef* pheader = &BusComm_GimImuYaw;
-    counta[3]++;
-    ratea[3] = 1000 * counta[3] / HAL_GetTick();
+    counta[4]++;
+    ratea[4] = 1000 * counta[4] / HAL_GetTick();
     memset(buff, 0, 8);
     float2buff(buscomm->gimbal_imu_spd, buff);
     float2buff(buscomm->gimbal_imu_pos, buff + 4);
@@ -177,8 +202,8 @@ static void _send_chassis_ref(uint8_t buff[]) {
 
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     FDCAN_TxHeaderTypeDef* pheader = &BusComm_GimChassisRef;
-    counta[4]++;
-    ratea[4] = 1000 * counta[4] / HAL_GetTick();
+    counta[5]++;
+    ratea[5] = 1000 * counta[5] / HAL_GetTick();
     memset(buff, 0, 8);
     float2buff(buscomm->chassis_fb_ref, buff);
     float2buff(buscomm->chassis_lr_ref, buff + 4);
@@ -198,20 +223,33 @@ static void _send_chassis_ref(uint8_t buff[]) {
 // }
 
 /*************** RECEIVE *****************/
-int countb[6];
-float rateb[6];
-static void _set_referee_data(uint8_t buff[]) {
-    countb[BusComm_PKG_REFEREE]++;
-    rateb[BusComm_PKG_REFEREE] = 1000 * countb[BusComm_PKG_REFEREE] / HAL_GetTick();
+int countb[7];
+float rateb[7];
+static void _set_referee_data_1(uint8_t buff[]) {
+    countb[BusComm_PKG_REFEREE_1]++;
+    rateb[BusComm_PKG_REFEREE_1] = 1000 * countb[BusComm_PKG_REFEREE_1] / HAL_GetTick();
+
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+
+    buscomm->yaw_relative_angle = ((float)buff2i16(buff)) / 100;
+    buscomm->speed_17mm_fdb = ((float)buff2i16(buff + 2)) / 100;
+    buscomm->heat_17mm = buff2ui16(buff + 4);
+
+    buscomm->last_update_time[BusComm_PKG_REFEREE_1] = HAL_GetTick();
+}
+
+static void _set_referee_data_2(uint8_t buff[]) {
+    countb[BusComm_PKG_REFEREE_2]++;
+    rateb[BusComm_PKG_REFEREE_2] = 1000 * countb[BusComm_PKG_REFEREE_2] / HAL_GetTick();
+
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+
     buscomm->robot_id = buff[0] & 0x7F;
     buscomm->game_outpost_alive = (buff[0] & 0x80) >> 7;
-    buscomm->yaw_relative_angle = ((float)buff2i16(buff + 1)) / 100;
-    buscomm->heat_cooling_limit = buff2ui16(buff + 3);
-    buscomm->heat_17mm = buff2ui16(buff + 5);
-    buscomm->speed_17mm_fdb = (buff[7] & 0x80) >> 7;
-    buscomm->speed_17mm_limit = (buff[7] & 0x60) >> 5;
-    buscomm->last_update_time[0] = HAL_GetTick();
+    buscomm->speed_17mm_limit = (buff[1] & 0xC0) >> 6;
+    buscomm->heat_cooling_limit = buff2i16(buff + 2);
+
+    buscomm->last_update_time[BusComm_PKG_REFEREE_2] = HAL_GetTick();
 }
 
 static void _set_control(uint8_t buff[]) {
@@ -234,7 +272,7 @@ static void _set_control(uint8_t buff[]) {
     buscomm->gimbal_yaw_ref = buff2float(buff + 2);
     _cmd_mode_control();
 
-    buscomm->last_update_time[BusComm_PKG_REFEREE] = HAL_GetTick();
+    buscomm->last_update_time[BusComm_PKG_CTRL] = HAL_GetTick();
 }
 
 static void _set_imu_yaw(uint8_t buff[]) {

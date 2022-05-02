@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 11:00:01
+ * @LastEditTime : 2022-05-02 11:08:05
  */
 
 #ifndef REFEREE_PERIPH_H
@@ -30,6 +30,7 @@ typedef __unaligned struct {
     uint8_t game_type : 4;
     uint8_t game_progress : 4;
     uint16_t stage_remain_time;
+    uint64_t SyncTimeStamp;
 } ext_game_status_t;
 
 typedef __unaligned struct {
@@ -145,7 +146,7 @@ typedef __unaligned struct {
 } ext_buff_t;
 
 typedef __unaligned struct {
-    uint8_t energy_point;
+    // uint8_t energy_point;
     uint8_t attack_time;
 } aerial_robot_energy_t;
 
@@ -163,7 +164,9 @@ typedef __unaligned struct
 } ext_shoot_data_t;
 
 typedef __unaligned struct {
-    uint16_t bullet_remaining_num;
+    uint16_t bullet_remaining_num_17mm;
+    uint16_t bullet_remaining_num_42mm;
+    uint16_t coin_remaining_num;
 } ext_bullet_remaining_t;
 
 typedef __unaligned struct {
@@ -247,29 +250,28 @@ typedef enum {
 } Referee_RefereeStateEnum;
 
 typedef struct {
-    Referee_RefereeStateEnum state;  // ����ϵͳ��ǰ״̬
-    uint32_t last_update_time;       // ����ϵͳ�ϴθ���ʱ��
+    Referee_RefereeStateEnum state;  // 裁判系统当前状态
+    uint32_t last_update_time;       // 裁判系统上次更新时间
 
-    uint16_t client_id;  // �ͻ���ID
-                         //  client_custom_data_t custom_data;           // ���ѷ������ͻ����Զ�������
-                         //  ext_client_graphic_draw_t graphic_draw;     // ���ѷ������ͻ����Զ����ͼ
+    uint16_t client_id;                     // 客户端ID
+                                            //  client_custom_data_t custom_data;           // （已废弃）客户端自定义数据
+                                            //  ext_client_graphic_draw_t graphic_draw;     // （已废弃）客户端自定义绘图
+    graphic_data_struct_t graphic_buf[30];  // 客户端自定义绘图缓冲区
+    uint8_t graphic_buf_len;                // 客户端自定义绘图缓冲区已占用长度
+                                            //  uint32_t graphic_current_id;                // 客户端自定义绘图当前序号
 
-    graphic_data_struct_t graphic_buf[30];  // �ͻ����Զ����ͼ������
-    uint8_t graphic_buf_len;                // �ͻ����Զ����ͼ��������ռ�ó���
-                                            //  uint32_t graphic_current_id;                // �ͻ����Զ����ͼ��ǰ���
-
-    uint8_t game_type;           //  ��Ϸ����,    1:RoboMaster ���״�ʦ����
-                                 //              2:RoboMaster ���״�ʦ��������
-                                 //      	    3��ICRA RoboMaster �˹�������ս��
-                                 //              4��RoboMaster ������3V3
-                                 //              5��RoboMaster ������1V1
-    uint8_t game_progress;       //  ��ǰ�����׶�,0��δ��ʼ������
-                                 //              1��׼���׶Σ�
-                                 //              2���Լ�׶Σ�
-                                 //              3��5s����ʱ��
-                                 //              4����ս�У�
-                                 //              5������������
-    uint16_t stage_remain_time;  //  ��ǰ�׶�ʣ��ʱ�䣬��λs
+    uint8_t game_type;           //  游戏类型,    1:RoboMaster 机甲大师赛；
+                                 //              2:RoboMaster 机甲大师单项赛；
+                                 //      	    3：ICRA RoboMaster 人工智能挑战赛
+                                 //              4：RoboMaster 联盟赛3V3
+                                 //              5：RoboMaster 联盟赛1V1
+    uint8_t game_progress;       //  当前比赛阶段,0：未开始比赛；
+                                 //              1：准备阶段；
+                                 //              2：自检阶段；
+                                 //              3：5s倒计时；
+                                 //              4：对战中；
+                                 //              5：比赛结算中
+    uint16_t stage_remain_time;  //  当前阶段剩余时间，单位s
 
     uint32_t event_type;
 

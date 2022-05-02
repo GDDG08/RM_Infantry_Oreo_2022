@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 21:41:54
+ * @LastEditTime : 2022-05-02 10:20:41
  */
 
 // Note:
@@ -27,6 +27,14 @@ extern "C" {
 #define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
 // #define __FN_BOARD_TYPE __FN_BOARD_TYPE_GIMBAL
 
+/*      ******************DEBUG********************      */
+#define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
+#define __FN_DEBUG_BTLOG __FN_ENABLE
+#define __FN_MINIPC_CAPT __FN_ENABLE
+#define __FN_SHOOTER_PID __FN_ENABLE
+
+/*      **********************************************      */
+
 #define __FN_BOARD_TYPE_CHASSIS 1
 #define __FN_BOARD_TYPE_GIMBAL 2
 #define __FN_BOARD_TYPE_SUPERCAP 3
@@ -41,14 +49,6 @@ extern "C" {
 
 #define __IMU_SIX_AXIS_TYPE 6
 #define __IMU_NINE_AXIS_TYPE 9
-
-/*      ******************DEBUG********************      */
-#define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
-#define __FN_DEBUG_BTLOG __FN_ENABLE
-#define __FN_MINIPC_CAPT __FN_ENABLE
-#define __FN_SHOOTER_PID __FN_ENABLE
-
-/*      **********************************************      */
 
 extern int GLOBAL_INIT_FLAG;
 
