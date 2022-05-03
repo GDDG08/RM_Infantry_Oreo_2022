@@ -70,8 +70,8 @@ void Shooter_InitShooter() {
     shooter->change_shooter_mode_complete = 1;
     shooter->slope_output = 0;
     shooter->speed_limit = 0;
-    shooter->slope_step = 100.0f;
-    shooter->dertaRef = 0;
+		shooter->slope_step =350.0f;
+		shooter->dertaRef=0;
 
     Shooter_InitShooterMotor();
 
@@ -463,10 +463,11 @@ void Shooter_CalcRef() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     if (shooter->change_shooter_mode_complete) {
         shooter->ref_output = shooter->shoot_speed.left_shoot_speed - shooter->speed_limit;
-    } else {
-        shooter->ref_output = shooter->shoot_speed.left_shoot_speed + shooter->slope_output - shooter->speed_limit;
-        shooter->slope_output -= shooter->dertaRef / shooter->slope_step;
-    }
+    } 
+		else {
+				shooter->ref_output=shooter->shoot_speed.left_shoot_speed - shooter->slope_output - shooter->speed_limit;   
+				shooter->slope_output -= shooter->dertaRef / shooter->slope_step;
+		}
 }
 void Shooter_ShootControl() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
@@ -497,11 +498,19 @@ void Shooter_ShootControl() {
         default:
             break;
     }
-    if (shooter->slope_output > 0) {
+		if (shooter->slope_direction == 0){
+			if(shooter->slope_output<0)
         shooter->change_shooter_mode_complete = 1;
     }
-    if (shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed) {
+		else
+		{
+			if(shooter->slope_output>0)
+        shooter->change_shooter_mode_complete = 1;
+		}
+		if(shooter->last_shoot_speed_ref != shooter->shoot_speed.left_shoot_speed)
+			{
         shooter->change_shooter_mode_complete = 0;
+				shooter->slope_direction=shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed?1:0;//0������ 1������
         shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
         shooter->slope_output = shooter->dertaRef;
     }

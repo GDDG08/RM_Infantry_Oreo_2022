@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 16:28:32
+ * @LastEditTime : 2022-05-01 20:31:58
  */
 
 #include "configure.h"
@@ -120,10 +120,10 @@ void Const_Infantry_3_Init(Const_ConstTypeDef* x) {
     memcpy(x->gimbalPitchMotorParam, Const_gimbalPitchMotorParam_infantry_3, sizeof(Const_gimbalPitchMotorParam_infantry_3));
     memcpy(x->ShooterMotorParam, Const_ShooterMotorParam_infantry_3, sizeof(Const_ShooterMotorParam_infantry_3));
     memcpy(x->FeederMotorParam, Const_FeederMotorParam_infantry_3, sizeof(Const_FeederMotorParam_infantry_3));
-
+    
     memcpy(x->AutoAimOffset, Const_AutoAimOffset_infantry_3, sizeof(Const_AutoAimOffset_infantry_3));
 
-    /*          Gimbal pitch limit                  */
+/*          Gimbal pitch limit                  */
     x->PITCH_UMAXANGLE = 10.0f;
     x->PITCH_UMAXANGLE_GRYO = 8.0f;
     x->PITCH_DMAXANGLE = -31.5f;
@@ -145,15 +145,9 @@ void Const_Infantry_3_Init(Const_ConstTypeDef* x) {
     x->ShooterSlowSpeed = 150.0f;
     x->ShooterFastSpeed = 230.0f;
 
-#if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     x->Shooter15mpers = 105.0f;
     x->Shooter18mpers = 115.0f;
     x->Shooter30mpers = 175.0f;
-#else
-    x->Shooter15mpers = 15.0f;
-    x->Shooter18mpers = 18.0f;
-    x->Shooter30mpers = 30.0f;
-#endif
 
     x->FeederSlowSpeed = 50.0f;
     x->FeederFastSpeed = 100.0f;
