@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 22:10:53
+ * @LastEditTime : 2022-05-02 16:26:09
  */
 
 #include "gim_shoot_ctrl.h"
@@ -459,12 +459,11 @@ uint8_t Shooter_HeatCtrl() {
  * @param      NULL
  * @retval     NULL
  */
-void Shooter_CalcRef()
-{
-		Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
-		if (shooter->change_shooter_mode_complete) {
-        shooter->ref_output=shooter->shoot_speed.left_shoot_speed - shooter->speed_limit;   
-    }
+void Shooter_CalcRef() {
+    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+    if (shooter->change_shooter_mode_complete) {
+        shooter->ref_output = shooter->shoot_speed.left_shoot_speed - shooter->speed_limit;
+    } 
 		else {
 				shooter->ref_output=shooter->shoot_speed.left_shoot_speed - shooter->slope_output - shooter->speed_limit;   
 				shooter->slope_output -= shooter->dertaRef / shooter->slope_step;
@@ -511,12 +510,12 @@ void Shooter_ShootControl() {
 		if(shooter->last_shoot_speed_ref != shooter->shoot_speed.left_shoot_speed)
 			{
         shooter->change_shooter_mode_complete = 0;
-				shooter->slope_direction=shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed?1:0;//0£ºÏòÉÏ 1£ºÏòÏÂ
+				shooter->slope_direction=shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed?1:0;//0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
         shooter->slope_output = shooter->dertaRef;
     }
     Shooter_CalcRef();
-		Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->ref_output);
+    Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->ref_output);
     Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->ref_output);
     shooter->last_shoot_speed_ref = shooter->shoot_speed.left_shoot_speed;
     // Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->shoot_speed.left_shoot_speed);
