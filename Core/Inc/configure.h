@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 10:20:41
+ * @LastEditTime : 2022-05-03 21:00:54
  */
 
 // Note:
@@ -24,8 +24,8 @@ extern "C" {
 
 /* Main Control program       */
 
-// #define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
-#define __FN_BOARD_TYPE __FN_BOARD_TYPE_GIMBAL
+#define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
+// #define __FN_BOARD_TYPE __FN_BOARD_TYPE_GIMBAL
 
 /*      ******************DEBUG********************      */
 #define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
