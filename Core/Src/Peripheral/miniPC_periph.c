@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 21:51:57
+ * @LastEditTime : 2022-05-03 14:37:52
  */
 
 #include "minipc_periph.h"
@@ -168,21 +168,24 @@ void MiniPC_SendDataPacket() {
     int16_t yaw_speed = imu->speed.yaw * 100;
     int16_t pitch_speed = imu->speed.pitch * 100;
 
-    uint16_t shooter_speed = 15;
-    switch (buscomm->speed_17mm_limit) {
-        case REFEREE_SHOOTER_SPEED_15:
-            shooter_speed = 15;
-            break;
-        case REFEREE_SHOOTER_SPEED_18:
-            shooter_speed = 18;
-            break;
-        case REFEREE_SHOOTER_SPEED_30:
-            shooter_speed = 30;
-            break;
-        default:
-            shooter_speed = 15;
-            break;
+    uint16_t shooter_speed = buscomm->speed_17mm_fdb;
+    if (!(shooter_speed > 0) && (shooter_speed < 35)) {
+        switch (buscomm->speed_17mm_limit) {
+            case REFEREE_SHOOTER_SPEED_15:
+                shooter_speed = 15;
+                break;
+            case REFEREE_SHOOTER_SPEED_18:
+                shooter_speed = 18;
+                break;
+            case REFEREE_SHOOTER_SPEED_30:
+                shooter_speed = 30;
+                break;
+            default:
+                shooter_speed = 15;
+                break;
+        }
     }
+
     shooter_speed *= 100;
 
     minipc->state = MiniPC_PENDING;
@@ -197,7 +200,7 @@ void MiniPC_SendDataPacket() {
     buff[5] = Const_MiniPC_Data_PACKET_DATA_LEN;
     buff[6] = 0;
     buff[7] = 0;
-    buff[8] = 0x01;  // game_status_tower
+    buff[8] = buscomm->game_outpost_alive;  // game_status_tower
     float2buff(yaw, buff + 9);
     i162buff(pitch, buff + 13);
     i162buff(row, buff + 15);
