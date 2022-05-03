@@ -70,7 +70,7 @@ void Shooter_InitShooter() {
     shooter->change_shooter_mode_complete = 1;
     shooter->slope_output = 0;
     shooter->speed_limit = 0;
-    shooter->slope_step = 100.0f;
+    shooter->slope_step = 200.0f;
     shooter->dertaRef = 0;
 
     Shooter_InitShooterMotor();
@@ -197,7 +197,9 @@ float Shooter_GetShootSpeedOffset() {
  */
 void Shooter_Control() {
     Shooter_UpdataControlData();
-
+	
+		Shooter_Overspeedtest();
+	
     Shooter_ShootControl();
 
     Shooter_FeederControl();
@@ -459,12 +461,38 @@ uint8_t Shooter_HeatCtrl() {
  * @param      NULL
  * @retval     NULL
  */
+void Shooter_Overspeedtest()
+{
+	    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+	    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+	
+		float referee_speed;
+	if(shooter->speed_limit==0)
+	{
+		 switch (buscomm->speed_17mm_limit) {
+        case REFEREE_SHOOTER_SPEED_15:
+            referee_speed = 15;
+            break;
+        case REFEREE_SHOOTER_SPEED_18:
+            referee_speed = 18;
+            break;
+        case REFEREE_SHOOTER_SPEED_30:
+            referee_speed = 30;
+            break;
+        default:
+            referee_speed = 15;
+            break;
+    }
+		if(buscomm->speed_17mm_fdb>referee_speed)
+				shooter->speed_limit=(buscomm->speed_17mm_fdb-referee_speed)*9;
+	}
+}
 void Shooter_CalcRef() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     if (shooter->change_shooter_mode_complete) {
         shooter->ref_output = shooter->shoot_speed.left_shoot_speed - shooter->speed_limit;
     } else {
-        shooter->ref_output = shooter->shoot_speed.left_shoot_speed + shooter->slope_output - shooter->speed_limit;
+        shooter->ref_output = shooter->shoot_speed.left_shoot_speed - shooter->slope_output - shooter->speed_limit;
         shooter->slope_output -= shooter->dertaRef / shooter->slope_step;
     }
 }
@@ -497,11 +525,22 @@ void Shooter_ShootControl() {
         default:
             break;
     }
-    if (shooter->slope_output > 0) {
+    if(shooter->slope_direction)
+    {
+        if (shooter->slope_output > 0) {
         shooter->change_shooter_mode_complete = 1;
     }
-    if (shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed) {
+	}
+    else
+    {
+        if (shooter->slope_output < 0) {
+        shooter->change_shooter_mode_complete = 1;
+    }
+    }
+   
+    if (shooter->last_shoot_speed_ref != shooter->shoot_speed.left_shoot_speed) {
         shooter->change_shooter_mode_complete = 0;
+        shooter->slope_direction=shooter->last_shoot_speed_ref>shooter->shoot_speed.left_shoot_speed?1:0;//0上升1下降
         shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
         shooter->slope_output = shooter->dertaRef;
     }
@@ -517,6 +556,7 @@ void Shooter_ShootControl() {
     Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
 #endif
 }
+		
 
 /**
  * @brief      Shooter feeder control: single shooting

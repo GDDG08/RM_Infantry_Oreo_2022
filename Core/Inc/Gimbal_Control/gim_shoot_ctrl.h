@@ -131,6 +131,7 @@ void Shooter_MotorLockedHandle(void);
 void Shooter_AngleCorrect(void);
 void Shooter_RealAngleCorrect(void);
 uint8_t Shooter_HeatCtrl(void);
+void Shooter_Overspeedtest(void);
 void Shooter_CalcRef(void);
 void Shooter_ShootControl(void);
 void Shooter_SingleShootCtrl(void);

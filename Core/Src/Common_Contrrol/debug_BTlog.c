@@ -153,7 +153,9 @@ void BTlog_Init() {
     ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
 		ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
 		ADD_SEND_DATA(shooter->slope_output, Float, "slope");
-		ADD_SEND_DATA(shooter->dertaRef, Float, "derta_ref");
+		//ADD_SEND_DATA(shooter->dertaRef, Float, "derta_ref");
+		ADD_SEND_DATA(shooter->speed_limit, Float, "overspeed_limit");
+		ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "shoot_speed");
 		
     // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
     // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
