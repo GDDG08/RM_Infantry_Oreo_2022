@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 11:21:37
+ * @LastEditTime : 2022-05-03 14:19:33
  */
 
 #include "referee_periph.h"
@@ -959,9 +959,6 @@ uint8_t Referee_ParseRefereeCmd(uint16_t cmd_id, uint8_t* data, uint16_t data_le
 
     if (cmd_id == Const_Referee_CMD_INTERACTIVE.cmd_id)
         return Referee_ParseRobotCustomData(data, data_length);
-    if (cmd_id == 0x0207) {
-        int a = 1;
-    }
     for (int i = 0; i < Const_Referee_CMD_NUM; ++i) {
         if (cmd_id == Const_Referee_CMD_LIST[i].cmd_id) {
             // if (data_length != Const_Referee_CMD_LIST[i].data_length) return PARSE_FAILED;  // wrong data length
