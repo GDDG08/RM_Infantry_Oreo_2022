@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 20:37:39
+ * @LastEditTime : 2022-05-03 14:34:41
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -158,12 +158,16 @@ void MiniPC_UpdateControlData() {
 
         if (minipc->aim_mode == MiniPC_ARMOR) {
             minipc->output_offset = MiniPC_Offset_Armor;
+            minipc->control_mode = MiniPC_ABSOLUTE;
         } else if (minipc->aim_mode == MiniPC_SMALL_BUFF) {
             minipc->output_offset = MiniPC_Offset_Buff_Small;
+            minipc->control_mode = MiniPC_RELATIVE;
         } else if (minipc->aim_mode == MiniPC_BIG_BUFF) {
             minipc->output_offset = MiniPC_Offset_Buff_Big;
+            minipc->control_mode = MiniPC_RELATIVE;
         } else if (minipc->aim_mode == MiniPC_SENTRY) {
             minipc->output_offset = MiniPC_Offset_Sentry;
+            minipc->control_mode = MiniPC_ABSOLUTE;
         }
     }
 }
@@ -180,7 +184,7 @@ void MiniPC_SetAutoAimOutput() {
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
 
-    if ((minipc->enable_aim_output) && (minipc->target_state == MiniPC_TARGET_FOLLOWING)) {
+    if ((minipc->enable_aim_output) && (gimbal->mode.present_mode != Gimbal_NOAUTO) && (minipc->target_state == MiniPC_TARGET_FOLLOWING)) {
         if (minipc->control_mode == MiniPC_ABSOLUTE) {
             Gimbal_SetYawAutoRef(minipc->yaw_ref_filtered + minipc->output_offset.yaw);
             Gimbal_SetPitchAutoRef(minipc->pitch_ref_filtered + minipc->output_offset.pitch);
