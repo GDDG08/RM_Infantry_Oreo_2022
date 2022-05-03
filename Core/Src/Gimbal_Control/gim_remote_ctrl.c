@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 21:41:13
+ * @LastEditTime : 2022-05-03 14:25:14
  */
 
 #include "gim_remote_ctrl.h"
@@ -66,7 +66,7 @@ void Remote_ControlCom() {
 
     control_data->pending = 1;
 
-    Login_LoginCmd();
+    // Login_LoginCmd();
 
     switch (data->remote.s[1]) {
             /*      right switch control mode   */

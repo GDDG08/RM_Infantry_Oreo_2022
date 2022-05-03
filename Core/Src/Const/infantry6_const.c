@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 21:28:25
+ * @LastEditTime : 2022-05-02 18:35:51
  */
 
 #include "configure.h"
@@ -66,7 +66,8 @@ static const float Const_AutoAimOffset_infantry_6[4][2] = {
     {0.0f, 0.0f},       // Armor
     {-0.54f, -0.544f},  // Buff_Small
     {-0.54f, -0.544f},  // Buff_Big
-    {-3.0f, -0.3f}      // Sentry
+    // {-3.0f, -0.3f}      // Sentry
+    {0.0f, 0.0f}      // Sentry
     // pitch, yaw
 };
 

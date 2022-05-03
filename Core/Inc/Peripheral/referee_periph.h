@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 11:08:05
+ * @LastEditTime : 2022-05-03 14:18:45
  */
 
 #ifndef REFEREE_PERIPH_H
@@ -26,18 +26,18 @@ extern UART_HandleTypeDef* Const_Referee_UART_HANDLER;
 
 /********** START OF REFEREE CMD STRUCT DEFINITION **********/
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t game_type : 4;
     uint8_t game_progress : 4;
     uint16_t stage_remain_time;
     uint64_t SyncTimeStamp;
 } ext_game_status_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t winner;
 } ext_game_result_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint16_t red_1_robot_HP;
     uint16_t red_2_robot_HP;
     uint16_t red_3_robot_HP;
@@ -56,12 +56,12 @@ typedef __unaligned struct {
     uint16_t blue_base_HP;
 } ext_game_robot_HP_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t dart_belong;
     uint16_t stage_remaining_time;
 } ext_dart_status_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t F1_zone_status : 1;
     uint8_t F1_zone_buff_debuff_status : 3;
     uint8_t F2_zone_status : 1;
@@ -76,35 +76,35 @@ typedef __unaligned struct {
     uint8_t F6_zone_buff_debuff_status : 3;
 } ext_ICRA_buff_debuff_zone_status_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint32_t event_type;
 } ext_event_data_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t supply_projectile_id;
     uint8_t supply_robot_id;
     uint8_t supply_projectile_step;
     uint8_t supply_projectile_num;
 } ext_supply_projectile_action_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t level;
     uint8_t foul_robot_id;
 } ext_referee_warning_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t dart_remaining_time;
 } ext_dart_remaining_time_t;
 
 /* ��obsolete��
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t supply_projectile_id;
     uint8_t supply_robot_id;
     uint8_t supply_num;
 } ext_supply_projectile_booking_t;
 */
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t robot_id;
     uint8_t robot_level;
     uint16_t remain_HP;
@@ -124,7 +124,7 @@ typedef __unaligned struct {
     uint8_t mains_power_shooter_output : 1;
 } ext_game_robot_status_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint16_t chassis_volt;
     uint16_t chassis_current;
     float chassis_power;
@@ -134,63 +134,62 @@ typedef __unaligned struct {
     uint16_t mobile_shooter_heat2;
 } ext_power_heat_data_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     float x;
     float y;
     float z;
     float yaw;
 } ext_game_robot_pos_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t power_rune_buff;
 } ext_buff_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     // uint8_t energy_point;
     uint8_t attack_time;
 } aerial_robot_energy_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t armor_id : 4;
     uint8_t hurt_type : 4;
 } ext_robot_hurt_t;
 
-typedef __unaligned struct
-{
+typedef struct __attribute__((packed)) {
     uint8_t bullet_type;
     uint8_t shooter_id;
     uint8_t bullet_freq;
     float bullet_speed;
 } ext_shoot_data_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint16_t bullet_remaining_num_17mm;
     uint16_t bullet_remaining_num_42mm;
     uint16_t coin_remaining_num;
 } ext_bullet_remaining_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint32_t rfid_status;
 } ext_rfid_status_t;
 
 // ------------------------------
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint16_t data_cmd_id;
     uint16_t sender_ID;
     uint16_t receiver_ID;
 } ext_student_interactive_header_data_t;
 
-// typedef __unaligned struct {
+// typedef struct __attribute__((packed)) {
 //     uint8_t data[];
 // } robot_interactive_data_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t operate_type;
     uint8_t layer;
 } ext_client_custom_graphic_delete_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t graphic_name[3];
     uint32_t operate_type : 3;
     uint32_t graphic_type : 3;
@@ -206,28 +205,28 @@ typedef __unaligned struct {
     uint32_t end_y : 11;
 } graphic_data_struct_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     graphic_data_struct_t grapic_data_struct;
 } ext_client_custom_graphic_single_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     graphic_data_struct_t grapic_data_struct[2];
 } ext_client_custom_graphic_double_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     graphic_data_struct_t grapic_data_struct[5];
 } ext_client_custom_graphic_five_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     graphic_data_struct_t grapic_data_struct[7];
 } ext_client_custom_graphic_seven_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     graphic_data_struct_t grapic_data_struct;
     uint8_t data[30];
 } ext_client_custom_character_t;
 
-typedef __unaligned struct {
+typedef struct __attribute__((packed)) {
     uint8_t dart_launch_opening_status;
     uint8_t dart_attack_target;
     uint16_t target_change_time;
