@@ -37,7 +37,8 @@ uint8_t Key_GetEquipCode() {
     // if (GPIO_ReadPin(CODE3) == GPIO_PIN_RESET) {
     //     code |= 0x04;
     // }
-    code = 0x07;
+    code = 0x07;    //for infantry 3
+    // code = 0x06; //for infantry 4?5
 #else
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     code = buscomm->infantry_code;
