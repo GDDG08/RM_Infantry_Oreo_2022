@@ -67,7 +67,7 @@ static const float Const_AutoAimOffset_infantry_6[4][2] = {
     {-0.54f, -0.544f},  // Buff_Small
     {-0.54f, -0.544f},  // Buff_Big
     // {-3.0f, -0.3f}      // Sentry
-    {0.0f, 0.0f}      // Sentry
+    {-1.5f, 0.0f}      // Sentry
     // pitch, yaw
 };
 
