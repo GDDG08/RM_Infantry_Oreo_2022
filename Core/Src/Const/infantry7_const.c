@@ -94,7 +94,7 @@ void Const_Infantry_7_Init(Const_ConstTypeDef* x) {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     /*      infantry chasiss const                  */
-    x->YAW_MOTOR_INIT_OFFSET = -147.0f;
+    x->YAW_MOTOR_INIT_OFFSET = 28.0f;
     x->YAW_MAXANGLE = 60.0f;
 
     memcpy(x->chassisMotorParam, Const_chassisMotorParam_infantry_7, sizeof(Const_chassisMotorParam_infantry_7));
@@ -112,7 +112,7 @@ void Const_Infantry_7_Init(Const_ConstTypeDef* x) {
     x->MOUSE_CHASSIS_ACCELERATE = 0.5f;
     x->MOUSE_CHASSIS_SLOWDOWN = 0.5f;
     x->MOUSE_CHASSIS_MAX_SPEED = 600;
-    x->MOUSE_CHASSIS_MAX_GYRO_SPEED = 400;
+    x->MOUSE_CHASSIS_MAX_GYRO_SPEED = 300;
 
     x->MiniPC_Follow_Target_Time = 100;
     x->MiniPC_Lost_Target_Time = 100;
@@ -125,10 +125,10 @@ void Const_Infantry_7_Init(Const_ConstTypeDef* x) {
     memcpy(x->AutoAimOffset, Const_AutoAimOffset_infantry_7, sizeof(Const_AutoAimOffset_infantry_7));
 
     /*          Gimbal pitch limit                  */
-    x->PITCH_UMAXANGLE = 10.0f;
+    x->PITCH_UMAXANGLE = 12.5f;
     x->PITCH_UMAXANGLE_GRYO = 8.0f;
-    x->PITCH_DMAXANGLE = -31.5f;
-    x->YAW_MAXANGLE = 60.0f;
+    x->PITCH_DMAXANGLE = -22.2f;
+    x->YAW_MAXANGLE = 55.0f;
     x->PITCH_MOTOR_INIT_OFFSETf = -31.0f;
     x->SERVO_INIT_OFFSET = 0.05f;
 
