@@ -11,3 +11,4 @@ infantry_-oreo.zip
 .cmsis
 .pack
 build
+Core/Src/Peripheral/key_periph.c
