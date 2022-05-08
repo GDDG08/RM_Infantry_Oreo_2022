@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 18:35:51
+ * @LastEditTime : 2022-05-08 11:27:57
  */
 
 #include "configure.h"
@@ -67,7 +67,7 @@ static const float Const_AutoAimOffset_infantry_6[4][2] = {
     {-0.54f, -0.544f},  // Buff_Small
     {-0.54f, -0.544f},  // Buff_Big
     // {-3.0f, -0.3f}      // Sentry
-    {-1.5f, 0.0f}      // Sentry
+    {-1.5f, 0.0f}  // Sentry
     // pitch, yaw
 };
 
@@ -110,8 +110,8 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
     /*      infantry gimbal const       */
     x->MOUSE_PITCH_ANGLE_TO_FACT = 0.008f;
     x->MOUSE_YAW_ANGLE_TO_FACT = 0.015f;
-    x->MOUSE_CHASSIS_ACCELERATE = 0.5f;
-    x->MOUSE_CHASSIS_SLOWDOWN = 0.5f;
+    x->MOUSE_CHASSIS_ACCELERATE = 2.0f;
+    x->MOUSE_CHASSIS_SLOWDOWN = 1.5f;
     x->MOUSE_CHASSIS_MAX_SPEED = 600;
     x->MOUSE_CHASSIS_MAX_GYRO_SPEED = 300;
 
