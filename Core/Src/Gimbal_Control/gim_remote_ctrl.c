@@ -355,11 +355,7 @@ void Remote_KeyMouseProcess() {
     if (data->key.z == 1) {
         if (cap_flag == 1) {
             if (buscomm->cap_mode_user == SUPERCAP_CTRL_OFF) {
-                if (buscomm->cap_state == SUPERCAP_MODE_ON) {
                     buscomm->cap_mode_user = SUPERCAP_CTRL_ON;
-                } else {
-                    buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
-                }
             } else if (buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
                 buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
             }
@@ -368,7 +364,7 @@ void Remote_KeyMouseProcess() {
     } else
         cap_flag = 1;
 
-    if (data->key.shift == 1 && buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
+    if (data->key.shift == 1) {
         buscomm->cap_boost_mode_user = SUPERCAP_BOOST;
     } else {
         buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;

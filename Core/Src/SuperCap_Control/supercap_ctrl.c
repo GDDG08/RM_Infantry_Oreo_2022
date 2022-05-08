@@ -87,7 +87,7 @@ void Cap_Update(void) {
     capctrl->cap_boost_mode = buscomm->cap_boost_mode_user;
 
     buscomm->cap_boost_mode_fnl = PowCtr->ChassisStarting_flag << 2 | PowCtr->ChassisDown_flag << 1 | capctrl->cap_boost_mode;
-    buscomm->cap_mode_fnl = buscomm->cap_boost_mode_fnl | capctrl->cap_mode_Remote | capctrl->cap_mode_Stall | capctrl->cap_mode_Starting;
+    buscomm->cap_mode_fnl = buscomm->cap_boost_mode_fnl || capctrl->cap_mode_Remote || capctrl->cap_mode_Stall || capctrl->cap_mode_Starting;
     buscomm->chassis_power_limit = referee->max_chassis_power;
     buscomm->chassis_power_buffer = (uint8_t)referee->chassis_power_buffer;
     buscomm->chassis_power = referee->chassis_power;
