@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-08 11:27:57
+ * @LastEditTime : 2022-05-14 10:01:33
  */
 
 #include "configure.h"
@@ -96,7 +96,7 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     /*      infantry chasiss const                  */
-    x->YAW_MOTOR_INIT_OFFSET = -62.0f;
+    x->YAW_MOTOR_INIT_OFFSET = 118.0f;
     x->YAW_MAXANGLE = 60.0f;
 
     memcpy(x->chassisMotorParam, Const_chassisMotorParam_infantry_6, sizeof(Const_chassisMotorParam_infantry_6));
@@ -135,8 +135,7 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
 
     x->CVKF_NT_YAW = 80;
 
-    /*          Gimbal pitch limit                  */
-    x->YAW_MOTOR_INIT_OFFSET = -62.0f;
+    x->YAW_MOTOR_INIT_OFFSET = 118.0f;
 
     x->ShooterLockedCurrent = 3000.0f;
     x->ShooterLockedSpeed = 20.0f;
