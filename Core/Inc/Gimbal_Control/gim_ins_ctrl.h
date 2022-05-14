@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:50:51
+ * @LastEditTime : 2022-05-14 14:43:57
  */
 
 #ifndef GIM_INS_CTRL_H
@@ -56,7 +56,7 @@ extern "C" {
 
 #define IST8310_RX_BUF_DATA_OFFSET 16
 
-#define INS_TASK_INIT_TIME 3000
+#define INS_TASK_INIT_TIME 1000
 
 #define INS_YAW_ADDRESS_OFFSET 0
 #define INS_PITCH_ADDRESS_OFFSET 1

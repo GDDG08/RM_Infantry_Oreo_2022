@@ -531,9 +531,9 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
     // float duty = output * 0.00011136f + 0.53522f;
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
-    float duty = output * 0.00011136lf + 0.47522lf;
+    float duty = output * 0.00011136f + 0.47522f;
 #else
-    float ref = Motor_GetMotorRef(pmotor);
+    double ref = Motor_GetMotorRef(pmotor);
     float duty = 0.0073f * ref + 0.5f;
 #endif
 
