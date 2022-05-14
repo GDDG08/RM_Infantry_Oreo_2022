@@ -483,8 +483,8 @@ void Shooter_Overspeedtest()
             referee_speed = 15;
             break;
     }
-		//if(buscomm->speed_17mm_fdb>referee_speed)
-			//	shooter->speed_limit=(buscomm->speed_17mm_fdb-referee_speed)*9;
+		if(buscomm->speed_17mm_fdb>referee_speed)
+				shooter->speed_limit=1;
 	}
 }
 void Shooter_CalcRef() {
