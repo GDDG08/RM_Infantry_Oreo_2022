@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-30 21:29:20
+ * @LastEditTime : 2022-05-14 10:50:56
  */
 
 #include "cha_power_ctrl.h"
@@ -32,7 +32,6 @@ PID_PIDParamTypeDef Chassis_SpeedCCWPIDParam;
 PID_PIDParamTypeDef PowerCtrl_CurrentParam = {.kp = 1.3, .ki = 0.0, .kd = 50, .sum_max = 5000, .output_max = 16000};
 PID_PIDParamTypeDef PowerCtrl_PIDParam = {.kp = 0.0045, .ki = 0.00057, .kd = 0, .sum_max = 1700, .output_max = 1};
 
-float Power_ref = -1.0f;
 
 /**
  * @brief   获取功率控制数据
@@ -335,14 +334,14 @@ void PowerCtrl(void) {
 
         if (capctrl->cap_boost_mode == 1)  //三种模式 急速、加速、普通匀速
         {
-            PowerPID_Cal((Power_ref >= 0) ? Power_ref : 500.0f, capctrl->Sum_PowerReally);  //即功率期望极大
+            PowerPID_Cal( 500.0f, capctrl->Sum_PowerReally);  //即功率期望极大
         } else if (capctrl->cap_mode_Starting == 1) {
-            PowerPID_Cal((Power_ref >= 0) ? Power_ref : 250.0f, capctrl->Sum_PowerReally);
+            PowerPID_Cal(250.0f, capctrl->Sum_PowerReally);
         } else if ((capctrl->cap_mode_Remote | capctrl->cap_mode_Stall) == 1) {
-            PowerPID_Cal((Power_ref >= 0) ? Power_ref : ((float)referee->max_chassis_power + 20.0f), capctrl->Sum_PowerReally);
+            PowerPID_Cal(((float)referee->max_chassis_power + 20.0f), capctrl->Sum_PowerReally);
         } else {
             PowerOffset_Cal();  //计算OFFSET 保证不超功率
-            PowerPID_Cal((Power_ref >= 0) ? Power_ref : ((float)(referee->max_chassis_power) - PowCtr->Power_offset), capctrl->Sum_PowerReally);
+            PowerPID_Cal(((float)(referee->max_chassis_power) - PowCtr->Power_offset), capctrl->Sum_PowerReally);
             // PowerPID_Cal(60.0f, capctrl->Sum_PowerReally);
         }
 

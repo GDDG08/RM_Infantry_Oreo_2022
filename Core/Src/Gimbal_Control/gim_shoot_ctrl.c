@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 16:26:09
+ * @LastEditTime : 2022-05-14 14:22:59
  */
 
 #include "gim_shoot_ctrl.h"
@@ -197,9 +197,9 @@ float Shooter_GetShootSpeedOffset() {
  */
 void Shooter_Control() {
     Shooter_UpdataControlData();
-	
-		Shooter_Overspeedtest();
-	
+
+    Shooter_Overspeedtest();
+
     Shooter_ShootControl();
 
     Shooter_FeederControl();
@@ -418,41 +418,37 @@ void Shooter_RealAngleCorrect() {
 uint8_t Shooter_HeatCtrl() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
+    // Judge if cooling rate
     if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) >= Const_HeatCtrlFastLimit) {  // sufficient heat remain, fast shooting
         shooter->heat_ctrl.current_speed = Const_FeederFastSpeed;
         shooter->heat_ctrl.current_pidnum = 1;
         Shooter_SetFeederSpeed(shooter->heat_ctrl.current_speed);
         shooter->heat_ctrl.heat_tracking = 0;
-    } else {
-        if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) >= Const_HeatCtrlSlowLimit) {
-            shooter->heat_ctrl.current_speed = Const_FeederSlowSpeed;
-            shooter->heat_ctrl.current_pidnum = 1;
-            Shooter_SetFeederSpeed(shooter->heat_ctrl.current_speed);
-            shooter->heat_ctrl.heat_tracking = 0;
-        } else {
-            if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) <= Const_HeatCtrlWaitLimit) {
-                shooter->heat_ctrl.current_speed = Const_FeederWaitSpeed;
-                shooter->heat_ctrl.current_pidnum = 1;
-                Shooter_SetFeederSpeed(shooter->heat_ctrl.current_speed);
-                shooter->heat_ctrl.heat_tracking = 0;
-            } else {
-                if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) <= Const_HeatCtrlStopLimit) {
-                    // insufficient heat remain, single shooting
-                    //   shooter->heat_ctrl.heat_tracking += shooter->heat_ctrl.heat_tracking / 1000.0;
-                    //   if (shooter->heat_ctrl.heat_tracking >= Const_HeatCtrlSingleCount) {
-                    //       shooter->heat_ctrl.heat_tracking = 0;
-                    //       Shooter_SingleShootReset();
-                    //   }
-                    //   Shooter_SingleShootCtrl();
-                    //   shooter->heat_ctrl.current_pidnum = 2
-                    // no heat remain, stop shooting
-                    shooter->heat_ctrl.heat_tracking = 0;
-                    Shooter_AngleCorrect();
-                    shooter->heat_ctrl.current_pidnum = 2;
-                }
-            }
-        }
+    } else if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) >= Const_HeatCtrlSlowLimit) {
+        shooter->heat_ctrl.current_speed = Const_FeederSlowSpeed;
+        shooter->heat_ctrl.current_pidnum = 1;
+        Shooter_SetFeederSpeed(shooter->heat_ctrl.current_speed);
+        shooter->heat_ctrl.heat_tracking = 0;
+    } else if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) <= Const_HeatCtrlWaitLimit) {
+        shooter->heat_ctrl.current_speed = Const_FeederWaitSpeed;
+        shooter->heat_ctrl.current_pidnum = 1;
+        Shooter_SetFeederSpeed(shooter->heat_ctrl.current_speed);
+        shooter->heat_ctrl.heat_tracking = 0;
+    } else if ((shooter->heat_ctrl.shooter_17mm_cooling_rate - shooter->heat_ctrl.shooter_17mm_cooling_heat) <= Const_HeatCtrlStopLimit) {
+        // insufficient heat remain, single shooting
+        //   shooter->heat_ctrl.heat_tracking += shooter->heat_ctrl.heat_tracking / 1000.0;
+        //   if (shooter->heat_ctrl.heat_tracking >= Const_HeatCtrlSingleCount) {
+        //       shooter->heat_ctrl.heat_tracking = 0;
+        //       Shooter_SingleShootReset();
+        //   }
+        //   Shooter_SingleShootCtrl();
+        //   shooter->heat_ctrl.current_pidnum = 2
+        // no heat remain, stop shooting
+        shooter->heat_ctrl.heat_tracking = 0;
+        Shooter_AngleCorrect();
+        shooter->heat_ctrl.current_pidnum = 2;
     }
+
     return shooter->heat_ctrl.current_pidnum;
 }
 
@@ -461,31 +457,29 @@ uint8_t Shooter_HeatCtrl() {
  * @param      NULL
  * @retval     NULL
  */
-void Shooter_Overspeedtest()
-{
-	    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-	    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
-	
-		float referee_speed;
-	if(shooter->speed_limit==0)
-	{
-		 switch (buscomm->speed_17mm_limit) {
-        case REFEREE_SHOOTER_SPEED_15:
-            referee_speed = 15;
-            break;
-        case REFEREE_SHOOTER_SPEED_18:
-            referee_speed = 18;
-            break;
-        case REFEREE_SHOOTER_SPEED_30:
-            referee_speed = 30;
-            break;
-        default:
-            referee_speed = 15;
-            break;
+void Shooter_Overspeedtest() {
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+
+    float referee_speed;
+    if (shooter->speed_limit == 0) {
+        switch (buscomm->speed_17mm_limit) {
+            case REFEREE_SHOOTER_SPEED_15:
+                referee_speed = 15;
+                break;
+            case REFEREE_SHOOTER_SPEED_18:
+                referee_speed = 18;
+                break;
+            case REFEREE_SHOOTER_SPEED_30:
+                referee_speed = 30;
+                break;
+            default:
+                referee_speed = 15;
+                break;
+        }
+        if (buscomm->speed_17mm_fdb > referee_speed)
+            shooter->speed_limit = (buscomm->speed_17mm_fdb - referee_speed) * 9;
     }
-		if(buscomm->speed_17mm_fdb>referee_speed)
-				shooter->speed_limit=(buscomm->speed_17mm_fdb-referee_speed)*9;
-	}
 }
 void Shooter_CalcRef() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
@@ -525,22 +519,19 @@ void Shooter_ShootControl() {
         default:
             break;
     }
-    if(shooter->slope_direction)
-    {
+    if (shooter->slope_direction) {
         if (shooter->slope_output > 0) {
-        shooter->change_shooter_mode_complete = 1;
-    }
-	}
-    else
-    {
+            shooter->change_shooter_mode_complete = 1;
+        }
+    } else {
         if (shooter->slope_output < 0) {
-        shooter->change_shooter_mode_complete = 1;
+            shooter->change_shooter_mode_complete = 1;
+        }
     }
-    }
-   
+
     if (shooter->last_shoot_speed_ref != shooter->shoot_speed.left_shoot_speed) {
         shooter->change_shooter_mode_complete = 0;
-        shooter->slope_direction=shooter->last_shoot_speed_ref>shooter->shoot_speed.left_shoot_speed?1:0;//0上升1下降
+        shooter->slope_direction = shooter->last_shoot_speed_ref > shooter->shoot_speed.left_shoot_speed ? 1 : 0;  // 0上升1下降
         shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
         shooter->slope_output = shooter->dertaRef;
     }
@@ -556,7 +547,6 @@ void Shooter_ShootControl() {
     Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
 #endif
 }
-		
 
 /**
  * @brief      Shooter feeder control: single shooting
