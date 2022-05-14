@@ -31,7 +31,7 @@ extern "C" {
 #define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
 #define __FN_DEBUG_BTLOG __FN_ENABLE
 #define __FN_MINIPC_CAPT __FN_ENABLE
-#define __FN_SHOOTER_PID __FN_DISABLE  //对于无编码器的车，开启编码器模式会导致电机高速转动
+#define __FN_SHOOTER_PID __FN_ENABLE  //对于无编码器的车，开启编码器模式会导致电机高速转动
 
 /*      **********************************************      */
 
