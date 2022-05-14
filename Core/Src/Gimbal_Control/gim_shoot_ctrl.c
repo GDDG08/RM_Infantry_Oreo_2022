@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-14 14:22:59
+ * @LastEditTime : 2022-05-14 14:28:04
  */
 
 #include "gim_shoot_ctrl.h"
@@ -478,7 +478,7 @@ void Shooter_Overspeedtest() {
                 break;
         }
         if (buscomm->speed_17mm_fdb > referee_speed)
-            shooter->speed_limit = (buscomm->speed_17mm_fdb - referee_speed) * 9;
+            shooter->speed_limit = 1;
     }
 }
 void Shooter_CalcRef() {

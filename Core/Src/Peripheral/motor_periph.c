@@ -525,13 +525,13 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
         return;
     if (pmotor->type != Motor_TYPE_PWM_MOTOR)
         return;
-    float output = Motor_GetMotorOutput(pmotor);
+    double output = Motor_GetMotorOutput(pmotor);
 
     // satori
     // float duty = output * 0.00011136f + 0.53522f;
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
-    float duty = output * 0.00011136f + 0.47522f;
+    float duty = output * 0.00011136lf + 0.47522lf;
 #else
     float ref = Motor_GetMotorRef(pmotor);
     float duty = 0.0073f * ref + 0.5f;

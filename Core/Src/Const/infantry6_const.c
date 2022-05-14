@@ -152,8 +152,8 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
     x->Shooter30mpers = 265.0f;
 #else
     x->Shooter15mpers = 15.0f;
-    x->Shooter18mpers = 18.0f;
-    x->Shooter30mpers = 30.0f;
+    x->Shooter18mpers = 16.0f;
+    x->Shooter30mpers = 26.0f;
 #endif
 
     x->FeederSlowSpeed = 50.0f;
