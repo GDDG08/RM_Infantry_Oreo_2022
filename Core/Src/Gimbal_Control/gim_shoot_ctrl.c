@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-14 14:28:04
+ * @LastEditTime : 2022-05-15 09:43:36
  */
 
 #include "gim_shoot_ctrl.h"
@@ -462,7 +462,7 @@ void Shooter_Overspeedtest() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
     float referee_speed;
-    if (shooter->speed_limit == 0) {
+    if (shooter->lastfdb != buscomm->speed_17mm_fdb) {
         switch (buscomm->speed_17mm_limit) {
             case REFEREE_SHOOTER_SPEED_15:
                 referee_speed = 15;
@@ -478,8 +478,11 @@ void Shooter_Overspeedtest() {
                 break;
         }
         if (buscomm->speed_17mm_fdb > referee_speed)
-            shooter->speed_limit = 1;
+            shooter->speed_limit += (1 ? 5 : 1);
+        // if (buscomm->speed_17mm_fdb > referee_speed)
+        //     shooter->speed_limit = 1;
     }
+    shooter->lastfdb = buscomm->speed_17mm_fdb;
 }
 void Shooter_CalcRef() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
@@ -557,7 +560,7 @@ void Shooter_SingleShootCtrl() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
     if (fabs(Motor_feederMotor.pid_pos.fdb - Motor_feederMotor.pid_pos.ref) > 1.0f) {  // feeder motor not ready
-        // return;     // do nothing
+                                                                                       // return;     // do nothing
     }
     if (!shooter->single_shoot_done) {  // not shoot yet
         Motor_feederMotor.pid_pos.ref += 45.0f;
