@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-03 14:37:52
+ * @LastEditTime : 2022-05-14 20:30:32
  */
 
 #include "minipc_periph.h"
@@ -34,7 +34,7 @@ const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;           // miniPC Receive buffe
 const uint16_t Const_MiniPC_TX_BUFF_LEN = 200;           // miniPC Transmit buffer length
 const uint16_t Const_MiniPC_MINIPC_OFFLINE_TIME = 1000;  // miniPC offline time
 const uint16_t Const_MiniPC_TX_HEART_FRAME_LEN = 10;     // miniPC heart transmit frame length
-const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 26;      // miniPC data transmit frame length
+const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 31;      // miniPC data transmit frame length
 
 const uint8_t Const_MiniPC_SLAVE_COMPUTER = 0x00;
 const uint8_t Const_MiniPC_INFANTRY_3 = 0x03;
@@ -54,9 +54,10 @@ const uint8_t Const_MiniPC_PACKET_HEADR_1 = 0X5a;
 const uint8_t Const_MiniPC_Heart_PACKET = 0x00;
 const uint8_t Const_MiniPC_ARMOR_PACKET = 0x02;
 const uint8_t Const_MiniPC_DATA_PACKET = 0x08;
+const uint8_t Const_MiniPC_BUFF_PACKET = 0x09;
 
 const uint8_t Const_MiniPC_Heart_PACKET_DATA_LEN = 2;
-const uint8_t Const_MiniPC_Data_PACKET_DATA_LEN = 18;
+const uint8_t Const_MiniPC_Data_PACKET_DATA_LEN = 23;
 
 MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;  // miniPC data
 
@@ -209,9 +210,10 @@ void MiniPC_SendDataPacket() {
     ui162buff(pitch_speed, buff + 21);
     buff[23] = minipc->team_color;
     buff[24] = minipc->mode;
+    buff[29] = 0;
 
     // Must be even
-    buff[25] = 0x00;
+    buff[30] = 0x00;
 
     uint16_t checksum = 0;
     if (size % 2) {
@@ -295,6 +297,8 @@ void MiniPC_DecodeMiniPCPacket(uint8_t* buff, uint16_t rxdatalen) {
         case Const_MiniPC_ARMOR_PACKET:
             MiniPC_ArmorPacketDecode(buff, rxdatalen);
             break;
+        case Const_MiniPC_BUFF_PACKET:
+            break;
         default:
             break;
     }
@@ -323,6 +327,26 @@ void MiniPC_HeartPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
  * @retval     NULL
  */
 void MiniPC_ArmorPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
+    MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
+
+    minipc->new_data_flag = 1;
+
+    minipc->is_get_target = buff[8];
+
+    minipc->yaw_angle = buff2float(buff + 9);
+    minipc->pitch_angle = (float)buff2i16(buff + 13) / 100.0f;
+    minipc->distance = (float)buff2i16(buff + 15);
+
+    minipc->state = MiniPC_CONNECTED;
+}
+
+/**
+ * @brief      Minipc data armor packet decoding function
+ * @param      buff: Data buffer
+ * @param      rxdatalen: recevie data length
+ * @retval     NULL
+ */
+void MiniPC_BuffPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
     MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
 
     minipc->new_data_flag = 1;
