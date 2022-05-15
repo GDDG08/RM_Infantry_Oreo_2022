@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-14 20:30:32
+ * @LastEditTime : 2022-05-15 19:03:43
  */
 
 #include "minipc_periph.h"
@@ -33,7 +33,6 @@
 const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;           // miniPC Receive buffer length
 const uint16_t Const_MiniPC_TX_BUFF_LEN = 200;           // miniPC Transmit buffer length
 const uint16_t Const_MiniPC_MINIPC_OFFLINE_TIME = 1000;  // miniPC offline time
-const uint16_t Const_MiniPC_TX_HEART_FRAME_LEN = 10;     // miniPC heart transmit frame length
 const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 31;      // miniPC data transmit frame length
 
 const uint8_t Const_MiniPC_SLAVE_COMPUTER = 0x00;
@@ -51,7 +50,6 @@ const uint8_t Const_MiniPC_LITTLE_BUFF = 0x02;
 const uint8_t Const_MiniPC_PACKET_HEADR_0 = 0xa5;
 const uint8_t Const_MiniPC_PACKET_HEADR_1 = 0X5a;
 
-const uint8_t Const_MiniPC_Heart_PACKET = 0x00;
 const uint8_t Const_MiniPC_ARMOR_PACKET = 0x02;
 const uint8_t Const_MiniPC_DATA_PACKET = 0x08;
 const uint8_t Const_MiniPC_BUFF_PACKET = 0x09;
@@ -83,52 +81,6 @@ void MiniPC_InitMiniPC() {
  */
 MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr() {
     return &MiniPC_MiniPCData;
-}
-
-/**
- * @brief      Sent MiniPC heart pack
- * @param      NULL
- * @retval     NULL
- */
-void MiniPC_SendHeartPacket() {
-    static uint32_t heart_count = 0;
-    if ((HAL_GetTick() - heart_count) <= Const_MiniPC_HEART_SENT_PERIOD)
-        return;
-
-    MiniPC_Update();
-
-    MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
-
-    minipc->state = MiniPC_PENDING;
-
-    uint8_t* buff = MiniPC_TxData;
-    int size = Const_MiniPC_TX_HEART_FRAME_LEN;
-    buff[0] = Const_MiniPC_PACKET_HEADR_0;
-    buff[1] = Const_MiniPC_PACKET_HEADR_1;
-    buff[2] = Const_MiniPC_SLAVE_COMPUTER;
-    buff[3] = minipc->addressee;
-    buff[4] = Const_MiniPC_Heart_PACKET;
-    buff[5] = Const_MiniPC_Heart_PACKET_DATA_LEN;
-    buff[6] = 0;
-    buff[7] = 0;
-    buff[8] = minipc->team_color;
-    buff[9] = minipc->mode;
-
-    uint16_t checksum = 0;
-    if (size % 2) {
-        buff[size] = 0x00;
-        size++;
-    }
-    for (int i = 0; i < size; i += 2) {
-        checksum += buff2ui16(buff + i);
-    }
-    ui162buff(checksum, buff + 6);
-
-    heart_count = HAL_GetTick();
-
-    //    if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
-    //        return;  // tx busy
-    //    Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, size);
 }
 
 /**
@@ -169,25 +121,7 @@ void MiniPC_SendDataPacket() {
     int16_t yaw_speed = imu->speed.yaw * 100;
     int16_t pitch_speed = imu->speed.pitch * 100;
 
-    uint16_t shooter_speed = buscomm->speed_17mm_fdb;
-    if (!(shooter_speed > 0) && (shooter_speed < 35)) {
-        switch (buscomm->speed_17mm_limit) {
-            case REFEREE_SHOOTER_SPEED_15:
-                shooter_speed = 15;
-                break;
-            case REFEREE_SHOOTER_SPEED_18:
-                shooter_speed = 18;
-                break;
-            case REFEREE_SHOOTER_SPEED_30:
-                shooter_speed = 30;
-                break;
-            default:
-                shooter_speed = 15;
-                break;
-        }
-    }
-
-    shooter_speed *= 100;
+    uint16_t shooter_speed = Shooter_GetRefereeSpeedFdb() * 100;
 
     minipc->state = MiniPC_PENDING;
 
@@ -291,33 +225,15 @@ void MiniPC_DecodeMiniPCPacket(uint8_t* buff, uint16_t rxdatalen) {
     }
 
     switch (buff[4]) {
-        case Const_MiniPC_Heart_PACKET:
-            MiniPC_HeartPacketDecode(buff, rxdatalen);
-            break;
         case Const_MiniPC_ARMOR_PACKET:
             MiniPC_ArmorPacketDecode(buff, rxdatalen);
             break;
         case Const_MiniPC_BUFF_PACKET:
+            MiniPC_BuffPacketDecode(buff, rxdatalen);
             break;
         default:
             break;
     }
-}
-
-/**
- * @brief      Minipc data heart packet decoding function
- * @param      buff: Data buffer
- * @param      rxdatalen: recevie data length
- * @retval     NULL
- */
-void MiniPC_HeartPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
-    MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
-
-    if (minipc->heart_flag <= 3) {
-        minipc->heart_flag = 10;
-    }
-
-    minipc->state = MiniPC_CONNECTED;
 }
 
 /**
@@ -326,16 +242,21 @@ void MiniPC_HeartPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
  * @param      rxdatalen: recevie data length
  * @retval     NULL
  */
-void MiniPC_ArmorPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
+void MiniPC_ArmorPacketDecode(void* buff, uint16_t rxdatalen) {
     MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
+
+    MiniPC_ArmorPacket_t* data_ptr = buff + 8;
 
     minipc->new_data_flag = 1;
 
-    minipc->is_get_target = buff[8];
-
-    minipc->yaw_angle = buff2float(buff + 9);
-    minipc->pitch_angle = (float)buff2i16(buff + 13) / 100.0f;
-    minipc->distance = (float)buff2i16(buff + 15);
+    minipc->is_get_target = data_ptr->is_get;
+    minipc->timestamp = data_ptr->timestamp;
+    minipc->x = data_ptr->x;
+    minipc->y = data_ptr->y;
+    minipc->z = data_ptr->z;
+    minipc->vx = data_ptr->vx;
+    minipc->vz = data_ptr->vz;
+    minipc->ID = data_ptr->ID;
 
     minipc->state = MiniPC_CONNECTED;
 }
@@ -368,14 +289,23 @@ void MiniPC_BuffPacketDecode(uint8_t* buff, uint16_t rxdatalen) {
 void MiniPC_ResetMiniPCData() {
     MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
 
-    minipc->heart_flag = 0;
-    minipc->distance = 0;
-    minipc->is_get_target = 0;
-    minipc->mode = Const_MiniPC_ARMOR;
-    minipc->pitch_angle = 0;
-    minipc->yaw_angle = 0;
-    minipc->state = MiniPC_NULL;
+    // minipc->heart_flag = 0;
     minipc->team_color = 0;
+    minipc->mode = Const_MiniPC_ARMOR;
+    minipc->is_get_target = 0;
+    minipc->yaw_angle = 0;
+    minipc->pitch_angle = 0;
+    minipc->distance = 0;
+
+    minipc->timestamp = 0;
+    minipc->x = 0;
+    minipc->y = 0;
+    minipc->z = 0;
+    minipc->vx = 0;
+    minipc->vz = 0;
+    minipc->ID = 0;
+    minipc->addressee = 0;
+    minipc->state = MiniPC_NULL;
     minipc->new_data_flag = 0;
     minipc->last_update_time = HAL_GetTick();
 }

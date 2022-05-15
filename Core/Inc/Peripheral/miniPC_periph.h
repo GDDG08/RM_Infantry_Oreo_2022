@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 16:10:17
+ * @LastEditTime : 2022-05-15 12:02:03
  */
 
 #ifndef MINIPC_PERIPH_H
@@ -33,24 +33,46 @@ typedef enum {
 } MiniPC_MiniPCStateEnum;
 
 typedef struct {
-    uint8_t heart_flag;
+    // uint8_t heart_flag;
 
     // up stream
     uint8_t team_color;
     uint8_t mode;
+    uint8_t is_get_target;  // 1 to get armor plate, 0 to not get armor plate
 
     // down stream
-    uint8_t is_get_target;  // 1 to get armor plate, 0 to not get armor plate
     float yaw_angle;
     float pitch_angle;
     float distance;
 
+    // down stream new
+    uint16_t timestamp;
+    int16_t x, y, z;
+    int16_t vx, vz;
+    uint8_t ID;
+
     uint8_t addressee;
     MiniPC_MiniPCStateEnum state;
     uint32_t last_update_time;
-
     uint8_t new_data_flag;
+    
 } MiniPC_MiniPCDataTypeDef;
+
+typedef struct __attribute__((packed)) {
+    uint16_t timestamp;
+    uint8_t is_get;
+    int16_t x, y, z;
+    int16_t vx, vz;
+    uint8_t ID;
+} MiniPC_ArmorPacket_t;
+
+// typedef struct __attribute__((packed)) {
+//     uint16_t timestamp;
+//     uint8_t is_get;
+//     int16_t x, y, z;
+//     int16_t vx, vz;
+//     uint8_t ID;
+// } MiniPC_BuffPacket_t;
 
 extern const uint8_t Const_MiniPC_ARMOR;
 extern const uint8_t Const_MiniPC_BIG_BUFF;
@@ -67,8 +89,8 @@ void MiniPC_SendDataPacket(void);
 uint8_t MiniPC_IsMiniPCOffline(void);
 // void MiniPC_RXCallback(UART_HandleTypeDef* huart);
 void MiniPC_DecodeMiniPCPacket(uint8_t* buff, uint16_t rxdatalen);
-void MiniPC_HeartPacketDecode(uint8_t* buff, uint16_t rxdatalen);
-void MiniPC_ArmorPacketDecode(uint8_t* buff, uint16_t rxdatalen);
+void MiniPC_ArmorPacketDecode(void* buff, uint16_t rxdatalen);
+void MiniPC_BuffPacketDecode(uint8_t* buff, uint16_t rxdatalen);
 void MiniPC_ResetMiniPCData(void);
 void MiniPC_Update(void);
 uint8_t MiniPC_VerifyMiniPCData(uint8_t* buff, uint16_t rxdatalen);

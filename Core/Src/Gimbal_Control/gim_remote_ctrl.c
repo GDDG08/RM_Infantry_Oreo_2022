@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-03 14:25:14
+ * @LastEditTime : 2022-05-15 13:28:58
  */
 
 #include "gim_remote_ctrl.h"
@@ -89,8 +89,8 @@ void Remote_ControlCom() {
         case Remote_SWITCH_DOWN: {
             /* right switch down is auto aim mode   */
             Gimbal_ChangeMode(Gimbal_ARMOR);
-            // MiniPC_ChangeAimMode(MiniPC_ARMOR);
-            MiniPC_ChangeAimMode(MiniPC_SENTRY);
+            MiniPC_ChangeAimMode(MiniPC_ARMOR);
+            // MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
             Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
             Remote_RemoteShooterModeSet();
             Remote_Gesture();
@@ -355,7 +355,7 @@ void Remote_KeyMouseProcess() {
     if (data->key.z == 1) {
         if (cap_flag == 1) {
             if (buscomm->cap_mode_user == SUPERCAP_CTRL_OFF) {
-                    buscomm->cap_mode_user = SUPERCAP_CTRL_ON;
+                buscomm->cap_mode_user = SUPERCAP_CTRL_ON;
             } else if (buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
                 buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
             }

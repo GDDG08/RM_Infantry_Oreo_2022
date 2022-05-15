@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 09:43:10
+ * @LastEditTime : 2022-05-15 13:23:12
  */
 
 // Note:
@@ -24,13 +24,13 @@ extern "C" {
 
 /* Main Control program       */
 
-#define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
-// #define __FN_BOARD_TYPE __FN_BOARD_TYPE_GIMBAL
+// #define __FN_BOARD_TYPE __FN_BOARD_TYPE_CHASSIS
+#define __FN_BOARD_TYPE __FN_BOARD_TYPE_GIMBAL
 
 /*      ******************DEBUG********************      */
 #define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
 #define __FN_DEBUG_BTLOG __FN_ENABLE
-#define __FN_MINIPC_CAPT __FN_DISABLE
+#define __FN_MINIPC_CAPT __FN_ENABLE
 #define __FN_SHOOTER_PID __FN_ENABLE  //对于无编码器的车，开启编码器模式会导致电机高速转动
 
 /*      **********************************************      */

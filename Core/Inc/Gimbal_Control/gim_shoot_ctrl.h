@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 22:10:58
+ * @LastEditTime : 2022-05-15 13:00:08
  */
 
 #ifndef GIM_SHOOT_CTRL_H
@@ -123,6 +123,7 @@ void Shooter_Control(void);
 void Shooter_InitShooterMotor(void);
 void Shooter_HeatCtrlInit(void);
 float Shooter_GetRefereeSpeed(void);
+float Shooter_GetRefereeSpeedFdb(void);
 void Shooter_UpdataControlData(void);
 void Shooter_SetFeederSpeed(float speed);
 void Shooter_SetShooterSpeed(float speed);

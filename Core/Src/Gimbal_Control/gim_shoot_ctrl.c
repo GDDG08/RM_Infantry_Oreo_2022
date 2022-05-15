@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 09:43:36
+ * @LastEditTime : 2022-05-15 19:09:21
  */
 
 #include "gim_shoot_ctrl.h"
@@ -303,11 +303,33 @@ float Shooter_GetRefereeSpeed() {
 
     return speed;
 }
+
 uint8_t Shooter_GetRefereeOverSpeed() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     return buscomm->speed_17mm_fdb;
 }
 
+float Shooter_GetRefereeSpeedFdb(void) {
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    uint16_t shooter_speed = buscomm->speed_17mm_fdb;
+    // if (!(shooter_speed > 0) && (shooter_speed < 35)) {
+    switch (buscomm->speed_17mm_limit) {
+        case REFEREE_SHOOTER_SPEED_15:
+            shooter_speed = 15;
+            break;
+        case REFEREE_SHOOTER_SPEED_18:
+            shooter_speed = 18;
+            break;
+        case REFEREE_SHOOTER_SPEED_30:
+            shooter_speed = 30;
+            break;
+        default:
+            shooter_speed = 15;
+            break;
+    }
+// }
+return shooter_speed;
+}
 /**
  * @brief      Updata control data
  * @param      NULL
@@ -484,6 +506,7 @@ void Shooter_Overspeedtest() {
     }
     shooter->lastfdb = buscomm->speed_17mm_fdb;
 }
+
 void Shooter_CalcRef() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     if (shooter->change_shooter_mode_complete) {
