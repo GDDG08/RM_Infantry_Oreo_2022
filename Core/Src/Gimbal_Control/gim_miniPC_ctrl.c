@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 21:29:30
+ * @LastEditTime : 2022-05-17 23:16:01
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -371,6 +371,7 @@ void GimbalMove_AutoAimRef_Change() {
                 k_Predict_z = 0.12f;
             }
         }
+        k_Predict_Correction = 1;
 
         minipc_data->new_data_flag = 0;
         TimeCountPredict = 0;

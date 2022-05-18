@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 20:26:06
+ * @LastEditTime : 2022-05-17 23:02:48
  */
 
 #include "debug_BTlog.h"
@@ -44,7 +44,7 @@ const uint8_t Const_BTlog_ID = 0x02;
 #endif
 
 /*              Debug BTlog constant            */
-const uint32_t Const_BTlog_HEART_SENT_PERIOD = 8;  // (ms)
+const uint32_t Const_BTlog_HEART_SENT_PERIOD = 5;  // (ms)
 const uint16_t Const_BTlog_RX_BUFF_LEN_MAX = 5000;
 const uint16_t Const_BTlog_TX_BUFF_LEN_MAX = 5000;
 const uint16_t Const_BTlog_RX_DATA_LEN_MAX = 50;
@@ -70,6 +70,7 @@ uint16_t BTlog_RX_BUFF_LEN = 1 + 1 + 1;
 uint16_t BTlog_RX_DATA_LEN = 0;
 
 uint32_t BTlog_time = 0;
+int16_t BTlog_MiniPC_debug_time_diff = 0;
 
 /**
  * @name: anonymous
@@ -140,28 +141,31 @@ void BTlog_Init() {
     // Motor_MotorTypeDef Motor_chassisMotor1, Motor_chassisMotor2, Motor_chassisMotor3, Motor_chassisMotor4, Motor_gimbalMotorYaw, Motor_gimbalMotorPitch, Motor_feederMotor, Motor_shooterMotorLeft, Motor_shooterMotorRight;
 
     // Log Data Send
-    ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
+    // ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     // // ADD_SEND_DATA(imu->angle.row, Float, "imu->angle.row");
     // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
 
-    // ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
+    // ADD_SEND_DATA(BTlog_MiniPC_debug_time_diff, Int16, "minipcD->timediff");
+    ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
     // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
     // ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
     // ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
     ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
     ADD_SEND_DATA(minipc_data->z, Int16, "minipcD->z");
+    ADD_SEND_DATA(minipc_data->vx, Int16, "minipcD->vx");
+    ADD_SEND_DATA(minipc_data->vz, Int16, "minipcD->vz");
 
     ADD_SEND_DATA(minipc->pitch_ref_calc, Float, "minipc->pitch");
     ADD_SEND_DATA(minipc->yaw_ref_calc, Float, "minipc->yaw");
-    ADD_SEND_DATA(is_x_SuddenStart, uInt8, "minipc->is_x_Start");
-    ADD_SEND_DATA(is_x_SuddenStop, uInt8, "minipc->is_x_Stop");
+    // ADD_SEND_DATA(is_x_SuddenStart, uInt8, "minipc->is_x_Start");
+    // ADD_SEND_DATA(is_x_SuddenStop, uInt8, "minipc->is_x_Stop");
     // ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "minipc->pitch_fnl");
     // ADD_SEND_DATA(gimbal->angle.pitch_angle_ref, Float, "minipc->yaw_fnl");
 
     // ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
-    ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
-    ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
+    // ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
+    // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
     // ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
     // ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
     // ADD_SEND_DATA(shooter->heat_ctrl.current_speed, Float, "feeder_speed");/
@@ -254,6 +258,9 @@ void BTlog_Send() {
         return;
 
     BTlog_time = HAL_GetTick();
+    MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
+    // BTlog_MiniPC_debug_time_diff = minipc_data->timestamp - BTlog_time % 60000;
+    BTlog_MiniPC_debug_time_diff = minipc_data->timestamp - MiniPC_Data_FrameTime;
 
     uint8_t* buff = BTlog_TxData;
 

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 12:02:03
+ * @LastEditTime : 2022-05-17 20:10:15
  */
 
 #ifndef MINIPC_PERIPH_H
@@ -55,7 +55,7 @@ typedef struct {
     MiniPC_MiniPCStateEnum state;
     uint32_t last_update_time;
     uint8_t new_data_flag;
-    
+
 } MiniPC_MiniPCDataTypeDef;
 
 typedef struct __attribute__((packed)) {
@@ -79,6 +79,7 @@ extern const uint8_t Const_MiniPC_BIG_BUFF;
 extern const uint8_t Const_MiniPC_LITTLE_BUFF;
 
 extern MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;
+extern uint32_t MiniPC_Data_FrameTime;
 // extern UART_HandleTypeDef* Const_MiniPC_UART_HANDLER;
 extern float sin_gen;
 

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 19:03:43
+ * @LastEditTime : 2022-05-17 22:44:22
  */
 
 #include "minipc_periph.h"
@@ -21,19 +21,20 @@
 // UART_HandleTypeDef* Const_MiniPC_UART_HANDLER = &huart5;
 
 /*              Mini_PC control constant            */
-/*const */ uint32_t Const_MiniPC_HEART_SENT_PERIOD = 100;  // (ms)
-/*const*/ uint32_t Const_MiniPC_DATA_SENT_PERIOD = 10;     // (ms)
+// /*const */ uint32_t Const_MiniPC_HEART_SENT_PERIOD = 100;  // (ms)
+/*const*/ uint32_t Const_MiniPC_DATA_SENT_PERIOD = 10;  // (ms)
+
+const uint16_t Const_MiniPC_MINIPC_OFFLINE_TIME = 100;  // miniPC offline time
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
-/*const*/ uint32_t Const_MiniPC_CAPT_PRE = 5;  // (ms)
-/*const*/ uint32_t Const_MiniPC_CAPT_DUR = 0;  // (ms)
+/*const*/ uint32_t Const_MiniPC_CAPT_PRE = 3;  // (ms)
+/*const*/ uint32_t Const_MiniPC_CAPT_DUR = 3;  // (ms)
 /*const*/ uint32_t Const_MiniPC_CAPT_AFT = 0;  // (ms)
 #endif
 
-const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;           // miniPC Receive buffer length
-const uint16_t Const_MiniPC_TX_BUFF_LEN = 200;           // miniPC Transmit buffer length
-const uint16_t Const_MiniPC_MINIPC_OFFLINE_TIME = 1000;  // miniPC offline time
-const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 31;      // miniPC data transmit frame length
+const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;       // miniPC Receive buffer length
+const uint16_t Const_MiniPC_TX_BUFF_LEN = 200;       // miniPC Transmit buffer length
+const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 31;  // miniPC data transmit frame length
 
 const uint8_t Const_MiniPC_SLAVE_COMPUTER = 0x00;
 const uint8_t Const_MiniPC_INFANTRY_3 = 0x03;
@@ -62,6 +63,8 @@ MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;  // miniPC data
 uint8_t MiniPC_RxData[Const_MiniPC_RX_BUFF_LEN];        // miniPC receive buff
 uint8_t MiniPC_TxData[Const_MiniPC_TX_BUFF_LEN];        // miniPC transmit buff
 uint8_t MiniPC_TxData_state[Const_MiniPC_TX_BUFF_LEN];  // miniPC transmit buff
+
+uint32_t MiniPC_Data_FrameTime;
 
 /**
  * @brief      Initialize minipc
@@ -104,7 +107,8 @@ void MiniPC_SendDataPacket() {
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
     osDelay(Const_MiniPC_CAPT_PRE);
     GPIO_Set(PC_CAM);
-
+    osDelay(Const_MiniPC_CAPT_DUR);
+    GPIO_Reset(PC_CAM);
 #endif
 
     //		COMM DEBUG
@@ -122,6 +126,7 @@ void MiniPC_SendDataPacket() {
     int16_t pitch_speed = imu->speed.pitch * 100;
 
     uint16_t shooter_speed = Shooter_GetRefereeSpeedFdb() * 100;
+    MiniPC_Data_FrameTime = HAL_GetTick() % 60000;
 
     minipc->state = MiniPC_PENDING;
 
@@ -144,8 +149,8 @@ void MiniPC_SendDataPacket() {
     ui162buff(pitch_speed, buff + 21);
     buff[23] = minipc->team_color;
     buff[24] = minipc->mode;
-    buff[29] = 0;
-
+    ui322buff(MiniPC_Data_FrameTime, buff + 25);
+    buff[29] = 0;  // is change target
     // Must be even
     buff[30] = 0x00;
 
@@ -160,21 +165,16 @@ void MiniPC_SendDataPacket() {
     ui162buff(checksum, buff + 6);
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
-    osDelay(Const_MiniPC_CAPT_DUR);
-    data_count = HAL_GetTick();
 
+    osDelay(Const_MiniPC_CAPT_AFT);
 #endif
+    data_count = HAL_GetTick();
     /*
     if (HAL_UART_GetState(Const_MiniPC_UART_HANDLER) & 0x01)
         return;  // tx busy
     Uart_SendMessage_IT(Const_MiniPC_UART_HANDLER, buff, Const_MiniPC_TX_DATA_FRAME_LEN);
     */
     CDC_Transmit_FS(buff, Const_MiniPC_TX_DATA_FRAME_LEN);
-
-#if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
-    GPIO_Reset(PC_CAM);
-    osDelay(Const_MiniPC_CAPT_AFT);
-#endif
 }
 
 /**
@@ -234,6 +234,7 @@ void MiniPC_DecodeMiniPCPacket(uint8_t* buff, uint16_t rxdatalen) {
         default:
             break;
     }
+    // BTlog_Send();
 }
 
 /**
@@ -291,7 +292,7 @@ void MiniPC_ResetMiniPCData() {
 
     // minipc->heart_flag = 0;
     minipc->team_color = 0;
-    minipc->mode = Const_MiniPC_ARMOR;
+    // minipc->mode = Const_MiniPC_ARMOR;
     minipc->is_get_target = 0;
     minipc->yaw_angle = 0;
     minipc->pitch_angle = 0;
