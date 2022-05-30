@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-30 17:30:01
+ * @LastEditTime : 2022-05-30 23:35:19
  */
 
 #include "gim_remote_ctrl.h"
@@ -392,8 +392,7 @@ void Remote_KeyMouseProcess() {
         t_ad = 0;
     buscomm->chassis_lr_ref = t_ad;
 
-    if (minipc->target_state == MiniPC_TARGET_FOLLOWING && gimbal->mode.present_mode == Gimbal_ARMOR) {
-    } else {
+    if (minipc->target_state == MiniPC_TARGET_FOLLOWING && gimbal->mode.present_mode == Gimbal_NOAUTO) {
         // Change the control amount according to the gimbal control
         float yaw, pitch;
         yaw = (float)data->mouse.x * MOUSE_YAW_ANGLE_TO_FACT;
