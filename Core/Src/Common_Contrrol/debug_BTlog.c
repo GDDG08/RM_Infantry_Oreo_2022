@@ -258,9 +258,9 @@ void BTlog_Send() {
         return;
 
     BTlog_time = HAL_GetTick();
-    MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
+    // MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
     // BTlog_MiniPC_debug_time_diff = minipc_data->timestamp - BTlog_time % 60000;
-    BTlog_MiniPC_debug_time_diff = minipc_data->timestamp - MiniPC_Data_FrameTime;
+    // BTlog_MiniPC_debug_time_diff = minipc_data->timestamp - MiniPC_Data_FrameTime;
 
     uint8_t* buff = BTlog_TxData;
 

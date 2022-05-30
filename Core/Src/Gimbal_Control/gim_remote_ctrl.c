@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 13:28:58
+ * @LastEditTime : 2022-05-30 17:30:01
  */
 
 #include "gim_remote_ctrl.h"
@@ -88,9 +88,10 @@ void Remote_ControlCom() {
         }
         case Remote_SWITCH_DOWN: {
             /* right switch down is auto aim mode   */
-            Gimbal_ChangeMode(Gimbal_ARMOR);
-            MiniPC_ChangeAimMode(MiniPC_ARMOR);
-            // MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
+            // Gimbal_ChangeMode(Gimbal_ARMOR);
+            // MiniPC_ChangeAimMode(MiniPC_ARMOR);
+            Gimbal_ChangeMode(Gimbal_NOAUTO);
+            MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
             Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
             Remote_RemoteShooterModeSet();
             Remote_Gesture();
