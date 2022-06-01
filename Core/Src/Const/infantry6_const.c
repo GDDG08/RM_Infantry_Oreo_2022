@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-14 14:58:38
+ * @LastEditTime : 2022-05-31 17:15:12
  */
 
 #include "configure.h"
@@ -63,9 +63,9 @@ static const float Const_FeederMotorParam_infantry_6[1][3][4][5] = {
 };
 
 static const float Const_AutoAimOffset_infantry_6[4][2] = {
-    {0.0f, 0.0f},       // Armor
-    {-0.54f, -0.544f},  // Buff_Small
-    {-0.54f, -0.544f},  // Buff_Big
+    {0.0f, 0.0f},        // Armor
+    {-0.54f, -0.544f},   // Buff_Small
+    {-0.492f, -2.074f},  // Buff_Big
     // {-3.0f, -0.3f}      // Sentry
     {-1.5f, 0.0f}  // Sentry
     // pitch, yaw

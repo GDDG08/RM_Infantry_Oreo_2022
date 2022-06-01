@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-17 23:02:48
+ * @LastEditTime : 2022-05-31 17:40:53
  */
 
 #include "debug_BTlog.h"
@@ -149,15 +149,15 @@ void BTlog_Init() {
     // ADD_SEND_DATA(BTlog_MiniPC_debug_time_diff, Int16, "minipcD->timediff");
     ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
     // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
-    // ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
-    // ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
-    ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
-    ADD_SEND_DATA(minipc_data->z, Int16, "minipcD->z");
-    ADD_SEND_DATA(minipc_data->vx, Int16, "minipcD->vx");
-    ADD_SEND_DATA(minipc_data->vz, Int16, "minipcD->vz");
+    ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
+    ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
+    // ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
+    // ADD_SEND_DATA(minipc_data->z, Int16, "minipcD->z");
+    // ADD_SEND_DATA(minipc_data->vx, Int16, "minipcD->vx");
+    // ADD_SEND_DATA(minipc_data->vz, Int16, "minipcD->vz");
 
-    ADD_SEND_DATA(minipc->pitch_ref_calc, Float, "minipc->pitch");
-    ADD_SEND_DATA(minipc->yaw_ref_calc, Float, "minipc->yaw");
+    // ADD_SEND_DATA(minipc->pitch_ref_calc, Float, "minipc->pitch");
+    // ADD_SEND_DATA(minipc->yaw_ref_calc, Float, "minipc->yaw");
     // ADD_SEND_DATA(is_x_SuddenStart, uInt8, "minipc->is_x_Start");
     // ADD_SEND_DATA(is_x_SuddenStop, uInt8, "minipc->is_x_Stop");
     // ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "minipc->pitch_fnl");
