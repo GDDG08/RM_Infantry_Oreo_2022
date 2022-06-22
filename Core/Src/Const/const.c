@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 20:59:04
+ * @LastEditTime : 2022-06-22 20:12:49
  */
 
 #include "const.h"
@@ -81,7 +81,7 @@ const_error:
 float Const_chassisMotorParam[4][3][4][5];
 float Const_gimbalYawMotorParam[5][3][4][5];
 float Const_gimbalPitchMotorParam[5][3][4][5];
-float Const_ShooterMotorParam[2][3][4][5];
+float Const_ShooterMotorParam[3][2][3][4][5];
 float Const_FeederMotorParam[1][3][4][5];
 
 float Const_AutoAimOffset[4][2];
@@ -119,8 +119,12 @@ void Const_SetGimbalPitchMotorParam() {
 
 void Const_SetShooterPIDParam() {
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-    Motor_InitMotorParam(&Shooter_shooterLeftMotorParam, Const_ShooterMotorParam[0], PID_POSITION, PID_POSITION, PID_POSITION);
-    Motor_InitMotorParam(&Shooter_shooterRightMotorParam, Const_ShooterMotorParam[1], PID_POSITION, PID_POSITION, PID_POSITION);
+    Motor_InitMotorParam(&Shooter_shooterLeftMotor_15_Param, Const_ShooterMotorParam[0][0], PID_POSITION, PID_POSITION, PID_POSITION);
+    Motor_InitMotorParam(&Shooter_shooterRightMotor_15_Param, Const_ShooterMotorParam[0][1], PID_POSITION, PID_POSITION, PID_POSITION);
+    Motor_InitMotorParam(&Shooter_shooterLeftMotor_18_Param, Const_ShooterMotorParam[1][0], PID_POSITION, PID_POSITION, PID_POSITION);
+    Motor_InitMotorParam(&Shooter_shooterRightMotor_18_Param, Const_ShooterMotorParam[1][1], PID_POSITION, PID_POSITION, PID_POSITION);
+    Motor_InitMotorParam(&Shooter_shooterLeftMotor_30_Param, Const_ShooterMotorParam[2][0], PID_POSITION, PID_POSITION, PID_POSITION);
+    Motor_InitMotorParam(&Shooter_shooterRightMotor_30_Param, Const_ShooterMotorParam[2][1], PID_POSITION, PID_POSITION, PID_POSITION);
     Motor_InitMotorParam(&Shooter_feederMotorParam, Const_FeederMotorParam[0], PID_POSITION, PID_POSITION, PID_POSITION);
 #endif
 }
@@ -191,7 +195,7 @@ static void Const_Copy() {
     memcpy(Const_gimbalPitchMotorParam, Const_Infantry.gimbalPitchMotorParam, sizeof(Const_Infantry.gimbalPitchMotorParam));
     memcpy(Const_ShooterMotorParam, Const_Infantry.ShooterMotorParam, sizeof(Const_Infantry.ShooterMotorParam));
     memcpy(Const_FeederMotorParam, Const_Infantry.FeederMotorParam, sizeof(Const_Infantry.FeederMotorParam));
-    
+
     memcpy(Const_AutoAimOffset, Const_Infantry.AutoAimOffset, sizeof(Const_Infantry.AutoAimOffset));
 
     /*          Gimbal pitch limit                  */

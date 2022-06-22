@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 13:00:08
+ * @LastEditTime : 2022-06-22 20:14:01
  */
 
 #ifndef GIM_SHOOT_CTRL_H
@@ -105,8 +105,12 @@ typedef struct {
     Shooter_HeatCtrlTypeDef heat_ctrl;
 } Shoot_StatusTypeDef;
 
-extern Motor_MotorParamTypeDef Shooter_shooterLeftMotorParam;
-extern Motor_MotorParamTypeDef Shooter_shooterRightMotorParam;
+extern Motor_MotorParamTypeDef Shooter_shooterLeftMotor_15_Param;
+extern Motor_MotorParamTypeDef Shooter_shooterRightMotor_15_Param;
+extern Motor_MotorParamTypeDef Shooter_shooterLeftMotor_18_Param;
+extern Motor_MotorParamTypeDef Shooter_shooterRightMotor_18_Param;
+extern Motor_MotorParamTypeDef Shooter_shooterLeftMotor_30_Param;
+extern Motor_MotorParamTypeDef Shooter_shooterRightMotor_30_Param;
 extern Motor_MotorParamTypeDef Shooter_feederMotorParam;
 
 extern Shoot_StatusTypeDef Shooter_ShooterControl;

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-31 17:40:53
+ * @LastEditTime : 2022-06-22 21:06:26
  */
 
 #include "debug_BTlog.h"
@@ -141,16 +141,16 @@ void BTlog_Init() {
     // Motor_MotorTypeDef Motor_chassisMotor1, Motor_chassisMotor2, Motor_chassisMotor3, Motor_chassisMotor4, Motor_gimbalMotorYaw, Motor_gimbalMotorPitch, Motor_feederMotor, Motor_shooterMotorLeft, Motor_shooterMotorRight;
 
     // Log Data Send
-    // ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
+    ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     // // ADD_SEND_DATA(imu->angle.row, Float, "imu->angle.row");
     // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
 
     // ADD_SEND_DATA(BTlog_MiniPC_debug_time_diff, Int16, "minipcD->timediff");
-    ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
+    // ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
     // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
-    ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
-    ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
+    // ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
+    // ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
     // ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
     // ADD_SEND_DATA(minipc_data->z, Int16, "minipcD->z");
     // ADD_SEND_DATA(minipc_data->vx, Int16, "minipcD->vx");
@@ -166,25 +166,25 @@ void BTlog_Init() {
     // ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
     // ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
     // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
-    // ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
-    // ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
+    ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
+    ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
     // ADD_SEND_DATA(shooter->heat_ctrl.current_speed, Float, "feeder_speed");/
     // ADD_SEND_DATA(shooter->slope_output, Float, "slope");
     // ADD_SEND_DATA(shooter->dertaRef, Float, "derta_ref");
     //  ADD_SEND_DATA(shooter->speed_limit, Float, "overspeed_limit");
     //  ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "shoot_speed");
 
-    // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
-    // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
+    ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
+    ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
-    ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.output, Float, "Yaw.pid_pos.output");
-    ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_spd.output, Float, "Yaw.pid_spd.output");
-    ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_cur.output, Float, "Yaw.pid_cur.output");
-    ADD_SEND_DATA(gimbal->yaw_ref, Float, "yaw_ref");
-    ADD_SEND_DATA(gimbal->yaw_position_fdb, Float, "yaw_fdb_pos");
-    ADD_SEND_DATA(gimbal->yaw_speed_fdb, Float, "yaw_fdb_spd");
+    // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.output, Float, "Yaw.pid_pos.output");
+    // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_spd.output, Float, "Yaw.pid_spd.output");
+    // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_cur.output, Float, "Yaw.pid_cur.output");
+    // ADD_SEND_DATA(gimbal->yaw_ref, Float, "yaw_ref");
+    // ADD_SEND_DATA(gimbal->yaw_position_fdb, Float, "yaw_fdb_pos");
+    // ADD_SEND_DATA(gimbal->yaw_speed_fdb, Float, "yaw_fdb_spd");
     // ADD_SEND_DATA(Motor_chassisMotor1.encoder.speed, Int16, "Chassis_Motor1_spd");
     // ADD_SEND_DATA(Motor_chassisMotor2.encoder.speed, Int16, "Chassis_Motor2_spd");
     // ADD_SEND_DATA(Motor_chassisMotor3.encoder.speed, Int16, "Chassis_Motor3_spd");
@@ -192,15 +192,15 @@ void BTlog_Init() {
     // ADD_SEND_DATA(capctrl->Chassis_voltage, Float, "Cap_Voltage");
     // ADD_SEND_DATA(capctrl->Sum_CurrentReally, Float, "Cap_Current");
     // ADD_SEND_DATA(capctrl->, Float, "Cap_Voltage");
-    // ADD_SEND_DATA(buscomm->chassis_power_limit, uInt8, "REFEREE_power_limit");
-    // ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
-    // ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
-    // ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
-    ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].ref, Float, "current_pid[0].ref");
-    ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].fdb, Float, "current_pid[0].fdb");
-    ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].output, Float, "current_pid[0].output");
+    ADD_SEND_DATA(buscomm->chassis_power_limit, uInt8, "REFEREE_power_limit");
+    ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
+    ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
+    // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].ref, Float, "current_pid[0].ref");
+    // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].fdb, Float, "current_pid[0].fdb");
+    // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].output, Float, "current_pid[0].output");
     // ADD_SEND_DATA(PowCtr->Power_scale, Float, "Power_scale");
-    // ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
+    ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
+    ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
     // ADD_SEND_DATA(referee->bullet_speed, Float, "bullet_speed");
     // ADD_SEND_DATA(buscomm->cap_mode_user, uInt8, "cap_mode_user");
     // ADD_SEND_DATA(buscomm->cap_boost_mode_user, uInt8, "cap_boost_mode_user");

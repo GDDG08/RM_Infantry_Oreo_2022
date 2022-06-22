@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 16:37:45
+ * @LastEditTime : 2022-06-22 19:52:55
  */
 
 #include "motor_periph.h"
@@ -527,18 +527,15 @@ void Motor_SendMotorPWMOutput(Motor_MotorTypeDef* pmotor) {
         return;
     double output = Motor_GetMotorOutput(pmotor);
 
-    // satori
-    // float duty = output * 0.00011136f + 0.53522f;
-
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
-    float duty = output * 0.00011136f + 0.47522f;
+    float duty = output * 0.0082f + 0.5f;
 #else
     double ref = Motor_GetMotorRef(pmotor);
     float duty = 0.0073f * ref + 0.5f;
 #endif
 
     pmotor->duty = duty;
-    // if (duty < 0.58f) duty = 0.58f;
+
     if (duty < 0.5f)
         duty = 0.5f;
     if (duty > 0.98f)
@@ -579,7 +576,9 @@ void Motor_SendMotorGroupOutput(Motor_MotorGroupTypeDef* pgroup) {
  * @retval     NULL
  */
 void Motor_ReadPWMEncoder(Motor_MotorTypeDef* pmotor) {
-    static int fdb = 0;
+    static uint16_t fdb = 0;
+    static float speed = 0;
+    static uint32_t time_last = 0;
 
     if (pmotor == NULL)
         return;
@@ -594,9 +593,12 @@ void Motor_ReadPWMEncoder(Motor_MotorTypeDef* pmotor) {
         fdb = 65535 - pmotor->encoder.counter;
     if (fdb == 65535)
         fdb = 0;
-
     __HAL_TIM_SET_COUNTER(pmotor->encoder.htim, 0);
-    Motor_SetMotorFdb(pmotor, 1, Filter_LowPass(fdb, &pmotor->fdb_fil_param, &pmotor->fdb_fil));
+
+    uint32_t time_now = HAL_GetTick();
+    speed = (float)fdb / 2048 * 3.1415926f * 26;
+    Motor_SetMotorFdb(pmotor, 1, Filter_LowPass(speed, &pmotor->fdb_fil_param, &pmotor->fdb_fil));
+    time_last = time_now;
 }
 
 /**

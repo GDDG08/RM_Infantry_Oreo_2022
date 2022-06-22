@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-17 19:08:51
+ * @LastEditTime : 2022-06-22 20:34:07
  */
 
 #include "gim_shoot_ctrl.h"
@@ -21,8 +21,13 @@
 #define SHOOTER_TASK_PERIOD 1
 #define SHOOTER_SPEED_INCREMENT 8  // For gain :0.1
 
-Motor_MotorParamTypeDef Shooter_shooterLeftMotorParam;
-Motor_MotorParamTypeDef Shooter_shooterRightMotorParam;
+Motor_MotorParamTypeDef Shooter_shooterLeftMotor_15_Param;
+Motor_MotorParamTypeDef Shooter_shooterRightMotor_15_Param;
+Motor_MotorParamTypeDef Shooter_shooterLeftMotor_18_Param;
+Motor_MotorParamTypeDef Shooter_shooterRightMotor_18_Param;
+Motor_MotorParamTypeDef Shooter_shooterLeftMotor_30_Param;
+Motor_MotorParamTypeDef Shooter_shooterRightMotor_30_Param;
+
 Motor_MotorParamTypeDef Shooter_feederMotorParam;
 
 Shoot_StatusTypeDef Shooter_ShooterControl;
@@ -499,8 +504,8 @@ void Shooter_Overspeedtest() {
                 referee_speed = 15;
                 break;
         }
-        if (buscomm->speed_17mm_fdb > referee_speed)
-            shooter->speed_limit += (1 ? 5 : 1);
+        // if (buscomm->speed_17mm_fdb > referee_speed)
+        //     shooter->speed_limit += (1 ? 5 : 1);
         // if (buscomm->speed_17mm_fdb > referee_speed)
         //     shooter->speed_limit = 1;
     }
@@ -561,6 +566,7 @@ void Shooter_ShootControl() {
         shooter->dertaRef = shooter->shoot_speed.left_shoot_speed - shooter->last_shoot_speed_ref;
         shooter->slope_output = shooter->dertaRef;
     }
+
     Shooter_CalcRef();
     Motor_SetMotorRef(&Motor_shooterMotorRight, shooter->ref_output);
     Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->ref_output);
@@ -569,8 +575,29 @@ void Shooter_ShootControl() {
     // Motor_SetMotorRef(&Motor_shooterMotorLeft, shooter->shoot_speed.left_shoot_speed);
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
-    Motor_CalcMotorOutput(&Motor_shooterMotorRight, &Shooter_shooterRightMotorParam);
-    Motor_CalcMotorOutput(&Motor_shooterMotorLeft, &Shooter_shooterLeftMotorParam);
+
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    Motor_MotorParamTypeDef* pparam_left;
+    Motor_MotorParamTypeDef* pparam_right;
+
+    switch (buscomm->speed_17mm_limit) {
+        default:
+        case REFEREE_SHOOTER_SPEED_15:
+            pparam_left = &Shooter_shooterLeftMotor_15_Param;
+            pparam_right = &Shooter_shooterRightMotor_15_Param;
+            break;
+        case REFEREE_SHOOTER_SPEED_18:
+            pparam_left = &Shooter_shooterLeftMotor_18_Param;
+            pparam_right = &Shooter_shooterRightMotor_18_Param;
+            break;
+        case REFEREE_SHOOTER_SPEED_30:
+            pparam_left = &Shooter_shooterLeftMotor_30_Param;
+            pparam_right = &Shooter_shooterRightMotor_30_Param;
+            break;
+    }
+
+    Motor_CalcMotorOutput(&Motor_shooterMotorLeft, pparam_left);
+    Motor_CalcMotorOutput(&Motor_shooterMotorRight, pparam_right);
 #endif
 }
 

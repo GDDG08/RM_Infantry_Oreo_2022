@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 20:27:42
+ * @LastEditTime : 2022-06-22 20:10:47
  */
 
 #ifndef CONST_H
@@ -59,7 +59,7 @@ typedef struct {
     // uint32_t MiniPC_New_Target_Time;
 
     float gimbalPitchMotorParam[5][3][4][5];
-    float ShooterMotorParam[2][3][4][5];
+    float ShooterMotorParam[3][2][3][4][5];
     float FeederMotorParam[1][3][4][5];
 
     float AutoAimOffset[4][2];

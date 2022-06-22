@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-30 23:50:53
+ * @LastEditTime : 2022-06-22 19:56:32
  */
 
 #include "gim_remote_ctrl.h"
@@ -90,8 +90,8 @@ void Remote_ControlCom() {
             /* right switch down is auto aim mode   */
             // Gimbal_ChangeMode(Gimbal_ARMOR);
             // MiniPC_ChangeAimMode(MiniPC_ARMOR);
-            Gimbal_ChangeMode(Gimbal_NOAUTO);
-            MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
+            Gimbal_ChangeMode(Gimbal_ARMOR);
+            MiniPC_ChangeAimMode(MiniPC_SENTRY);
             Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
             Remote_RemoteShooterModeSet();
             Remote_Gesture();
@@ -113,12 +113,13 @@ void Remote_MouseShooterModeSet() {
     Remote_RemoteDataTypeDef* data = Remote_GetRemoteDataPtr();
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
+#if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     // Prevent launching without opening the friction wheel
-    if ((shooter->shooter_mode != Shoot_REFEREE) || (Motor_shooterMotorLeft.pid_spd.fdb <= 30) || (Motor_shooterMotorRight.pid_spd.fdb <= 30)) {
+    if ((shooter->shooter_mode != Shoot_REFEREE) || (Motor_shooterMotorLeft.pid_spd.fdb <= 8) || (Motor_shooterMotorRight.pid_spd.fdb <= 8)) {
         Shooter_ChangeFeederMode(Feeder_FINISH);
         return;
     }
-
+#endif
     static int count_mouse_L = 0;
     if (data->mouse.l == 1) {
         count_mouse_L++;
@@ -164,10 +165,12 @@ void Remote_RemoteShooterModeSet() {
             // Shooter_ChangeFeederMode(Feeder_LOW_CONTINUE);
             Shooter_ChangeFeederMode(Feeder_REFEREE);
 
-            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 30) && (Motor_shooterMotorRight.pid_spd.fdb >= 30)) {
+#if __FN_IF_ENABLE(__FN_SHOOTER_PID)
+            if ((Motor_shooterMotorLeft.pid_spd.fdb >= 8) && (Motor_shooterMotorRight.pid_spd.fdb >= 8)) {
                 Shooter_ChangeFeederMode(Feeder_REFEREE);
             } else
                 Shooter_ChangeFeederMode(Feeder_FINISH);
+#endif
             break;
         }
         default:
@@ -301,7 +304,9 @@ void Remote_KeyMouseProcess() {
 
     if (data->mouse.r == 1) {
         Gimbal_ChangeMode(Gimbal_ARMOR);
-        MiniPC_ChangeAimMode(MiniPC_ARMOR);
+        MiniPC_ChangeAimMode(MiniPC_SENTRY);
+        // Gimbal_ChangeMode(Gimbal_ARMOR);
+        // MiniPC_ChangeAimMode(MiniPC_ARMOR);
     } else if (data->mouse.r == 0) {
         if (big_energy_state == 1 && small_energy_state == 0) {
             Gimbal_ChangeMode(Gimbal_BIG_ENERGY);

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-17 23:16:01
+ * @LastEditTime : 2022-06-20 22:49:50
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -232,9 +232,9 @@ void AutoAim_Para_Init() {
     Predict_Offest_x = 100.0f;
     Predict_Offset_y = -150.0f;
 
-    kk_Predict_x = 0;
-    kt_Predict_x = 0.3f;
-    k_Predict_z = 0.2f;
+    kk_Predict_x = 2.0f;
+    kt_Predict_x = 0.1f;
+    k_Predict_z = 0.0f;
     k_Predict_Offset_y = 0.02f;
     k_Predict_Correction = 1.0f;
 
@@ -309,7 +309,7 @@ void GimbalMove_AutoAimRef_Change() {
                 k_Predict_Correction = 1.0f;
             }
         } else if (TargetData_predict.ax >= 0) {
-            if (Target_x_SuddenStart_Count == 3) {
+            if (Target_x_SuddenStart_Count == 8) {
                 is_x_SuddenStart = 1;
                 k_Predict_Correction = 1.5f;
             } else if (TargetData_predict.ax >= 5.0f) {
@@ -320,7 +320,7 @@ void GimbalMove_AutoAimRef_Change() {
                 k_Predict_Correction = 1.0f;
             }
         } else {
-            if (Target_x_SuddenStop_Count == 3) {
+            if (Target_x_SuddenStop_Count == 5) {
                 is_x_SuddenStop = 1;
                 k_Predict_Correction = 0.3f;
             } else if (TargetData_predict.ax <= -4.0f) {
@@ -371,7 +371,7 @@ void GimbalMove_AutoAimRef_Change() {
                 k_Predict_z = 0.12f;
             }
         }
-        k_Predict_Correction = 1;
+        // k_Predict_Correction = 1;
 
         minipc_data->new_data_flag = 0;
         TimeCountPredict = 0;

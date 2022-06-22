@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 10:12:50
+ * @LastEditTime : 2022-06-17 22:42:02
  *
  */
 
@@ -34,7 +34,7 @@
 
 #define BUSCOMM_TASK_PERIOD 1
 // #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-// FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER = &hfdcan3;
+// FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER = &hfdcan1;
 // #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
 FDCAN_HandleTypeDef* Const_BusComm_CAN_HANDLER = &hfdcan2;
 // #endif
@@ -288,7 +288,7 @@ void BusComm_ResetBusCommData() {
     buscomm->chassis_fb_ref = 0.0f;
     buscomm->chassis_lr_ref = 0.0f;
     buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
-    buscomm->power_limit_mode = POWER_UNLIMIT;
+    buscomm->power_limit_mode = POWER_LIMITED;
     buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
     // buscomm->pitch_angle = 0.0f;
     buscomm->ui_cmd = 0;
