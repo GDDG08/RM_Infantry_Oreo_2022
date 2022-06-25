@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:17:07
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-23 21:38:49
+ * @LastEditTime : 2022-06-24 15:38:38
  */
 
 #ifndef DEBUG_BTLOG_H
@@ -55,6 +55,7 @@ extern UART_HandleTypeDef* Const_BTlog_UART_HANDLER;
 
 void BTlog_Init(void);
 void BTlog_Send(void);
+void BTlog_CTRL(void);
 void BTlog_RXCallback(UART_HandleTypeDef*);
 uint8_t BTLog_VerifyData(uint8_t*, uint16_t);
 #endif

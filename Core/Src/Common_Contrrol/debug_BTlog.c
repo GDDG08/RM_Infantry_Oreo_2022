@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-22 21:06:26
+ * @LastEditTime : 2022-06-25 15:36:28
  */
 
 #include "debug_BTlog.h"
@@ -70,7 +70,14 @@ uint16_t BTlog_RX_BUFF_LEN = 1 + 1 + 1;
 uint16_t BTlog_RX_DATA_LEN = 0;
 
 uint32_t BTlog_time = 0;
-int16_t BTlog_MiniPC_debug_time_diff = 0;
+// int16_t BTlog_MiniPC_debug_time_diff = 0;
+
+// CTRL field
+#if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
+Filter_LowPassParamTypeDef gimbal_angle_fil_param;
+Filter_LowPassTypeDef gimbal_angle_yaw_fil;
+Filter_LowPassTypeDef gimbal_angle_pitch_fil;
+#endif
 
 /**
  * @name: anonymous
@@ -147,10 +154,10 @@ void BTlog_Init() {
     // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
 
     // ADD_SEND_DATA(BTlog_MiniPC_debug_time_diff, Int16, "minipcD->timediff");
-    // ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
-    // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
-    // ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
-    // ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
+    ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
+    ADD_SEND_DATA(sin_gen, Float, "sin_gen");
+    ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
+    ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
     // ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
     // ADD_SEND_DATA(minipc_data->z, Int16, "minipcD->z");
     // ADD_SEND_DATA(minipc_data->vx, Int16, "minipcD->vx");
@@ -239,6 +246,10 @@ void BTlog_Init() {
 
 #endif
 
+    // CTRL init
+#if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
+    Filter_LowPassInit(0.04, &gimbal_angle_fil_param);
+#endif
     Uart_InitUartDMA(Const_BTlog_UART_HANDLER);
     Uart_ReceiveDMA(Const_BTlog_UART_HANDLER, BTlog_RxData, Const_BTlog_RX_BUFF_LEN_MAX);
 }
@@ -290,6 +301,10 @@ const uint8_t CMD_STOP_SENDING = 0xF2;
 const uint8_t CMD_SET_GYRO_COMPENSATE = 0xA0;
 const uint8_t CMD_SET_CUSTOMIZE = 0xA5;
 const uint8_t CMD_SET_AUTO_OFFSET = 0xB1;
+const uint8_t CMD_SET_GIMBAL_ANGLE = 0xB6;
+
+float SET_GIMBAL_ANGLE_pitch, SET_GIMBAL_ANGLE_yaw;
+uint32_t SET_GIMBAL_ANGLE_last_time;
 /**
  * @name: DECODE
  * @msg:
@@ -302,6 +317,7 @@ void BTlog_DecodeData(uint8_t* BTlog_RxData, uint16_t rxdatalen) {
     if (rxdatalen == 1) {
         BTlog_state_pending = 1;
         if (BTlog_RxData[0] == CMD_GET_STRUCT) {
+            BTlog_state_sending = 0;
             int size = (BTlog_tagSize + 1) * BTlog_TX_DATA_LEN + 3 + 1 + sizeof(BTlog_endFlag);
 
             uint8_t* buff = BTlog_TxData;
@@ -337,6 +353,14 @@ void BTlog_DecodeData(uint8_t* BTlog_RxData, uint16_t rxdatalen) {
         if (BTlog_RxData[0] == CMD_SET_AUTO_OFFSET) {
             AutoControl_offset_pitch = buff2float(BTlog_RxData + 1);
             AutoControl_offset_yaw = buff2float(BTlog_RxData + 5);
+        } else if (BTlog_RxData[0] == CMD_SET_GIMBAL_ANGLE) {
+            float yaw = buff2float(BTlog_RxData + 1);
+            float pitch = buff2float(BTlog_RxData + 5);
+            if (fabs(yaw - SET_GIMBAL_ANGLE_yaw) > 0.5f)
+                SET_GIMBAL_ANGLE_yaw = yaw;
+            if (fabs(pitch - SET_GIMBAL_ANGLE_pitch) > 0.5f)
+                SET_GIMBAL_ANGLE_pitch = pitch;
+            SET_GIMBAL_ANGLE_last_time = HAL_GetTick();
         }
 #endif
 
@@ -354,6 +378,16 @@ void BTlog_DecodeData(uint8_t* BTlog_RxData, uint16_t rxdatalen) {
         }
     }
 }
+
+void BTlog_CTRL() {
+#if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
+    if (HAL_GetTick() - SET_GIMBAL_ANGLE_last_time <= 1000) {
+        Gimbal_SetYawRef(Filter_LowPass(SET_GIMBAL_ANGLE_yaw, &gimbal_angle_fil_param, &gimbal_angle_yaw_fil));
+        Gimbal_SetPitchRef(Filter_LowPass(SET_GIMBAL_ANGLE_pitch, &gimbal_angle_fil_param, &gimbal_angle_pitch_fil));
+    }
+#endif
+}
+
 /**
  * @brief      Data Checksum Verify
  * @param      buff: Data buffer

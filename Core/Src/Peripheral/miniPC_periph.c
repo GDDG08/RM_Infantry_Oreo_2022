@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-17 22:44:22
+ * @LastEditTime : 2022-06-25 18:44:38
  */
 
 #include "minipc_periph.h"
@@ -15,6 +15,7 @@
 #include "const.h"
 #include "buscomm_ctrl.h"
 #include "gim_minipc_ctrl.h"
+#include "gim_shoot_ctrl.h"
 #include "gim_ins_ctrl.h"
 #include "buff_lib.h"
 
@@ -91,6 +92,7 @@ MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr() {
  * @param      NULL
  * @retval     NULL
  */
+float sin_gen2;
 float sin_gen;
 void MiniPC_SendDataPacket() {
     static uint32_t data_count = 0;
@@ -120,12 +122,17 @@ void MiniPC_SendDataPacket() {
 
     float yaw = imu->angle.yaw;
     int16_t pitch = imu->angle.pitch * 100;
-    int16_t row = imu->angle.row * 100;
-
+    float row = imu->angle.row;
+    while (imu->angle.row > 180)
+        row -= 360;
+    while (imu->angle.row < -180)
+        row += 360;
+    int16_t roll = row * 100;
     int16_t yaw_speed = imu->speed.yaw * 100;
     int16_t pitch_speed = imu->speed.pitch * 100;
 
-    uint16_t shooter_speed = Shooter_GetRefereeSpeedFdb() * 100;
+    sin_gen2 = Shooter_GetRefereeSpeedFdb();
+    uint16_t bullet_speed = Shooter_GetRefereeSpeedFdb() * 100;
     MiniPC_Data_FrameTime = HAL_GetTick() % 60000;
 
     minipc->state = MiniPC_PENDING;
@@ -143,9 +150,9 @@ void MiniPC_SendDataPacket() {
     buff[8] = buscomm->game_outpost_alive;  // game_status_tower
     float2buff(yaw, buff + 9);
     i162buff(pitch, buff + 13);
-    i162buff(row, buff + 15);
+    i162buff(roll, buff + 15);
     ui162buff(yaw_speed, buff + 17);
-    ui162buff(shooter_speed, buff + 19);
+    ui162buff(bullet_speed, buff + 19);
     ui162buff(pitch_speed, buff + 21);
     buff[23] = minipc->team_color;
     buff[24] = minipc->mode;

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 19:53:03
+ * @LastEditTime : 2022-06-23 18:49:51
  */
 
 #include "gim_gimbal_ctrl.h"
@@ -201,9 +201,10 @@ float Gimbal_LimitPitch(float ref) {
         pitch_umaxangle = Const_PITCH_UMAXANGLE;
     }
 
-    if (((gimbal->angle.pitch_angle_ref > pitch_umaxangle) && (ref > 0)) ||
-        ((gimbal->angle.pitch_angle_ref < Const_PITCH_DMAXANGLE) && (ref < 0)))
-        return 0.0f;
+    if (ref > pitch_umaxangle)
+        return pitch_umaxangle;
+    else if (ref < Const_PITCH_DMAXANGLE)
+        return Const_PITCH_DMAXANGLE;
     // Out of depression set maximum ref
     else
         return ref;
@@ -217,7 +218,18 @@ float Gimbal_LimitPitch(float ref) {
 void Gimbal_SetPitchRef(float ref) {
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
 
-    gimbal->angle.pitch_angle_ref += ref;
+    gimbal->angle.pitch_angle_ref = Gimbal_LimitPitch(ref);
+}
+
+/**
+ * @brief      Set pitch ref
+ * @param      ref: Pitch set ref
+ * @retval     NULL
+ */
+void Gimbal_SetPitchRefDelta(float delta) {
+    Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
+
+    Gimbal_SetPitchRef(gimbal->angle.pitch_angle_ref + delta);
 }
 
 /**
@@ -230,22 +242,23 @@ void Gimbal_SetPitchRef(float ref) {
 // float AutoControl_offset_pitch = -0.54f;
 float AutoControl_offset_pitch = 0.0f;
 void Gimbal_SetPitchAutoRef(float ref) {
-    Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
-    INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
-    MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
+    // Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
+    // INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
+    // MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
 
     // ref /= AutoControl_ratio_pitch;
     // ref += imu->angle.pitch;
     ref += AutoControl_offset_pitch;
-    float limited_ref;
-    if (ref > Const_PITCH_UMAXANGLE)
-        limited_ref = Const_PITCH_UMAXANGLE;
-    else if (ref < Const_PITCH_DMAXANGLE)
-        limited_ref = Const_PITCH_DMAXANGLE;
-    else
-        limited_ref = ref;
+    // float limited_ref;
+    // if (ref > Const_PITCH_UMAXANGLE)
+    //     limited_ref = Const_PITCH_UMAXANGLE;
+    // else if (ref < Const_PITCH_DMAXANGLE)
+    //     limited_ref = Const_PITCH_DMAXANGLE;
+    // else
+    //     limited_ref = ref;
     // Out of depression set maximum ref
-    gimbal->angle.pitch_angle_ref = limited_ref;  // imu->angle.pitch + ref
+    // gimbal->angle.pitch_angle_ref = limited_ref;  // imu->angle.pitch + ref
+    Gimbal_SetPitchRef(ref);
 }
 
 // /**
@@ -321,7 +334,7 @@ void Gimbal_SetYawRefDelta(float ref) {
 
     LimitMaxMin(ref, 0.28, -0.28);
 
-    gimbal->angle.yaw_angle_ref = Gimbal_LimitYaw(gimbal->angle.yaw_angle_ref - ref);
+    Gimbal_SetYawRef(gimbal->angle.yaw_angle_ref - ref);
 }
 
 /**

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-20 22:49:50
+ * @LastEditTime : 2022-06-23 14:06:07
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -195,8 +195,8 @@ void MiniPC_SetAutoAimOutput() {
             }
         } else {
             if (minipc->target_state == MiniPC_TARGET_FOLLOWING) {
-                Gimbal_SetYawAutoRef(imu->angle.yaw + minipc->yaw_ref_filtered + minipc->output_offset.yaw);
-                Gimbal_SetPitchAutoRef(imu->angle.pitch + minipc->pitch_ref_filtered + minipc->output_offset.pitch);
+                Gimbal_SetYawAutoRef(/*imu->angle.yaw + */minipc->yaw_ref_filtered + minipc->output_offset.yaw);
+                Gimbal_SetPitchAutoRef(/*imu->angle.pitch  +*/ minipc->pitch_ref_filtered + minipc->output_offset.pitch);
             }
         }
     }

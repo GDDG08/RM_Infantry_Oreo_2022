@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-22 19:56:32
+ * @LastEditTime : 2022-06-23 18:42:20
  */
 
 #include "gim_remote_ctrl.h"
@@ -90,8 +90,8 @@ void Remote_ControlCom() {
             /* right switch down is auto aim mode   */
             // Gimbal_ChangeMode(Gimbal_ARMOR);
             // MiniPC_ChangeAimMode(MiniPC_ARMOR);
-            Gimbal_ChangeMode(Gimbal_ARMOR);
-            MiniPC_ChangeAimMode(MiniPC_SENTRY);
+            Gimbal_ChangeMode(Gimbal_SMALL_ENERGY);
+            MiniPC_ChangeAimMode(MiniPC_SMALL_BUFF);
             Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
             Remote_RemoteShooterModeSet();
             Remote_Gesture();
@@ -122,18 +122,23 @@ void Remote_MouseShooterModeSet() {
 #endif
     static int count_mouse_L = 0;
     if (data->mouse.l == 1) {
-        count_mouse_L++;
-        if (count_mouse_L >= 50) {
-            Shooter_ChangeFeederMode(Feeder_REFEREE);
-            count_mouse_L = 50;
-        }
+        // count_mouse_L++;
+        // if (count_mouse_L >= 50) {
+        //     // Shooter_ChangeFeederMode(Feeder_REFEREE);
+        //     Shooter_ChangeFeederMode(Feeder_SINGLE);
+
+        //     count_mouse_L = 50;
+        // }
+
+        Shooter_ChangeFeederMode(Feeder_SINGLE);
     } else {
-        if (0 < count_mouse_L && count_mouse_L < 50) {
-            Shooter_SingleShootReset();
-            Shooter_ChangeFeederMode(Feeder_SINGLE);
-        } else
-            Shooter_ChangeFeederMode(Feeder_FINISH);
-        count_mouse_L = 0;
+        // if (0 < count_mouse_L && count_mouse_L < 50) {
+        //     Shooter_SingleShootReset();
+        //     Shooter_ChangeFeederMode(Feeder_SINGLE);
+        // } else
+        Shooter_ChangeFeederMode(Feeder_FINISH);
+        Shooter_SingleShootReset();
+        // count_mouse_L = 0;
     }
 }
 
@@ -212,7 +217,7 @@ void Remote_RemoteProcess() {
     pitch_ref = (float)data->remote.ch[3] * REMOTE_PITCH_ANGLE_TO_REF;
 
     Gimbal_SetYawRefDelta(yaw_ref);
-    Gimbal_SetPitchRef(Gimbal_LimitPitch(-pitch_ref));
+    Gimbal_SetPitchRefDelta(-pitch_ref);
 }
 
 /**
@@ -404,7 +409,7 @@ void Remote_KeyMouseProcess() {
         pitch = Filter_Bessel((float)data->mouse.y, &Remote_mouse_y_Filter) * MOUSE_PITCH_ANGLE_TO_FACT;
 
         Gimbal_SetYawRefDelta(yaw);
-        Gimbal_SetPitchRef(Gimbal_LimitPitch(pitch));
+        Gimbal_SetPitchRefDelta(pitch);
     }
 }
 

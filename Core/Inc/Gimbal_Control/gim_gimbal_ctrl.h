@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-29 20:20:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-01 19:52:02
+ * @LastEditTime : 2022-06-23 18:46:53
  */
 
 #ifndef GIM_GIMBAL_CTRL_H
@@ -87,6 +87,7 @@ void Gimbal_CtrlPitch(void);
 void Gimbal_ChangeMode(Gimbal_ModeEnum mode);
 float Gimbal_LimitPitch(float ref);
 void Gimbal_SetPitchRef(float ref);
+void Gimbal_SetPitchRefDelta(float ref);
 void Gimbal_SetPitchAutoRef(float ref);
 float Gimbal_LimitYaw(float ref);
 void Gimbal_SetYawRef(float ref);

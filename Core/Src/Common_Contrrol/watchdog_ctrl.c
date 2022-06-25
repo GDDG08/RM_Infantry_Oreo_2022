@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-17 22:44:10
+ * @LastEditTime : 2022-06-24 15:38:12
  */
 
 #include "watchdog_ctrl.h"
@@ -33,6 +33,7 @@ void WatchDog_Task(void const* argument) {
     for (;;) {
         WatchDog_FeedDog();
         BTlog_Send();
+        BTlog_CTRL();
         osDelay(WATCHDOG_TASK_PERIOD);
     }
 }
