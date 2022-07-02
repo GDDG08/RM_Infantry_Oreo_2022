@@ -5,16 +5,12 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-29 17:29:06
+ * @LastEditTime : 2022-07-02 15:06:17
  */
 
 #include "gim_remote_ctrl.h"
 
 #if __FN_IF_ENABLE(__FN_CTRL_REMOTE)
-
-#define KEY(T) data->key.T
-#define KEY_UP(T) data->key.T
-#define KEY_DN(T) data->key.T
 
 #include "const.h"
 #include "buscomm_ctrl.h"
@@ -24,8 +20,15 @@
 #include "gim_shoot_ctrl.h"
 #include "gim_login_ctrl.h"
 
+#define KEY(T) (data->key.T)
+#define KEY2(T1, T2) (data->key.T1 && data->key.T2)
+#define KEY3(T1, T2, T3) (data->key.T1 && data->key.T2 && data->key.T3)
+#define KEY_UP(T) (remoteKey_last.T && !remoteKey->T)
+#define KEY_DN(T) (!remoteKey_last.T && remoteKey->T)
+
 Remote_RemoteControlTypeDef Remote_remoteControlData;
 Remote_KeyboardTypeDef remoteKey_last;
+Remote_KeyboardTypeDef remoteKey_zero;
 
 Math_SlopeParamTypeDef Remote_ChassisFBSlope;
 Math_SlopeParamTypeDef Remote_ChassisRLSlope;
@@ -36,7 +39,9 @@ Filter_Bessel_TypeDef Remote_right_leftFilter = {0, 0, 0};
 Filter_Bessel_TypeDef Remote_mouse_y_Filter = {0, 0, 0};
 
 const float REMOTE_PITCH_ANGLE_TO_REF = 0.0005f;
-const float REMOTE_YAW_ANGLE_TO_REF = 0.0015f;
+const float REMOTE_YAW_ANGLE_TO_REF = 0.0005f;
+
+float Remote_max_chassis_speed = 0;
 
 /**
  * @brief      Remote Control Init
@@ -45,7 +50,7 @@ const float REMOTE_YAW_ANGLE_TO_REF = 0.0015f;
  */
 void Remote_RemotrControlInit() {
     Remote_RemoteControlTypeDef* control_data = Remote_GetControlDataPtr();
-
+    Remote_max_chassis_speed = MOUSE_CHASSIS_MAX_SPEED;
     Math_InitSlopeParam(&Remote_ChassisFBSlope, MOUSE_CHASSIS_ACCELERATE, MOUSE_CHASSIS_SLOWDOWN);
     Math_InitSlopeParam(&Remote_ChassisRLSlope, MOUSE_CHASSIS_ACCELERATE, MOUSE_CHASSIS_SLOWDOWN);
 }
@@ -230,92 +235,69 @@ void Remote_RemoteProcess() {
  * @param      NULL
  * @retval     NULL
  */
+uint8_t wait4release_watch;
+
 void Remote_KeyMouseProcess() {
     Remote_RemoteDataTypeDef* data = Remote_GetRemoteDataPtr();
-        Remote_KeyboardTypeDef* remoteKey = &(Remote_GetRemoteDataPtr()->key);
+    Remote_KeyboardTypeDef* remoteKey = &(Remote_GetRemoteDataPtr()->key);
     Remote_RemoteControlTypeDef* control_data = Remote_GetControlDataPtr();
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
 
-    float max_chassis_speed;
-    /************Control mode choise**************/
+    // // /************Control mode choise**************/
 
-    if (data->key.x == 1) {
-    }
+    // if (data->key.x == 1) {
+    // }
 
-    if (data->key.c == 1 && data->key.shift == 1) {
-        buscomm->ui_cmd = 1;
-    } else {
-        buscomm->ui_cmd = 0;
-    }
-    if (data->key.c == 1) {
-    }
+    // if (data->key.c == 1 && data->key.shift == 1) {
+    //     buscomm->ui_cmd = 1;
+    // } else {
+    //     buscomm->ui_cmd = 0;
+    // }
+    // if (data->key.c == 1) {
+    // }
 
-    /*******R relode projectile******/
-    static int flag_relode = 0;
-    if (data->key.r == 1) {
-        if ((Servo_GetServoAngle(&Servo_ammoContainerCapServo) != 300) && (flag_relode == 1)) {
-            Servo_SetServoAngle(&Servo_ammoContainerCapServo, 300);
-            flag_relode = 0;
-        } else if ((Servo_GetServoAngle(&Servo_ammoContainerCapServo) != 0) && (flag_relode == 1)) {
-            Servo_SetServoAngle(&Servo_ammoContainerCapServo, -30);
-            flag_relode = 0;
-        }
-    } else
-        flag_relode = 1;
+    // /*******R relode projectile******/
+    // static int flag_relode = 0;
+    // if (data->key.r == 1) {
+    //     if ((Servo_GetServoAngle(&Servo_ammoContainerCapServo) != 300) && (flag_relode == 1)) {
+    //         Servo_SetServoAngle(&Servo_ammoContainerCapServo, 300);
+    //         flag_relode = 0;
+    //     } else if ((Servo_GetServoAngle(&Servo_ammoContainerCapServo) != 0) && (flag_relode == 1)) {
+    //         Servo_SetServoAngle(&Servo_ammoContainerCapServo, -30);
+    //         flag_relode = 0;
+    //     }
+    // } else
+    //     flag_relode = 1;
 
-    /******Chassis mode control*******/
-    static int gyro_flag = 0, gyro_state = 0;
-    if (buscomm->chassis_mode != CHASSIS_CTRL_STOP) {
-        if (data->key.ctrl == 1) {  // ctrl gyro mode
-            if ((gyro_state == 0) && (gyro_flag == 1)) {
-                gyro_state = 1;
-                gyro_flag = 0;
-            } else if ((gyro_state == 1) && (gyro_flag == 1)) {
-                gyro_state = 0;
-                gyro_flag = 0;
-            }
-        } else
-            gyro_flag = 1;
-        if (gyro_state == 1) {
-            Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
-            max_chassis_speed = MOUSE_CHASSIS_MAX_GYRO_SPEED;
-        } else {
-            Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
-            max_chassis_speed = MOUSE_CHASSIS_MAX_SPEED;
-        }
-    }
+    // /******Chassis mode control*******/
+    // static int gyro_flag = 0, gyro_state = 0;
+    // if (buscomm->chassis_mode != CHASSIS_CTRL_STOP) {
+    //     if (data->key.ctrl == 1) {  // ctrl gyro mode
+    //         if ((gyro_state == 0) && (gyro_flag == 1)) {
+    //             gyro_state = 1;
+    //             gyro_flag = 0;
+    //         } else if ((gyro_state == 1) && (gyro_flag == 1)) {
+    //             gyro_state = 0;
+    //             gyro_flag = 0;
+    //         }
+    //     } else
+    //         gyro_flag = 1;
+    //     if (gyro_state == 1) {
+    //         Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
+    //         max_chassis_speed = MOUSE_CHASSIS_MAX_GYRO_SPEED;
+    //     } else {
+    //         Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    //         max_chassis_speed = MOUSE_CHASSIS_MAX_SPEED;
+    //     }
+    // }
 
-    /******Gimbal mode control*******/
-    static int big_energy_flag = 0, big_energy_state = 0;
-    static int small_energy_flag = 0, small_energy_state = 0;
-    if (data->key.b == 1) {
-        if ((big_energy_state == 0) && (big_energy_flag == 1)) {
-            big_energy_state = 1;
-            big_energy_flag = 0;
-        } else if ((big_energy_state == 1) && (big_energy_flag == 1)) {
-            big_energy_state = 0;
-            big_energy_flag = 0;
-        }
-    } else
-        big_energy_flag = 1;
-
-    if (data->key.v == 1) {
-        if ((small_energy_state == 0) && (small_energy_flag == 1)) {
-            small_energy_state = 1;
-            small_energy_flag = 0;
-        } else if ((small_energy_state == 1) && (small_energy_flag == 1)) {
-            small_energy_state = 0;
-            small_energy_flag = 0;
-        }
-    } else
-        small_energy_flag = 1;
-
-    if (KEY(g)) {
-    }
-    // if (data->key.g == 1) {
+    // /******Gimbal mode control*******/
+    // static int big_energy_flag = 0, big_energy_state = 0;
+    // static int small_energy_flag = 0, small_energy_state = 0;
+    // if (data->key.b == 1) {
     //     if ((big_energy_state == 0) && (big_energy_flag == 1)) {
     //         big_energy_state = 1;
     //         big_energy_flag = 0;
@@ -326,130 +308,306 @@ void Remote_KeyMouseProcess() {
     // } else
     //     big_energy_flag = 1;
 
-    if (data->mouse.r == 1) {
-        Gimbal_ChangeMode(Gimbal_ARMOR);
-        MiniPC_ChangeAimMode(MiniPC_SENTRY);
-        // Gimbal_ChangeMode(Gimbal_ARMOR);
-        // MiniPC_ChangeAimMode(MiniPC_ARMOR);
-    } else if (data->mouse.r == 0) {
-        if (big_energy_state == 1 && small_energy_state == 0) {
-            Gimbal_ChangeMode(Gimbal_BIG_ENERGY);
-            MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
-            // chassis stop
-            Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
-        }
+    // if (data->key.v == 1) {
+    //     if ((small_energy_state == 0) && (small_energy_flag == 1)) {
+    //         small_energy_state = 1;
+    //         small_energy_flag = 0;
+    //     } else if ((small_energy_state == 1) && (small_energy_flag == 1)) {
+    //         small_energy_state = 0;
+    //         small_energy_flag = 0;
+    //     }
+    // } else
+    //     small_energy_flag = 1;
 
-        else if (big_energy_state == 0 && small_energy_state == 1) {
-            Gimbal_ChangeMode(Gimbal_SMALL_ENERGY);
-            MiniPC_ChangeAimMode(MiniPC_SMALL_BUFF);
-            // chassis stop
-            Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
-        } else {
-            if (big_energy_state == 1 && small_energy_state == 1) {
-                big_energy_state = 0;
-                small_energy_state = 0;
-            }
-            Gimbal_ChangeMode(Gimbal_NOAUTO);
-            MiniPC_ChangeAimMode(MiniPC_ARMOR);
+    // if (KEY(g)) {
+    // }
+    // // if (data->key.g == 1) {
+    // //     if ((big_energy_state == 0) && (big_energy_flag == 1)) {
+    // //         big_energy_state = 1;
+    // //         big_energy_flag = 0;
+    // //     } else if ((big_energy_state == 1) && (big_energy_flag == 1)) {
+    // //         big_energy_state = 0;
+    // //         big_energy_flag = 0;
+    // //     }
+    // // } else
+    // //     big_energy_flag = 1;
 
-            if (gyro_state == 1) {
-                Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
-                max_chassis_speed = MOUSE_CHASSIS_MAX_GYRO_SPEED;
-            } else {
-                Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
-                max_chassis_speed = MOUSE_CHASSIS_MAX_SPEED;
-            }
-        }
-    }
+    // if (data->mouse.r == 1) {
+    //     Gimbal_ChangeMode(Gimbal_ARMOR);
+    //     MiniPC_ChangeAimMode(MiniPC_SENTRY);
+    //     // Gimbal_ChangeMode(Gimbal_ARMOR);
+    //     // MiniPC_ChangeAimMode(MiniPC_ARMOR);
+    // } else if (data->mouse.r == 0) {
+    //     if (big_energy_state == 1 && small_energy_state == 0) {
+    //         Gimbal_ChangeMode(Gimbal_BIG_ENERGY);
+    //         MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
+    //         // chassis stop
+    //         Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
+    //     }
 
-    /*******State control of friction wheel*********/
-    if (data->key.q == 1)  // Q Press to open the friction wheel
-        Shooter_ChangeShooterMode(Shoot_REFEREE);
-    if (data->key.e == 1)  // E Press to close the friction wheel
-        Shooter_ChangeShooterMode(Shoot_NULL);
+    //     else if (big_energy_state == 0 && small_energy_state == 1) {
+    //         Gimbal_ChangeMode(Gimbal_SMALL_ENERGY);
+    //         MiniPC_ChangeAimMode(MiniPC_SMALL_BUFF);
+    //         // chassis stop
+    //         Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
+    //     } else {
+    //         if (big_energy_state == 1 && small_energy_state == 1) {
+    //             big_energy_state = 0;
+    //             small_energy_state = 0;
+    //         }
+    //         Gimbal_ChangeMode(Gimbal_NOAUTO);
+    //         MiniPC_ChangeAimMode(MiniPC_ARMOR);
 
-    /*******Radio frequency fire rate control*******/
-    if (data->key.f == 1) {
-    }
-
-    // /*if you move you will exit the auto mode*/
-    // if (((data->key.w == 1) || (data->key.a == 1) || (data->key.d == 1) || (data->key.s == 1)) &&
-    //     (buscomm->chassis_mode == CHASSIS_CTRL_STOP)) {
-    //     Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    //         if (gyro_state == 1) {
+    //             Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
+    //             max_chassis_speed = MOUSE_CHASSIS_MAX_GYRO_SPEED;
+    //         } else {
+    //             Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    //             max_chassis_speed = MOUSE_CHASSIS_MAX_SPEED;
+    //         }
+    //     }
     // }
 
-    /*auto mode minipc offset*/
-    static uint8_t holdFlag_w = 0, holdFlag_a = 0, holdFlag_s = 0, holdFlag_d = 0;
+    // /*******State control of friction wheel*********/
+    // if (data->key.q == 1)  // Q Press to open the friction wheel
+    //     Shooter_ChangeShooterMode(Shoot_REFEREE);
+    // if (data->key.e == 1)  // E Press to close the friction wheel
+    //     Shooter_ChangeShooterMode(Shoot_NULL);
 
-    if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF ||
-        (data->key.q && (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY))) {
-        uint8_t Ctrl_horizental = 0, Ctrl_vertical = 0;
-        if (holdFlag_w && !data->key.w)
-            Ctrl_vertical = data->key.shift ? 10 : 1;
-        if (holdFlag_s && !data->key.s)
-            Ctrl_vertical = data->key.shift ? -10 : -1;
-        if (holdFlag_d && !data->key.d)
-            Ctrl_horizental = data->key.shift ? 10 : 1;
-        if (holdFlag_a && !data->key.a)
-            Ctrl_horizental = data->key.shift ? -10 : -1;
-        holdFlag_w = data->key.w;
-        holdFlag_s = data->key.s;
-        holdFlag_a = data->key.a;
-        holdFlag_d = data->key.d;
+    // /*******Radio frequency fire rate control*******/
+    // if (data->key.f == 1) {
+    // }
 
-        MiniPC_OffsetTuneCntTypeDef* vision_offset_mode = &minipc->vision_offset[minipc->aim_mode];
+    // // /*if you move you will exit the auto mode*/
+    // // if (((data->key.w == 1) || (data->key.a == 1) || (data->key.d == 1) || (data->key.s == 1)) &&
+    // //     (buscomm->chassis_mode == CHASSIS_CTRL_STOP)) {
+    // //     Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    // // }
 
-        if (data->key.f) {
-            vision_offset_mode->horizental = 0;
-            vision_offset_mode->vertical = 0;
-        } else {
-            vision_offset_mode->horizental += Ctrl_horizental;
-            vision_offset_mode->vertical += Ctrl_vertical;
+    // /*auto mode minipc offset*/
+    // static uint8_t holdFlag_w = 0, holdFlag_a = 0, holdFlag_s = 0, holdFlag_d = 0;
+
+    // if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF ||
+    //     (data->key.q && (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY))) {
+    //     uint8_t Ctrl_horizental = 0, Ctrl_vertical = 0;
+    //     if (holdFlag_w && !data->key.w)
+    //         Ctrl_vertical = data->key.shift ? 10 : 1;
+    //     if (holdFlag_s && !data->key.s)
+    //         Ctrl_vertical = data->key.shift ? -10 : -1;
+    //     if (holdFlag_d && !data->key.d)
+    //         Ctrl_horizental = data->key.shift ? 10 : 1;
+    //     if (holdFlag_a && !data->key.a)
+    //         Ctrl_horizental = data->key.shift ? -10 : -1;
+    //     holdFlag_w = data->key.w;
+    //     holdFlag_s = data->key.s;
+    //     holdFlag_a = data->key.a;
+    //     holdFlag_d = data->key.d;
+
+    //     MiniPC_OffsetTuneCntTypeDef* vision_offset_mode = &minipc->vision_offset[minipc->aim_mode];
+
+    //     if (data->key.f) {
+    //         vision_offset_mode->horizental = 0;
+    //         vision_offset_mode->vertical = 0;
+    //     } else {
+    //         vision_offset_mode->horizental += Ctrl_horizental;
+    //         vision_offset_mode->vertical += Ctrl_vertical;
+    //     }
+    // }
+
+    // /******** supercap control ********/
+    // static int cap_flag = 0;
+    // if (data->key.z == 1) {
+    //     if (cap_flag == 1) {
+    //         if (buscomm->cap_mode_user == SUPERCAP_CTRL_OFF) {
+    //             buscomm->cap_mode_user = SUPERCAP_CTRL_ON;
+    //         } else if (buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
+    //             buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
+    //         }
+    //         cap_flag = 0;
+    //     }
+    // } else
+    //     cap_flag = 1;
+
+    // if (data->key.shift == 1) {
+    //     buscomm->cap_boost_mode_user = SUPERCAP_BOOST;
+    // } else {
+    //     buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
+    // }
+
+    // /**************Front and back control*************/
+    // static float t_ws = 0.0f;
+    // static float t_ad = 0.0f;
+
+    // if (!data->key.q) {
+    //     if (data->key.w == 1) {
+    //         t_ws = Math_CalcSlopeRef(t_ws, max_chassis_speed, &Remote_ChassisFBSlope);
+    //     } else if (data->key.s == 1) {
+    //         t_ws = Math_CalcSlopeRef(t_ws, -max_chassis_speed, &Remote_ChassisFBSlope);
+    //     } else
+    //         t_ws = 0;
+    //     buscomm->chassis_fb_ref = t_ws;
+
+    //     /**************Left and right control*************/
+    //     if (data->key.d == 1) {
+    //         t_ad = Math_CalcSlopeRef(t_ad, max_chassis_speed, &Remote_ChassisRLSlope);
+    //     } else if (data->key.a == 1) {
+    //         t_ad = Math_CalcSlopeRef(t_ad, -max_chassis_speed, &Remote_ChassisRLSlope);
+    //     } else
+    //         t_ad = 0;
+    //     buscomm->chassis_lr_ref = t_ad;
+    // }
+
+    // if (gimbal->mode.present_mode == Gimbal_NOAUTO || (gimbal->mode.present_mode != Gimbal_IMU_DEBUG && minipc->target_state != MiniPC_TARGET_FOLLOWING)) {
+    //     // Change the control amount according to the gimbal control
+    //     float yaw, pitch;
+    //     yaw = (float)data->mouse.x * MOUSE_YAW_ANGLE_TO_FACT;
+    //     pitch = Filter_Bessel((float)data->mouse.y, &Remote_mouse_y_Filter) * MOUSE_PITCH_ANGLE_TO_FACT;
+
+    //     Gimbal_SetYawRefDelta(yaw);
+    //     Gimbal_SetPitchRefDelta(pitch);
+    // }
+
+    static uint8_t wait4release = 0;
+    wait4release_watch = wait4release;
+
+    static uint8_t Ctrl_horizental = 0, Ctrl_vertical = 0;
+    Ctrl_horizental = 0, Ctrl_vertical = 0;
+    MiniPC_OffsetTuneCntTypeDef* vision_offset_mode = &minipc->vision_offset[minipc->aim_mode];
+
+    if (KEY2(ctrl, shift)) {
+        // wait4release = 2
+        // AutoAim Offset
+        if (KEY_DN(w)) {
+            Ctrl_vertical = 10;
+            wait4release = 1;
+        } else if (KEY_DN(s)) {
+            Ctrl_vertical = -10;
+            wait4release = 1;
+        } else if (KEY_DN(d)) {
+            Ctrl_horizental = 10;
+            wait4release = 1;
+        } else if (KEY_DN(a)) {
+            Ctrl_horizental = -10;
+            wait4release = 1;
         }
-    }
 
-    /******** supercap control ********/
-    static int cap_flag = 0;
-    if (data->key.z == 1) {
-        if (cap_flag == 1) {
-            if (buscomm->cap_mode_user == SUPERCAP_CTRL_OFF) {
-                buscomm->cap_mode_user = SUPERCAP_CTRL_ON;
-            } else if (buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
-                buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
+    } else if (KEY(ctrl)) {
+        if (wait4release <= 1) {
+            // AutoAim Offset
+            if (KEY_DN(f)) {
+                vision_offset_mode->horizental = 0;
+                vision_offset_mode->vertical = 0;
+                wait4release = 1;
+            } else if (KEY_DN(w)) {
+                Ctrl_vertical = 1;
+                wait4release = 1;
+            } else if (KEY_DN(s)) {
+                Ctrl_vertical = -1;
+                wait4release = 1;
+            } else if (KEY_DN(d)) {
+                Ctrl_horizental = 1;
+                wait4release = 1;
+            } else if (KEY_DN(a)) {
+                Ctrl_horizental = -1;
+                wait4release = 1;
             }
-            cap_flag = 0;
         }
-    } else
-        cap_flag = 1;
-
-    if (data->key.shift == 1) {
-        buscomm->cap_boost_mode_user = SUPERCAP_BOOST;
+    } else if (KEY(shift)) {
+        if (wait4release <= 1) {
+            // UI switch
+            if (KEY_DN(c)) {
+                buscomm->ui_cmd = !buscomm->ui_cmd;
+                wait4release = 1;
+            }
+            // reload
+            if (KEY_DN(r)) {
+                wait4release = 1;
+            }
+        }
     } else {
-        buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
+        if (wait4release == 0) {
+            // friction wheel
+            if (KEY_DN(q))  // Q Press to open the friction wheel
+                Shooter_ChangeShooterMode(Shoot_REFEREE);
+            if (KEY_DN(e))  // E Press to close the friction wheel
+                Shooter_ChangeShooterMode(Shoot_NULL);
+
+            // supercap
+            if (KEY_UP(z))
+                buscomm->cap_mode_user = (buscomm->cap_mode_user == SUPERCAP_CTRL_OFF) ? SUPERCAP_CTRL_ON : SUPERCAP_CTRL_OFF;
+
+            // autoaim mode
+            if (KEY_UP(v))
+                Remote_SwitchAutoAimState(MiniPC_SMALL_BUFF);
+
+            if (KEY_UP(b))
+                Remote_SwitchAutoAimState(MiniPC_BIG_BUFF);
+
+            if (KEY_UP(g))
+                Remote_SwitchAutoAimState(MiniPC_SENTRY);
+
+            /**************Front and back control*************/
+            static float t_ws = 0.0f;
+
+            if (KEY(w)) {
+                t_ws = Math_CalcSlopeRef(t_ws, Remote_max_chassis_speed, &Remote_ChassisFBSlope);
+            } else if (KEY(s)) {
+                t_ws = Math_CalcSlopeRef(t_ws, -Remote_max_chassis_speed, &Remote_ChassisFBSlope);
+            } else
+                t_ws = 0;
+            buscomm->chassis_fb_ref = t_ws;
+
+            /**************Left and right control*************/
+            static float t_ad = 0.0f;
+
+            if (KEY(d)) {
+                t_ad = Math_CalcSlopeRef(t_ad, Remote_max_chassis_speed, &Remote_ChassisRLSlope);
+            } else if (KEY(a)) {
+                t_ad = Math_CalcSlopeRef(t_ad, -Remote_max_chassis_speed, &Remote_ChassisRLSlope);
+            } else
+                t_ad = 0;
+            buscomm->chassis_lr_ref = t_ad;
+        }
     }
 
-    /**************Front and back control*************/
-    static float t_ws = 0.0f;
-    static float t_ad = 0.0f;
+    if (wait4release == 0) {
+        /******** CTRL and SHIFT function ******/
+        // gyro
+        if (KEY_UP(ctrl))
+            Remote_SwitchGryoState();
 
-    if (!data->key.q) {
-        if (data->key.w == 1) {
-            t_ws = Math_CalcSlopeRef(t_ws, max_chassis_speed, &Remote_ChassisFBSlope);
-        } else if (data->key.s == 1) {
-            t_ws = Math_CalcSlopeRef(t_ws, -max_chassis_speed, &Remote_ChassisFBSlope);
-        } else
-            t_ws = 0;
-        buscomm->chassis_fb_ref = t_ws;
-
-        /**************Left and right control*************/
-        if (data->key.d == 1) {
-            t_ad = Math_CalcSlopeRef(t_ad, max_chassis_speed, &Remote_ChassisRLSlope);
-        } else if (data->key.a == 1) {
-            t_ad = Math_CalcSlopeRef(t_ad, -max_chassis_speed, &Remote_ChassisRLSlope);
-        } else
-            t_ad = 0;
-        buscomm->chassis_lr_ref = t_ad;
+        // boost
+        buscomm->cap_boost_mode_user = KEY(shift) ? SUPERCAP_BOOST : SUPERCAP_UNBOOST;
+    } else {
+        // All zero
+        if (memcmp(remoteKey, &remoteKey_zero, sizeof(remoteKey_zero)) == 0)
+            wait4release = 0;
     }
+
+    // autoaim offset
+    vision_offset_mode->horizental += Ctrl_horizental;
+    vision_offset_mode->vertical += Ctrl_vertical;
+
+    memcpy(&remoteKey_last, remoteKey, sizeof(remoteKey_last));
+
+    /*********** mouse control********/
+    // static uint8_t mouse_r_last = 0;
+    if (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY) {
+        if (data->mouse.r == 1)
+            Gimbal_ChangeMode(Gimbal_ARMOR);
+        else
+            Gimbal_ChangeMode(Gimbal_NOAUTO);
+    }
+    // else {
+    //     if (!mouse_r_last && data->mouse.r) {
+    //         MiniPC_ChangeAimMode(MiniPC_ARMOR);
+    //         Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    //         Gimbal_ChangeMode(Gimbal_ARMOR);
+    //     } else if (mouse_r_last && !data->mouse.r) {
+    //         Remote_SwitchAutoAimState(MiniPC_ARMOR);
+    //     }
+    // }
+    // mouse_r_last = data->mouse.r;
 
     if (gimbal->mode.present_mode == Gimbal_NOAUTO || (gimbal->mode.present_mode != Gimbal_IMU_DEBUG && minipc->target_state != MiniPC_TARGET_FOLLOWING)) {
         // Change the control amount according to the gimbal control
@@ -460,8 +618,6 @@ void Remote_KeyMouseProcess() {
         Gimbal_SetYawRefDelta(yaw);
         Gimbal_SetPitchRefDelta(pitch);
     }
-
-    memcpy(&remoteKey_last, remoteKey, sizeof(remoteKey_last));
 }
 
 /**
@@ -472,6 +628,64 @@ void Remote_KeyMouseProcess() {
 void Remote_ChangeChassisState(uint8_t chassis_mode) {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     buscomm->chassis_mode = chassis_mode;
+}
+
+/**
+ * @brief      switch chassis gryo state
+ * @param      NULL
+ * @retval     NULL
+ */
+void Remote_SwitchGryoState() {
+    static uint8_t gyro_state = 0;
+
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    if (buscomm->chassis_mode == CHASSIS_CTRL_STOP)
+        return;
+
+    if (gyro_state == 0) {
+        Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
+        Remote_max_chassis_speed = MOUSE_CHASSIS_MAX_GYRO_SPEED;
+        gyro_state = 1;
+    } else {
+        Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+        Remote_max_chassis_speed = MOUSE_CHASSIS_MAX_SPEED;
+        gyro_state = 0;
+    }
+}
+
+/**
+ * @brief      switch autoaim state
+ * @param      MiniPC_AutoAimModeEnum mode
+ * @retval     NULL
+ */
+void Remote_SwitchAutoAimState(uint8_t mode) {
+    MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
+    // static uint8_t isInArmorAim
+    //     // First Priority
+    //     if (mode == MiniPC_ARMOR) {
+    //     if (minipc->aim_mode == MiniPC_ARMOR) {
+    //         Gimbal_ChangeMode(Gimbal_ARMOR);
+    //     } else {
+    //         MiniPC_ChangeAimMode(MiniPC_ARMOR);
+    //         Gimbal_ChangeMode(Gimbal_ARMOR);
+    //         Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    //     }
+    // }
+    // else
+    if (minipc->aim_mode == MiniPC_ARMOR) {
+        MiniPC_ChangeAimMode(mode);
+        if (mode == MiniPC_SMALL_BUFF) {
+            Gimbal_ChangeMode(Gimbal_SMALL_ENERGY);
+            Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
+        } else if (mode == MiniPC_BIG_BUFF) {
+            Gimbal_ChangeMode(Gimbal_BIG_ENERGY);
+            Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
+        }
+    } else if (minipc->aim_mode == mode) {
+        MiniPC_ChangeAimMode(MiniPC_ARMOR);
+        Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+        Gimbal_ChangeMode(Gimbal_NOAUTO);
+    }
 }
 
 /**

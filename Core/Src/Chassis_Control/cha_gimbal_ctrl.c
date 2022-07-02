@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-29 19:21:46
+ * @LastEditTime : 2022-07-01 20:53:27
  */
 
 #include "cha_gimbal_ctrl.h"
@@ -117,7 +117,8 @@ float GimbalYaw_Angle_compensate;
 
 void GimbalYaw_AngleCalibrate() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-    GimbalYaw_Angle_compensate = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - buscomm->gimbal_imu_pos;
+    GimbalYaw_Angle_compensate = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - buscomm->gimbal_imu_pos;
+
 }
 
 /**
@@ -128,9 +129,8 @@ void GimbalYaw_AngleCalibrate() {
 void GimbalYaw_SetEncoderFdb() {
     GimbalYaw_GimbalYawTypeDef* gimbalyaw = GimbalYaw_GetGimbalYawPtr();
 
-    gimbalyaw->yaw_position_fdb = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
-    //gimbalyaw->yaw_speed_fdb = Motor_gimbalMotorYaw.encoder.speed;
-	
+    gimbalyaw->yaw_position_fdb = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
+    // gimbalyaw->yaw_speed_fdb = Motor_gimbalMotorYaw.encoder.speed;
 }
 
 /**

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-29 19:49:00
+ * @LastEditTime : 2022-07-01 20:55:20
  *
  */
 
@@ -266,6 +266,7 @@ void BusComm_ResetBusCommData() {
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     buscomm->last_update_time[1] = HAL_GetTick();
     buscomm->yaw_relative_angle = 0;
+    buscomm->yaw_encoder_angle = 0;
     buscomm->robot_id = 0;
     buscomm->heat_17mm = 0;
     buscomm->power_limit = 0;
@@ -358,6 +359,12 @@ void BusComm_Update() {
 
     Referee_SetMode(auto_aim_mode, cha_mode);
 
+    data->yaw_encoder_angle = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
+    while (data->yaw_encoder_angle > 180)
+        data->yaw_encoder_angle -= 360;
+    while (data->yaw_encoder_angle < -180)
+        data->yaw_encoder_angle += 360;
+        
     data->yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     data->robot_id = referee->robot_id;
     data->power_limit = referee->max_chassis_power;

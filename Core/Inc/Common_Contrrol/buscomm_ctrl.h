@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 10:14:22
+ * @LastEditTime : 2022-07-01 13:39:13
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -102,6 +102,7 @@ typedef struct {
 
     // Chassis up stream
     float yaw_relative_angle;     // Angle of chassis relative to pan tilt
+    float yaw_encoder_angle;     // Angle of chassis relative to pan tilt (consequent)
     uint8_t robot_id;             // Robot ID
     uint8_t power_limit;          // Super capacitor state
     uint16_t heat_17mm;           // Heat transfer of 17mm launching mechanism

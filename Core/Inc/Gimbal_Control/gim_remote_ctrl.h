@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:51:02
+ * @LastEditTime : 2022-07-01 16:09:24
  */
 
 #ifndef GIM_REMOTE_CTRL_H
@@ -42,6 +42,8 @@ void Remote_RemoteShooterModeSet(void);
 void Remote_RemoteProcess(void);
 void Remote_KeyMouseProcess(void);
 void Remote_ChangeChassisState(uint8_t chassis_mode);
+void Remote_SwitchGryoState(void);
+void Remote_SwitchAutoAimState(uint8_t mode);
 uint8_t Remote_Gesturejudge(void);
 void Remote_Gesture(void);
 void Remote_GestureFunction_1(void);

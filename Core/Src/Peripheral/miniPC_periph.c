@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-29 19:26:44
+ * @LastEditTime : 2022-07-01 13:48:27
  */
 
 #include "minipc_periph.h"
@@ -103,10 +103,10 @@ void MiniPC_GimbalAngleCalibrate() {
                                imu->speed.pitch};
 
     if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF) {
-        float angles_now_motor[2] = {buscomm->yaw_relative_angle,
+        float angles_now_motor[2] = {buscomm->yaw_encoder_angle,
                                      Motor_gimbalMotorPitch.encoder.angle};
 
-        MiniPC_angles[0] = buscomm->yaw_relative_angle;
+        MiniPC_angles[0] = buscomm->yaw_encoder_angle;
         // MiniPC_angles[0] = angles_now_motor[0] - MiniPC_angles_offset_motor[0] + MiniPC_angles_offset_imu[0];
         // MiniPC_angles[1] = angles_now_motor[1] - MiniPC_angles_offset_motor[1] + MiniPC_angles_offset_imu[1];
 

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 10:18:48
+ * @LastEditTime : 2022-07-02 15:23:31
  */
 
 #include "buscomm_cmd.h"
@@ -116,9 +116,9 @@ static void _send_referee_data_1(uint8_t buff[]) {
     ratea[0] = 1000 * counta[0] / HAL_GetTick();
     memset(buff, 0, 8);
 
-    i162buff((int16_t)(buscomm->yaw_relative_angle * 100), buff);
-    i162buff((int16_t)(buscomm->speed_17mm_fdb * 100), buff + 2);
-    ui162buff(buscomm->heat_17mm, buff + 4);
+    float2buff(buscomm->yaw_encoder_angle, buff);
+    i162buff((int16_t)(buscomm->speed_17mm_fdb * 100), buff + 4);
+    ui162buff(buscomm->heat_17mm, buff + 6);
 
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
 }
@@ -135,7 +135,7 @@ static void _send_referee_data_2(uint8_t buff[]) {
     ratea[1] = 1000 * counta[1] / HAL_GetTick();
     memset(buff, 0, 8);
     buff[0] = (buscomm->game_outpost_alive << 7) + buscomm->robot_id;
-    buff[1] = buscomm->speed_17mm_limit << 6;
+    buff[1] = buscomm->speed_17mm_limit << 6 ;
     i162buff(buscomm->heat_cooling_limit, buff + 2);
 
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
@@ -230,10 +230,19 @@ static void _set_referee_data_1(uint8_t buff[]) {
     rateb[BusComm_PKG_REFEREE_1] = 1000 * countb[BusComm_PKG_REFEREE_1] / HAL_GetTick();
 
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    static float yaw_angle;
 
-    buscomm->yaw_relative_angle = ((float)buff2i16(buff)) / 100;
-    buscomm->speed_17mm_fdb = ((float)buff2i16(buff + 2)) / 100;
-    buscomm->heat_17mm = buff2ui16(buff + 4);
+    yaw_angle = buff2float(buff);
+
+    buscomm->yaw_encoder_angle = yaw_angle;
+    while (yaw_angle > 180)
+        yaw_angle -= 360;
+    while (yaw_angle < -180)
+        yaw_angle += 360;
+    buscomm->yaw_relative_angle = yaw_angle;
+
+    buscomm->speed_17mm_fdb = ((float)buff2i16(buff + 4)) / 100;
+    buscomm->heat_17mm = buff2ui16(buff + 6);
 
     buscomm->last_update_time[BusComm_PKG_REFEREE_1] = HAL_GetTick();
 }

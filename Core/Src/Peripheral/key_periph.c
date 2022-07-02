@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-27 17:01:04
+ * @LastEditTime : 2022-06-30 18:19:53
  */
 
 #include "key_periph.h"
@@ -37,8 +37,8 @@ uint8_t Key_GetEquipCode() {
     // if (GPIO_ReadPin(CODE3) == GPIO_PIN_RESET) {
     //     code |= 0x04;
     // }
-    // code = 0x07;  // for infantry 3
-    code = 0x06;  // for infantry 4?5
+    code = 0x07;  // for infantry 3
+    // code = 0x06;  // for infantry 4?5
 #else
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     code = buscomm->infantry_code;
