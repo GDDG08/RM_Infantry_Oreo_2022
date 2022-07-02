@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:59:41
+ * @LastEditTime : 2022-06-29 19:21:46
  */
 
 #include "cha_gimbal_ctrl.h"
@@ -113,6 +113,13 @@ void GimbalYaw_SetMode(GimbalYaw_GimbalYawModeEnum mode) {
         gimbalyaw->mode_changed = 1;
 }
 
+float GimbalYaw_Angle_compensate;
+
+void GimbalYaw_AngleCalibrate() {
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    GimbalYaw_Angle_compensate = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - buscomm->gimbal_imu_pos;
+}
+
 /**
  * @brief      Set the motor encoder as yaw fb
  * @param      NULL
@@ -121,8 +128,9 @@ void GimbalYaw_SetMode(GimbalYaw_GimbalYawModeEnum mode) {
 void GimbalYaw_SetEncoderFdb() {
     GimbalYaw_GimbalYawTypeDef* gimbalyaw = GimbalYaw_GetGimbalYawPtr();
 
-    gimbalyaw->yaw_position_fdb = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET;
-    gimbalyaw->yaw_speed_fdb = Motor_gimbalMotorYaw.encoder.speed;
+    gimbalyaw->yaw_position_fdb = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
+    //gimbalyaw->yaw_speed_fdb = Motor_gimbalMotorYaw.encoder.speed;
+	
 }
 
 /**
@@ -205,6 +213,7 @@ void GimbalYaw_Control() {
     // Clear PID when mode changes
     if (gimbalyaw->mode_changed == 1) {
         Motor_ResetMotorPID(&Motor_gimbalMotorYaw);
+        GimbalYaw_AngleCalibrate();
         gimbalyaw->mode_changed = 0;
     }
 

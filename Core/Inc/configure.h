@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-23 17:23:38
+ * @LastEditTime : 2022-06-29 19:44:43
  */
 
 // Note:
@@ -31,7 +31,7 @@ extern "C" {
 #define __FN_DEBUG_NOREFEREEHW __FN_DISABLE
 #define __FN_DEBUG_BTLOG __FN_ENABLE
 #define __FN_MINIPC_CAPT __FN_ENABLE
-#define __FN_SHOOTER_PID __FN_ENABLE  //对于无编码器的车，开启编码器模式会导致电机高速转动
+#define __FN_SHOOTER_PID __FN_DISABLE  //对于无编码器的车，开启编码器模式会导致电机高速转动
 
 /*      **********************************************      */
 

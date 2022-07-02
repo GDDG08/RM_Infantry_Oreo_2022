@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-25 15:36:28
+ * @LastEditTime : 2022-06-29 19:40:42
  */
 
 #include "debug_BTlog.h"
@@ -45,8 +45,8 @@ const uint8_t Const_BTlog_ID = 0x02;
 
 /*              Debug BTlog constant            */
 const uint32_t Const_BTlog_HEART_SENT_PERIOD = 5;  // (ms)
-const uint16_t Const_BTlog_RX_BUFF_LEN_MAX = 5000;
-const uint16_t Const_BTlog_TX_BUFF_LEN_MAX = 5000;
+const uint16_t Const_BTlog_RX_BUFF_LEN_MAX = 500;
+const uint16_t Const_BTlog_TX_BUFF_LEN_MAX = 1000;
 const uint16_t Const_BTlog_RX_DATA_LEN_MAX = 50;
 const uint16_t Const_BTlog_TX_DATA_LEN_MAX = 50;
 
@@ -150,12 +150,18 @@ void BTlog_Init() {
     // Log Data Send
     ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-    // // ADD_SEND_DATA(imu->angle.row, Float, "imu->angle.row");
+    ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
     // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
+    ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
+    ADD_SEND_DATA(MiniPC_angles[0], Float, "MiniPC_angles:yaw");
+    ADD_SEND_DATA(MiniPC_angles[1], Float, "MiniPC_angles:pitch");
+    ADD_SEND_DATA(MiniPC_angles[2], Float, "MiniPC_angles:roll");
+    ADD_SEND_DATA(MiniPC_angles[3], Float, "MiniPC_spd:yaw");
+    ADD_SEND_DATA(MiniPC_angles[4], Float, "MiniPC_spd:pitch");
 
     // ADD_SEND_DATA(BTlog_MiniPC_debug_time_diff, Int16, "minipcD->timediff");
     ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
-    ADD_SEND_DATA(sin_gen, Float, "sin_gen");
+    // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
     ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
     ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
     // ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
@@ -174,15 +180,15 @@ void BTlog_Init() {
     // ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
     // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
     ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
-    ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
+    // ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
     // ADD_SEND_DATA(shooter->heat_ctrl.current_speed, Float, "feeder_speed");/
     // ADD_SEND_DATA(shooter->slope_output, Float, "slope");
     // ADD_SEND_DATA(shooter->dertaRef, Float, "derta_ref");
     //  ADD_SEND_DATA(shooter->speed_limit, Float, "overspeed_limit");
     //  ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "shoot_speed");
 
-    ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
-    ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
+    // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
+    // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");

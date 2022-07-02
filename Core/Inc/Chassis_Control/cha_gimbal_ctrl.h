@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:49:42
+ * @LastEditTime : 2022-06-29 19:22:10
  */
 
 #ifndef CHA_GIMBAL_CTRL_H
@@ -58,6 +58,7 @@ extern Motor_MotorParamTypeDef GimbalYaw_gimbalYawMotorParamIMUDebug;
 extern Motor_MotorParamTypeDef GimbalYaw_gimbalYawMotorParamNoAuto;
 
 extern GimbalYaw_GimbalYawTypeDef GimbalYaw_gimbalYawControlData;
+extern float GimbalYaw_Angle_compensate;
 
 void Gimbal_Task(void const* argument);
 void GimbalYaw_InitGimbalYaw(void);

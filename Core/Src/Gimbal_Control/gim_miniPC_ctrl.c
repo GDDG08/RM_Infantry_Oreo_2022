@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-23 14:06:07
+ * @LastEditTime : 2022-06-27 21:32:21
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -65,6 +65,7 @@ void MiniPC_ControlInit() {
     Const_SetAutoAimOffset();
     minipc->enable_aim_output = 1;
     minipc->control_mode = MiniPC_ABSOLUTE;
+    memset(minipc->vision_offset, 0, sizeof(minipc->vision_offset));
 
     Filter_LowPassInit(0.4, &minipc->yaw_fil_param);
     Filter_LowPassInit(0.1, &minipc->pitch_fil_param);
@@ -195,7 +196,7 @@ void MiniPC_SetAutoAimOutput() {
             }
         } else {
             if (minipc->target_state == MiniPC_TARGET_FOLLOWING) {
-                Gimbal_SetYawAutoRef(/*imu->angle.yaw + */minipc->yaw_ref_filtered + minipc->output_offset.yaw);
+                Gimbal_SetYawAutoRef(/*imu->angle.yaw + */ minipc->yaw_ref_filtered + minipc->output_offset.yaw);
                 Gimbal_SetPitchAutoRef(/*imu->angle.pitch  +*/ minipc->pitch_ref_filtered + minipc->output_offset.pitch);
             }
         }

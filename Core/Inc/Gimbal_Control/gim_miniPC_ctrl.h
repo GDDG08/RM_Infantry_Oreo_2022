@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-27 15:19:09
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-15 20:23:21
+ * @LastEditTime : 2022-06-27 21:40:48
  */
 
 #ifndef GIM_MINIPC_CTRL_H
@@ -33,7 +33,7 @@ typedef enum {
     MiniPC_ARMOR = 0u,
     MiniPC_BIG_BUFF = 1u,
     MiniPC_SMALL_BUFF = 2u,
-    MiniPC_SENTRY = 11u
+    MiniPC_SENTRY = 3u
 } MiniPC_AutoAimModeEnum;
 
 typedef enum {
@@ -45,6 +45,11 @@ typedef struct {
     float pitch;
     float yaw;
 } MiniPC_OffsetTypeDef;
+
+typedef struct {
+    int8_t horizental;
+    int8_t vertical;
+} MiniPC_OffsetTuneCntTypeDef;
 
 typedef struct {
     uint8_t enable_aim_output;
@@ -74,6 +79,7 @@ typedef struct {
     MiniPC_AutoControlModeEnum control_mode;
     MiniPC_TargetFollowModeEnum target_state;
     MiniPC_OffsetTypeDef output_offset;
+    MiniPC_OffsetTuneCntTypeDef vision_offset[4];
 } MiniPC_MiniPCControlTypeDef;
 
 typedef enum {
@@ -115,7 +121,6 @@ extern float Predict_Offest_x, Predict_Offset_y;
 
 extern uint16_t TimeCountPredict, Target_x_SuddenStart_Count, Target_x_SuddenStop_Count, Target_z_SuddenStart_Count, Target_z_SuddenStop_Count;
 extern uint8_t is_x_SuddenStart, is_x_SuddenStop, is_z_SuddenStart, is_z_SuddenStop;
-
 
 MiniPC_MiniPCControlTypeDef* MiniPC_GetMiniPCControlDataPtr(void);
 MiniPC_MiniPCControlTypeDef* MiniPC_GetMiniPCDecodeDataPtr(void);

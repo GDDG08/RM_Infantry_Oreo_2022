@@ -5,12 +5,16 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-23 18:42:20
+ * @LastEditTime : 2022-06-29 17:29:06
  */
 
 #include "gim_remote_ctrl.h"
 
 #if __FN_IF_ENABLE(__FN_CTRL_REMOTE)
+
+#define KEY(T) data->key.T
+#define KEY_UP(T) data->key.T
+#define KEY_DN(T) data->key.T
 
 #include "const.h"
 #include "buscomm_ctrl.h"
@@ -21,6 +25,7 @@
 #include "gim_login_ctrl.h"
 
 Remote_RemoteControlTypeDef Remote_remoteControlData;
+Remote_KeyboardTypeDef remoteKey_last;
 
 Math_SlopeParamTypeDef Remote_ChassisFBSlope;
 Math_SlopeParamTypeDef Remote_ChassisRLSlope;
@@ -90,8 +95,8 @@ void Remote_ControlCom() {
             /* right switch down is auto aim mode   */
             // Gimbal_ChangeMode(Gimbal_ARMOR);
             // MiniPC_ChangeAimMode(MiniPC_ARMOR);
-            Gimbal_ChangeMode(Gimbal_SMALL_ENERGY);
-            MiniPC_ChangeAimMode(MiniPC_SMALL_BUFF);
+            Gimbal_ChangeMode(Gimbal_BIG_ENERGY);
+            MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
             Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
             Remote_RemoteShooterModeSet();
             Remote_Gesture();
@@ -227,6 +232,7 @@ void Remote_RemoteProcess() {
  */
 void Remote_KeyMouseProcess() {
     Remote_RemoteDataTypeDef* data = Remote_GetRemoteDataPtr();
+        Remote_KeyboardTypeDef* remoteKey = &(Remote_GetRemoteDataPtr()->key);
     Remote_RemoteControlTypeDef* control_data = Remote_GetControlDataPtr();
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
@@ -307,6 +313,19 @@ void Remote_KeyMouseProcess() {
     } else
         small_energy_flag = 1;
 
+    if (KEY(g)) {
+    }
+    // if (data->key.g == 1) {
+    //     if ((big_energy_state == 0) && (big_energy_flag == 1)) {
+    //         big_energy_state = 1;
+    //         big_energy_flag = 0;
+    //     } else if ((big_energy_state == 1) && (big_energy_flag == 1)) {
+    //         big_energy_state = 0;
+    //         big_energy_flag = 0;
+    //     }
+    // } else
+    //     big_energy_flag = 1;
+
     if (data->mouse.r == 1) {
         Gimbal_ChangeMode(Gimbal_ARMOR);
         MiniPC_ChangeAimMode(MiniPC_SENTRY);
@@ -342,6 +361,7 @@ void Remote_KeyMouseProcess() {
             }
         }
     }
+
     /*******State control of friction wheel*********/
     if (data->key.q == 1)  // Q Press to open the friction wheel
         Shooter_ChangeShooterMode(Shoot_REFEREE);
@@ -352,13 +372,40 @@ void Remote_KeyMouseProcess() {
     if (data->key.f == 1) {
     }
 
-    if (data->key.g == 1) {
-    }
+    // /*if you move you will exit the auto mode*/
+    // if (((data->key.w == 1) || (data->key.a == 1) || (data->key.d == 1) || (data->key.s == 1)) &&
+    //     (buscomm->chassis_mode == CHASSIS_CTRL_STOP)) {
+    //     Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    // }
 
-    /*if you move you will exit the auto mode*/
-    if (((data->key.w == 1) || (data->key.a == 1) || (data->key.d == 1) || (data->key.s == 1)) &&
-        (buscomm->chassis_mode == CHASSIS_CTRL_STOP)) {
-        Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    /*auto mode minipc offset*/
+    static uint8_t holdFlag_w = 0, holdFlag_a = 0, holdFlag_s = 0, holdFlag_d = 0;
+
+    if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF ||
+        (data->key.q && (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY))) {
+        uint8_t Ctrl_horizental = 0, Ctrl_vertical = 0;
+        if (holdFlag_w && !data->key.w)
+            Ctrl_vertical = data->key.shift ? 10 : 1;
+        if (holdFlag_s && !data->key.s)
+            Ctrl_vertical = data->key.shift ? -10 : -1;
+        if (holdFlag_d && !data->key.d)
+            Ctrl_horizental = data->key.shift ? 10 : 1;
+        if (holdFlag_a && !data->key.a)
+            Ctrl_horizental = data->key.shift ? -10 : -1;
+        holdFlag_w = data->key.w;
+        holdFlag_s = data->key.s;
+        holdFlag_a = data->key.a;
+        holdFlag_d = data->key.d;
+
+        MiniPC_OffsetTuneCntTypeDef* vision_offset_mode = &minipc->vision_offset[minipc->aim_mode];
+
+        if (data->key.f) {
+            vision_offset_mode->horizental = 0;
+            vision_offset_mode->vertical = 0;
+        } else {
+            vision_offset_mode->horizental += Ctrl_horizental;
+            vision_offset_mode->vertical += Ctrl_vertical;
+        }
     }
 
     /******** supercap control ********/
@@ -385,22 +432,24 @@ void Remote_KeyMouseProcess() {
     static float t_ws = 0.0f;
     static float t_ad = 0.0f;
 
-    if (data->key.w == 1) {
-        t_ws = Math_CalcSlopeRef(t_ws, max_chassis_speed, &Remote_ChassisFBSlope);
-    } else if (data->key.s == 1) {
-        t_ws = Math_CalcSlopeRef(t_ws, -max_chassis_speed, &Remote_ChassisFBSlope);
-    } else
-        t_ws = 0;
-    buscomm->chassis_fb_ref = t_ws;
+    if (!data->key.q) {
+        if (data->key.w == 1) {
+            t_ws = Math_CalcSlopeRef(t_ws, max_chassis_speed, &Remote_ChassisFBSlope);
+        } else if (data->key.s == 1) {
+            t_ws = Math_CalcSlopeRef(t_ws, -max_chassis_speed, &Remote_ChassisFBSlope);
+        } else
+            t_ws = 0;
+        buscomm->chassis_fb_ref = t_ws;
 
-    /**************Left and right control*************/
-    if (data->key.d == 1) {
-        t_ad = Math_CalcSlopeRef(t_ad, max_chassis_speed, &Remote_ChassisRLSlope);
-    } else if (data->key.a == 1) {
-        t_ad = Math_CalcSlopeRef(t_ad, -max_chassis_speed, &Remote_ChassisRLSlope);
-    } else
-        t_ad = 0;
-    buscomm->chassis_lr_ref = t_ad;
+        /**************Left and right control*************/
+        if (data->key.d == 1) {
+            t_ad = Math_CalcSlopeRef(t_ad, max_chassis_speed, &Remote_ChassisRLSlope);
+        } else if (data->key.a == 1) {
+            t_ad = Math_CalcSlopeRef(t_ad, -max_chassis_speed, &Remote_ChassisRLSlope);
+        } else
+            t_ad = 0;
+        buscomm->chassis_lr_ref = t_ad;
+    }
 
     if (gimbal->mode.present_mode == Gimbal_NOAUTO || (gimbal->mode.present_mode != Gimbal_IMU_DEBUG && minipc->target_state != MiniPC_TARGET_FOLLOWING)) {
         // Change the control amount according to the gimbal control
@@ -411,6 +460,8 @@ void Remote_KeyMouseProcess() {
         Gimbal_SetYawRefDelta(yaw);
         Gimbal_SetPitchRefDelta(pitch);
     }
+
+    memcpy(&remoteKey_last, remoteKey, sizeof(remoteKey_last));
 }
 
 /**

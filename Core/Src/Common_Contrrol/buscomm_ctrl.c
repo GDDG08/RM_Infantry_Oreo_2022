@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-17 22:42:02
+ * @LastEditTime : 2022-06-29 19:49:00
  *
  */
 
@@ -358,7 +358,7 @@ void BusComm_Update() {
 
     Referee_SetMode(auto_aim_mode, cha_mode);
 
-    data->yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET;
+    data->yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     data->robot_id = referee->robot_id;
     data->power_limit = referee->max_chassis_power;
     data->heat_17mm = referee->shooter_heat0;
@@ -416,8 +416,9 @@ void _cmd_mode_control() {
         case GIMBAL_YAW_CTRL_BIG_ENERGY: {
             GimbalYaw_SetMode(GimbalYaw_MODE_BIG_ENERGY);
             GimbalYaw_SetYawRef(buscomm->gimbal_yaw_ref);
-            GimbalYaw_SetIMUYawPositionFdb(buscomm->gimbal_imu_pos);
+            // GimbalYaw_SetIMUYawPositionFdb(buscomm->gimbal_imu_pos);
             GimbalYaw_SetIMUYawSpeedFdb(buscomm->gimbal_imu_spd);
+            GimbalYaw_SetEncoderFdb();
             GimbalYaw_SetGimbalYawControlState(1);
             GimbalYaw_SetGimbalYawOutputState(1);
             break;
@@ -425,8 +426,9 @@ void _cmd_mode_control() {
         case GIMBAL_YAW_CTRL_SMALL_ENERGY: {
             GimbalYaw_SetMode(GimbalYaw_MODE_SMALL_ENERGY);
             GimbalYaw_SetYawRef(buscomm->gimbal_yaw_ref);
-            GimbalYaw_SetIMUYawPositionFdb(buscomm->gimbal_imu_pos);
+            // GimbalYaw_SetIMUYawPositionFdb(buscomm->gimbal_imu_pos);
             GimbalYaw_SetIMUYawSpeedFdb(buscomm->gimbal_imu_spd);
+            GimbalYaw_SetEncoderFdb();
             GimbalYaw_SetGimbalYawControlState(1);
             GimbalYaw_SetGimbalYawOutputState(1);
             break;

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-25 18:44:38
+ * @LastEditTime : 2022-06-29 19:26:44
  */
 
 #include "minipc_periph.h"
@@ -14,6 +14,7 @@
 
 #include "const.h"
 #include "buscomm_ctrl.h"
+#include "motor_periph.h"
 #include "gim_minipc_ctrl.h"
 #include "gim_shoot_ctrl.h"
 #include "gim_ins_ctrl.h"
@@ -35,7 +36,7 @@ const uint16_t Const_MiniPC_MINIPC_OFFLINE_TIME = 100;  // miniPC offline time
 
 const uint16_t Const_MiniPC_RX_BUFF_LEN = 200;       // miniPC Receive buffer length
 const uint16_t Const_MiniPC_TX_BUFF_LEN = 200;       // miniPC Transmit buffer length
-const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 31;  // miniPC data transmit frame length
+const uint16_t Const_MiniPC_TX_DATA_FRAME_LEN = 32;  // miniPC data transmit frame length
 
 const uint8_t Const_MiniPC_SLAVE_COMPUTER = 0x00;
 const uint8_t Const_MiniPC_INFANTRY_3 = 0x03;
@@ -57,12 +58,12 @@ const uint8_t Const_MiniPC_DATA_PACKET = 0x08;
 const uint8_t Const_MiniPC_BUFF_PACKET = 0x09;
 
 const uint8_t Const_MiniPC_Heart_PACKET_DATA_LEN = 2;
-const uint8_t Const_MiniPC_Data_PACKET_DATA_LEN = 23;
+const uint8_t Const_MiniPC_Data_PACKET_DATA_LEN = 24;
 
 MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;  // miniPC data
 
-uint8_t MiniPC_RxData[Const_MiniPC_RX_BUFF_LEN];        // miniPC receive buff
-uint8_t MiniPC_TxData[Const_MiniPC_TX_BUFF_LEN];        // miniPC transmit buff
+uint8_t MiniPC_RxData[Const_MiniPC_RX_BUFF_LEN];  // miniPC receive buff
+// uint8_t MiniPC_TxData[Const_MiniPC_TX_BUFF_LEN];        // miniPC transmit buff
 uint8_t MiniPC_TxData_state[Const_MiniPC_TX_BUFF_LEN];  // miniPC transmit buff
 
 uint32_t MiniPC_Data_FrameTime;
@@ -87,6 +88,43 @@ MiniPC_MiniPCDataTypeDef* MiniPC_GetMiniPCDataPtr() {
     return &MiniPC_MiniPCData;
 }
 
+float MiniPC_angles[5], MiniPC_angles_offset_imu[2], MiniPC_angles_offset_motor[2];  // yaw,pitch,roll,yawspd,pitchspd
+float MiniPC_last_mode;
+
+void MiniPC_GimbalAngleCalibrate() {
+    MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
+    INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+
+    float angles_now_imu[5] = {imu->angle.yaw,
+                               imu->angle.pitch,
+                               imu->angle.row,
+                               imu->speed.yaw,
+                               imu->speed.pitch};
+
+    if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF) {
+        float angles_now_motor[2] = {buscomm->yaw_relative_angle,
+                                     Motor_gimbalMotorPitch.encoder.angle};
+
+        MiniPC_angles[0] = buscomm->yaw_relative_angle;
+        // MiniPC_angles[0] = angles_now_motor[0] - MiniPC_angles_offset_motor[0] + MiniPC_angles_offset_imu[0];
+        // MiniPC_angles[1] = angles_now_motor[1] - MiniPC_angles_offset_motor[1] + MiniPC_angles_offset_imu[1];
+
+        // memcpy(MiniPC_angles + 2, angles_now_imu + 2, sizeof(float) * 3);
+        memcpy(MiniPC_angles + 1, angles_now_imu + 1, sizeof(float) * 4);
+
+        if (MiniPC_last_mode != MiniPC_SMALL_BUFF && MiniPC_last_mode != MiniPC_BIG_BUFF) {
+            // memcpy(MiniPC_angles_offset_imu, angles_now_imu, sizeof(float) * 2);
+            // memcpy(MiniPC_angles_offset_motor, angles_now_motor, sizeof(float) * 2);
+            memcpy(MiniPC_angles, angles_now_imu, sizeof(MiniPC_angles));
+        }
+    } else {
+        memcpy(MiniPC_angles, angles_now_imu, sizeof(MiniPC_angles));
+    }
+
+    MiniPC_last_mode = minipc->aim_mode;
+}
+
 /**
  * @brief      Sent MiniPC data request pack
  * @param      NULL
@@ -102,7 +140,8 @@ void MiniPC_SendDataPacket() {
         return;
 #endif
 
-    MiniPC_MiniPCDataTypeDef* minipc = MiniPC_GetMiniPCDataPtr();
+    MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
+    MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
@@ -120,29 +159,30 @@ void MiniPC_SendDataPacket() {
     // float yaw = 50.0f * sin(time / 50.0f);  // + 50 * sin(time / 100.0f);
     // sin_gen = yaw;
 
-    float yaw = imu->angle.yaw;
-    int16_t pitch = imu->angle.pitch * 100;
-    float row = imu->angle.row;
-    while (imu->angle.row > 180)
+    MiniPC_GimbalAngleCalibrate();
+    float yaw = MiniPC_angles[0];
+    int16_t pitch = MiniPC_angles[1] * 100;
+    float row = MiniPC_angles[2];
+    while (row > 180)
         row -= 360;
-    while (imu->angle.row < -180)
+    while (row < -180)
         row += 360;
     int16_t roll = row * 100;
-    int16_t yaw_speed = imu->speed.yaw * 100;
-    int16_t pitch_speed = imu->speed.pitch * 100;
+    int16_t yaw_speed = MiniPC_angles[3] * 100;
+    int16_t pitch_speed = MiniPC_angles[4] * 100;
 
     sin_gen2 = Shooter_GetRefereeSpeedFdb();
     uint16_t bullet_speed = Shooter_GetRefereeSpeedFdb() * 100;
     MiniPC_Data_FrameTime = HAL_GetTick() % 60000;
 
-    minipc->state = MiniPC_PENDING;
+    minipc_data->state = MiniPC_PENDING;
 
     uint8_t* buff = MiniPC_TxData_state;
     int size = Const_MiniPC_TX_DATA_FRAME_LEN;
     buff[0] = Const_MiniPC_PACKET_HEADR_0;
     buff[1] = Const_MiniPC_PACKET_HEADR_1;
     buff[2] = Const_MiniPC_SLAVE_COMPUTER;
-    buff[3] = minipc->addressee;
+    buff[3] = minipc_data->addressee;
     buff[4] = Const_MiniPC_DATA_PACKET;
     buff[5] = Const_MiniPC_Data_PACKET_DATA_LEN;
     buff[6] = 0;
@@ -151,15 +191,17 @@ void MiniPC_SendDataPacket() {
     float2buff(yaw, buff + 9);
     i162buff(pitch, buff + 13);
     i162buff(roll, buff + 15);
-    ui162buff(yaw_speed, buff + 17);
+    i162buff(yaw_speed, buff + 17);
     ui162buff(bullet_speed, buff + 19);
-    ui162buff(pitch_speed, buff + 21);
-    buff[23] = minipc->team_color;
-    buff[24] = minipc->mode;
+    i162buff(pitch_speed, buff + 21);
+    buff[23] = minipc_data->team_color;
+    buff[24] = minipc_data->mode;
     ui322buff(MiniPC_Data_FrameTime, buff + 25);
     buff[29] = 0;  // is change target
+    buff[30] = minipc->vision_offset[minipc->aim_mode].horizental;
+    buff[31] = minipc->vision_offset[minipc->aim_mode].vertical;
     // Must be even
-    buff[30] = 0x00;
+    // buff[32] = 0x00;
 
     uint16_t checksum = 0;
     if (size % 2) {
@@ -195,26 +237,6 @@ uint8_t MiniPC_IsMiniPCOffline() {
     uint32_t now = HAL_GetTick();
     return (now - minipc->last_update_time) > Const_MiniPC_MINIPC_OFFLINE_TIME;
 }
-
-// /**
-//  * @brief      Minipc serial port callback function
-//  * @param      huart: Pointer to serial port handle
-//  * @retval     NULL
-//  */
-// void MiniPC_RXCallback(UART_HandleTypeDef* huart) {
-//     /* clear DMA transfer complete flag */
-//     __HAL_DMA_DISABLE(huart->hdmarx);
-
-//     /* handle dbus data dbus_buf from DMA */
-//     uint16_t rxdatalen = Const_MiniPC_RX_BUFF_LEN - Uart_DMACurrentDataCounter(huart->hdmarx);
-
-//     MiniPC_DecodeMiniPCPacket(MiniPC_RxData, rxdatalen);
-//     MiniPC_UpdateControlData();
-
-//     /* restart dma transmission */
-//     __HAL_DMA_SET_COUNTER(huart->hdmarx, Const_MiniPC_RX_BUFF_LEN);
-//     __HAL_DMA_ENABLE(huart->hdmarx);
-// }
 
 /**
  * @brief      Minipc data packet decoding function
