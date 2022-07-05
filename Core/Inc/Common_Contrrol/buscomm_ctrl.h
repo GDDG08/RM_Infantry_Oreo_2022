@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-04 21:42:24
+ * @LastEditTime : 2022-07-05 21:11:44
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -73,6 +73,7 @@ extern FDCAN_TxHeaderTypeDef BusComm_GimControl;
 extern FDCAN_TxHeaderTypeDef BusComm_GimGimbalData;
 extern FDCAN_TxHeaderTypeDef BusComm_GimImuYaw;
 extern FDCAN_TxHeaderTypeDef BusComm_GimChassisRef;
+extern FDCAN_TxHeaderTypeDef BusComm_GimUIState;
 
 extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_1;
 extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_2;
@@ -96,13 +97,14 @@ typedef enum {
     BusComm_PKG_CTRL,
     BusComm_PKG_IMU,
     BusComm_PKG_CHA_REF,
+    BusComm_PKG_UI_STATE,
     BusComm_PKG_CAP_1,
     BusComm_PKG_CAP_2
 } BusComm_BusCommPkgEnum;
 
 typedef struct {
     BusComm_BusCommStateEnum state;
-    uint32_t last_update_time[7];
+    uint32_t last_update_time[8];
 
     // Chassis up stream
     float yaw_relative_angle;     // Angle of chassis relative to pan tilt
@@ -132,9 +134,16 @@ typedef struct {
     uint8_t cap_mode_user;        // Capacitance mode   1bit
     uint8_t cap_boost_mode_user;  // cap boost mode    1bit
     uint8_t power_limit_mode;     // Force to change power limit mode 1bit
-    // float pitch_angle;
-    uint8_t ui_cmd;         // 1bit
-    uint8_t infantry_code;  // 4bit
+    uint8_t ui_cmd;               // 1bit
+    uint8_t infantry_code;        // 4bit
+
+    float pitch_angle;         // int16_t x100 2byte
+    uint8_t magazine_state;    // 1 bit
+    uint8_t shooter_state;     // 1 bit
+    uint8_t minipc_mode;       // 2 bit
+    uint8_t minipc_target_id;  // 0-15 4 bit
+    int8_t minipc_offset_horizental;
+    int8_t minipc_offset_vertical;
 
     // Super Cap up stream
     uint32_t power_path_change_flag;

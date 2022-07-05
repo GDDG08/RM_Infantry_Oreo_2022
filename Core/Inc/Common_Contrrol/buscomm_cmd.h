@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 10:13:12
+ * @LastEditTime : 2022-07-05 21:11:04
  */
 
 #ifndef BUSCOMM_CMD_H
@@ -22,6 +22,7 @@ extern "C" {
 extern const uint32_t CMD_SET_CONTROL;
 extern const uint32_t CMD_SET_IMU_YAW;
 extern const uint32_t CMD_SET_CHA_REF;
+extern const uint32_t CMD_SET_UI_STATE;
 
 extern const uint32_t CMD_SET_REFEREE_DATA_1;
 extern const uint32_t CMD_SET_REFEREE_DATA_2;
@@ -46,9 +47,9 @@ typedef struct {
     void (*bus_func)(uint8_t buff[]);
 } BusCmd_TableEntry;
 
-extern BusCmd_TableEntry Buscmd_Receive[6];
+extern BusCmd_TableEntry Buscmd_Receive[7];
 extern BusCmd_TableEntry Capcmd_Receive[3];
-extern BusCmd_TableEntry Buscmd_GimSend[3];
+extern BusCmd_TableEntry Buscmd_GimSend[4];
 extern BusCmd_TableEntry Buscmd_ChaSend[3];
 // extern BusCmd_TableEntry Buscmd_CapSend[1];
 
