@@ -303,7 +303,7 @@ const Referee_RefereeCmdTypeDef Const_Referee_DATA_CMD_ID_LIST[6] = {
     {0x0102, 30, NULL},   // 客户端绘制二个图形
     {0x0103, 75, NULL},   // 客户端绘制五个图形
     {0x0104, 105, NULL},  // 客户端绘制七个图形
-    {0x0105, 45, NULL}    // 客户端绘制字符图形
+    {0x0110, 45, NULL}    // 客户端绘制字符图形
 };
 
 graphic_data_struct_t Referee_dummyGraphicCmd = {{0x00, 0x00, 0x00}, Draw_OPERATE_NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};

@@ -200,7 +200,7 @@ typedef struct __attribute__((packed)) {
     uint32_t width : 10;
     uint32_t start_x : 11;
     uint32_t start_y : 11;
-    uint32_t radius : 10;
+    uint32_t radius : 10; 
     uint32_t end_x : 11;
     uint32_t end_y : 11;
 } graphic_data_struct_t;
