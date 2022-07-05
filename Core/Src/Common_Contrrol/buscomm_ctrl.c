@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 20:55:20
+ * @LastEditTime : 2022-07-05 21:44:00
  *
  */
 
@@ -24,8 +24,12 @@
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
 #include "gim_gimbal_ctrl.h"
+#include "gim_shoot_ctrl.h"
+#include "gim_minipc_ctrl.h"
 #include "gim_ins_ctrl.h"
 #include "key_periph.h"
+#include "minipc_periph.h"
+
 #endif
 
 #if __FN_IF_ENABLE(__FN_SUPER_CAP)
@@ -46,10 +50,10 @@ const uint16_t Const_BusComm_RX_BUFF_LEN = 64;
 const uint16_t Const_BusComm_OFFLINE_TIME = 200;
 
 const uint32_t Const_BusComm_SIZE = FDCAN_DLC_BYTES_8;
-const uint8_t Const_BusComm_GIMBAL_BUFF_SIZE = 3;
+const uint8_t Const_BusComm_GIMBAL_BUFF_SIZE = 4;
 const uint8_t Const_BusComm_CHASSIS_BUFF_SIZE = 3;
 // const uint8_t Const_BusComm_SUPERCAP_BUFF_SIZE = 1;
-const uint8_t Const_BusComm_RECEIVE_SIZE = 6;
+const uint8_t Const_BusComm_RECEIVE_SIZE = 7;
 const uint8_t Const_CapComm_RECEIVE_SIZE = 3;
 
 // Dual bus communication protocol
@@ -63,6 +67,7 @@ const uint32_t Const_BusComm_CAN_TX_EXTID = 0x01;
 FDCAN_TxHeaderTypeDef BusComm_GimControl;
 FDCAN_TxHeaderTypeDef BusComm_GimImuYaw;
 FDCAN_TxHeaderTypeDef BusComm_GimChassisRef;
+FDCAN_TxHeaderTypeDef BusComm_GimUIState;
 
 FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_1;
 FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_2;
@@ -97,6 +102,7 @@ void BusComm_InitBusComm() {
     FDCAN_InitTxHander(&BusComm_GimControl, CMD_SET_CONTROL, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
     FDCAN_InitTxHander(&BusComm_GimImuYaw, CMD_SET_IMU_YAW, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
     FDCAN_InitTxHander(&BusComm_GimChassisRef, CMD_SET_CHA_REF, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
+    FDCAN_InitTxHander(&BusComm_GimUIState, CMD_SET_UI_STATE, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
 
     FDCAN_InitTxHander(&BusComm_ChaRefereeData_1, CMD_SET_REFEREE_DATA_1, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
     FDCAN_InitTxHander(&BusComm_ChaRefereeData_2, CMD_SET_REFEREE_DATA_2, Const_BusComm_SIZE, FDCAN_BRS_OFF, FDCAN_CLASSIC_CAN);
@@ -291,9 +297,15 @@ void BusComm_ResetBusCommData() {
     buscomm->cap_mode_user = SUPERCAP_CTRL_OFF;
     buscomm->power_limit_mode = POWER_LIMITED;
     buscomm->cap_boost_mode_user = SUPERCAP_UNBOOST;
-    // buscomm->pitch_angle = 0.0f;
     buscomm->ui_cmd = 0;
     buscomm->cap_rest_energy_display = 0;
+    buscomm->pitch_angle = 0.0f;
+    buscomm->magazine_state = 0;
+    buscomm->shooter_state = 0;
+    buscomm->minipc_mode = 0;
+    buscomm->minipc_target_id = 0;
+    buscomm->minipc_offset_horizental = 0;
+    buscomm->minipc_offset_vertical = 0;
 #endif
 
     // // SuperCap stream
@@ -346,7 +358,7 @@ void BusComm_Update() {
     uint8_t auto_aim_mode = 0, cha_mode = 0;
     if (data->chassis_mode == CHASSIS_CTRL_NORMAL)
         cha_mode = 0;
-    if (data->chassis_mode == CHASSIS_CTRL_GYRO)
+    if (data->chassis_mode == CHASSIS_CTRL_GYRO || data->chassis_mode == CHASSIS_CTRL_SUPERGYRO)
         cha_mode = 1;
     if (data->gimbal_yaw_mode == GIMBAL_YAW_CTRL_NO_AUTO)
         auto_aim_mode = 0;
@@ -364,7 +376,7 @@ void BusComm_Update() {
         data->yaw_encoder_angle -= 360;
     while (data->yaw_encoder_angle < -180)
         data->yaw_encoder_angle += 360;
-        
+
     data->yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     data->robot_id = referee->robot_id;
     data->power_limit = referee->max_chassis_power;
@@ -395,12 +407,23 @@ void BusComm_Update() {
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
+    Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
+    MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
+    MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
 
     data->gimbal_yaw_mode = gimbal->yaw_mode + 0x02;
     data->gimbal_yaw_ref = gimbal->angle.yaw_angle_ref;
     data->gimbal_imu_pos = imu->angle.yaw;
     data->gimbal_imu_spd = imu->speed.yaw;
     data->infantry_code = Key_GetEquipCode();
+
+    data->pitch_angle = imu->angle.pitch;
+    data->magazine_state = 0;
+    data->shooter_state = shooter->shooter_mode > 0;
+    data->minipc_mode = minipc->aim_mode;
+    data->minipc_target_id = minipc_data->ID;
+    data->minipc_offset_horizental = minipc->vision_offset[minipc->aim_mode].horizental;
+    data->minipc_offset_vertical = minipc->vision_offset[minipc->aim_mode].vertical;
 
 #endif
 
@@ -490,6 +513,17 @@ void _cmd_mode_control() {
 
             break;
         }
+        case CHASSIS_CTRL_SUPERGYRO: {
+            Chassis_SetMode(Chassis_MODE_SUPERGYRO);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(1);
+
+            break;
+        }
         case CHASSIS_CTRL_GYRO: {
             Chassis_SetMode(Chassis_MODE_GYRO);
             Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
@@ -499,6 +533,36 @@ void _cmd_mode_control() {
 
             Referee_SetWidthMode(1);
 
+            break;
+        }
+        case CHASSIS_CTRL_ASS: {
+            Chassis_SetMode(Chassis_MODE_ASS);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(0);
+            break;
+        }
+        case CHASSIS_CTRL_CRAB: {
+            Chassis_SetMode(Chassis_MODE_CRAB);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(0);
+            break;
+        }
+        case CHASSIS_CTRL_DISCO: {
+            Chassis_SetMode(Chassis_MODE_DISCO);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(0);
             break;
         }
         default:

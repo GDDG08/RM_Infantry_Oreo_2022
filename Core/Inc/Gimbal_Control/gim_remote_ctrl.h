@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 16:09:24
+ * @LastEditTime : 2022-07-04 22:40:31
  */
 
 #ifndef GIM_REMOTE_CTRL_H
@@ -28,10 +28,21 @@ typedef enum {
     Chassis_ON = 1
 } Chassis_ChassisStateEnum;
 
+typedef enum {
+    AutoAim_ARMOR = 0u,
+    AutoAim_BIG_BUFF,
+    AutoAim_SMALL_BUFF,
+    AutoAim_SENTRY,
+    AutoAim_ARMOR_TEMP,
+    AutoAim_GIMBAL_DEBUG
+} Remote_AutoAimModeEnum;
+
 typedef struct {
     uint8_t pending;
     Chassis_ChassisStateEnum chassis_state;
     float yaw_angle_offset;
+    Remote_AutoAimModeEnum aim_mode;
+    uint8_t onAim;
 } Remote_RemoteControlTypeDef;
 
 void Remote_RemotrControlInit(void);
@@ -42,8 +53,10 @@ void Remote_RemoteShooterModeSet(void);
 void Remote_RemoteProcess(void);
 void Remote_KeyMouseProcess(void);
 void Remote_ChangeChassisState(uint8_t chassis_mode);
-void Remote_SwitchGryoState(void);
-void Remote_SwitchAutoAimState(uint8_t mode);
+void Remote_SwitchGryoState(uint8_t);
+void Remote_SwitchAutoAimMode(uint8_t mode);
+void Remote_SetAutoAimState(uint8_t state);
+void Remote_AutoAimModeControl(void);
 uint8_t Remote_Gesturejudge(void);
 void Remote_Gesture(void);
 void Remote_GestureFunction_1(void);

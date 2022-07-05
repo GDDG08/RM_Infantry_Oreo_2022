@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-02 15:23:31
+ * @LastEditTime : 2022-07-05 21:40:25
  */
 
 #include "buscomm_cmd.h"
@@ -30,6 +30,7 @@
 const uint32_t CMD_SET_CONTROL = 0x201;
 const uint32_t CMD_SET_IMU_YAW = 0x203;
 const uint32_t CMD_SET_CHA_REF = 0x204;
+const uint32_t CMD_SET_UI_STATE = 0x205;
 
 const uint32_t CMD_SET_REFEREE_DATA_1 = 0x206;
 const uint32_t CMD_SET_REFEREE_DATA_2 = 0x207;
@@ -46,12 +47,14 @@ const uint32_t CMD_CHASSIS_SEND_PACK_3 = 0xA3;
 const uint32_t CMD_GIMBAL_SEND_PACK_1 = 0xB1;
 const uint32_t CMD_GIMBAL_SEND_PACK_2 = 0xB2;
 const uint32_t CMD_GIMBAL_SEND_PACK_3 = 0xB3;
+const uint32_t CMD_GIMBAL_SEND_PACK_4 = 0xB4;
 
 // const uint32_t CMD_SUPERCAP_SEND_PACK_1 = 0xC1;
 
-/*const*/ uint32_t Const_Send_Period_Control = 0;
-/*const*/ uint32_t Const_Send_Period_IMU_Yaw = 0;
+/*const*/ uint32_t Const_Send_Period_Control = 2;
+/*const*/ uint32_t Const_Send_Period_IMU_Yaw = 2;
 /*const*/ uint32_t Const_Send_Period_Cha_ref = 5;
+/*const*/ uint32_t Const_Send_Period_UI_State = 10;
 /*const*/ uint32_t Const_Send_Period_Referee_1 = 5;
 /*const*/ uint32_t Const_Send_Period_Referee_2 = 100;
 /*const*/ uint32_t Const_Send_Period_Cap_Mode = 5;
@@ -60,6 +63,7 @@ static void _send_referee_data_1(uint8_t buff[]);
 static void _send_referee_data_2(uint8_t buff[]);
 static void _send_control(uint8_t buff[]);
 static void _send_imu_yaw(uint8_t buff[]);
+static void _send_ui_state(uint8_t buff[]);
 static void _send_chassis_ref(uint8_t buff[]);
 // static void _send_cap_state(uint8_t buff[]);
 static void _send_cap_mode(uint8_t buff[]);
@@ -68,27 +72,30 @@ static void _set_referee_data_2(uint8_t buff[]);
 static void _set_control(uint8_t buff[]);
 static void _set_imu_yaw(uint8_t buff[]);
 static void _set_cha_ref(uint8_t buff[]);
+static void _set_ui_state(uint8_t buff[]);
 // static void _set_cap_state(uint8_t buff[]);
 static void _set_cap_state_1(uint8_t buff[]);
 static void _set_cap_state_2(uint8_t buff[]);
 
-BusCmd_TableEntry Buscmd_Receive[6] = {
+BusCmd_TableEntry Buscmd_Receive[7] = {
     {0xff, NULL},
     {CMD_SET_REFEREE_DATA_1, &_set_referee_data_1},
     {CMD_SET_REFEREE_DATA_2, &_set_referee_data_2},
     {CMD_SET_CONTROL, &_set_control},
     {CMD_SET_IMU_YAW, &_set_imu_yaw},
-    {CMD_SET_CHA_REF, &_set_cha_ref}};
+    {CMD_SET_CHA_REF, &_set_cha_ref},
+    {CMD_SET_UI_STATE, &_set_ui_state}};
 
 BusCmd_TableEntry Capcmd_Receive[3] = {
     {0xff, NULL},
     {CMD_SET_CAP_STATE_1, &_set_cap_state_1},
     {CMD_SET_CAP_STATE_2, &_set_cap_state_2}};
 
-BusCmd_TableEntry Buscmd_GimSend[3] = {
+BusCmd_TableEntry Buscmd_GimSend[4] = {
     {CMD_GIMBAL_SEND_PACK_1, &_send_control},
     {CMD_GIMBAL_SEND_PACK_2, &_send_imu_yaw},
-    {CMD_GIMBAL_SEND_PACK_3, &_send_chassis_ref}};
+    {CMD_GIMBAL_SEND_PACK_3, &_send_chassis_ref},
+    {CMD_GIMBAL_SEND_PACK_4, &_send_ui_state}};
 
 BusCmd_TableEntry Buscmd_ChaSend[3] = {
     {CMD_CHASSIS_SEND_PACK_1, &_send_referee_data_1},
@@ -98,8 +105,8 @@ BusCmd_TableEntry Buscmd_ChaSend[3] = {
 // BusCmd_TableEntry Buscmd_CapSend[1] = {
 //     {CMD_SUPERCAP_SEND_PACK_1, &_send_cap_state}};
 
-int counta[6];
-float ratea[6];
+int counta[7];
+float ratea[7];
 
 /*      send functions driver       */
 /*************** CHASSIS SEND *****************/
@@ -135,7 +142,7 @@ static void _send_referee_data_2(uint8_t buff[]) {
     ratea[1] = 1000 * counta[1] / HAL_GetTick();
     memset(buff, 0, 8);
     buff[0] = (buscomm->game_outpost_alive << 7) + buscomm->robot_id;
-    buff[1] = buscomm->speed_17mm_limit << 6 ;
+    buff[1] = buscomm->speed_17mm_limit << 6;
     i162buff(buscomm->heat_cooling_limit, buff + 2);
 
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
@@ -172,7 +179,7 @@ static void _send_control(uint8_t buff[]) {
     counta[3]++;
     ratea[3] = 1000 * counta[3] / HAL_GetTick();
     memset(buff, 0, 8);
-    buff[0] = (buscomm->gimbal_yaw_mode << 4) + (buscomm->chassis_mode << 2) + buscomm->power_limit_mode;
+    buff[0] = (buscomm->gimbal_yaw_mode << 4) + (buscomm->chassis_mode << 1) + buscomm->power_limit_mode;
     buff[1] = (buscomm->infantry_code << 4) + (buscomm->ui_cmd << 2) + (buscomm->cap_mode_user << 1) + buscomm->cap_boost_mode_user;
     float2buff(buscomm->gimbal_yaw_ref, buff + 2);
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
@@ -210,6 +217,24 @@ static void _send_chassis_ref(uint8_t buff[]) {
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
 }
 
+static void _send_ui_state(uint8_t buff[]) {
+    static uint32_t last_send_time = 0;
+    if ((HAL_GetTick() - last_send_time) <= Const_Send_Period_UI_State)
+        return;
+    last_send_time = HAL_GetTick();
+
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+    FDCAN_TxHeaderTypeDef* pheader = &BusComm_GimUIState;
+    counta[6]++;
+    ratea[6] = 1000 * counta[6] / HAL_GetTick();
+    memset(buff, 0, 8);
+    i162buff((int16_t)(buscomm->pitch_angle * 100), buff);
+    buff[2] = ((buscomm->magazine_state & 0x01) << 7) + ((buscomm->shooter_state & 0x01) << 6) + ((buscomm->minipc_mode & 0x03) << 4) + (buscomm->minipc_target_id & 0x0F);
+    buff[3] = buscomm->minipc_offset_horizental;
+    buff[4] = buscomm->minipc_offset_vertical;
+    FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
+}
+
 // /*************** SUPERCAP SEND *****************/
 // static void _send_cap_state(uint8_t buff[]) {
 //     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
@@ -223,8 +248,8 @@ static void _send_chassis_ref(uint8_t buff[]) {
 // }
 
 /*************** RECEIVE *****************/
-int countb[7];
-float rateb[7];
+int countb[8];
+float rateb[8];
 static void _set_referee_data_1(uint8_t buff[]) {
     countb[BusComm_PKG_REFEREE_1]++;
     rateb[BusComm_PKG_REFEREE_1] = 1000 * countb[BusComm_PKG_REFEREE_1] / HAL_GetTick();
@@ -272,8 +297,8 @@ static void _set_control(uint8_t buff[]) {
     }
 
     buscomm->gimbal_yaw_mode = buff[0] >> 4;
-    buscomm->chassis_mode = (buff[0] & 0x0C) >> 2;
-    buscomm->power_limit_mode = buff[0] & 0x03;
+    buscomm->chassis_mode = (buff[0] & 0x0E) >> 1;
+    buscomm->power_limit_mode = buff[0] & 0x01;
     buscomm->infantry_code = buff[1] >> 4;
     buscomm->ui_cmd = buff[1] & 0x04 >> 2;
     buscomm->cap_mode_user = (buff[1] & 0x02) >> 1;
@@ -301,6 +326,21 @@ static void _set_cha_ref(uint8_t buff[]) {
     buscomm->chassis_lr_ref = buff2float(buff + 4);
 
     buscomm->last_update_time[BusComm_PKG_CHA_REF] = HAL_GetTick();
+}
+
+static void _set_ui_state(uint8_t buff[]) {
+    countb[BusComm_PKG_UI_STATE]++;
+    rateb[BusComm_PKG_UI_STATE] = 1000 * countb[BusComm_PKG_UI_STATE] / HAL_GetTick();
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+
+    buscomm->pitch_angle = ((float)buff2i16(buff)) / 100;
+    buscomm->magazine_state = (buff[2] & 0x80) >> 7;
+    buscomm->shooter_state = (buff[2] & 0x40) >> 6;
+    buscomm->minipc_mode = (buff[2] & 0x30) >> 4;
+    buscomm->minipc_target_id = (buff[2] & 0x0F);
+    buscomm->minipc_offset_horizental = buff[3];
+    buscomm->minipc_offset_vertical = buff[4];
+    buscomm->last_update_time[BusComm_PKG_UI_STATE] = HAL_GetTick();
 }
 // int count7;
 // float rate7;

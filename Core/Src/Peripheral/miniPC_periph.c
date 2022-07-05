@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 13:48:27
+ * @LastEditTime : 2022-07-05 14:37:26
  */
 
 #include "minipc_periph.h"
@@ -46,9 +46,9 @@ const uint8_t Const_MiniPC_INFANTRY_5 = 0x05;
 const uint8_t Const_MiniPC_COLOR_RED = 0x00;
 const uint8_t Const_MiniPC_COLOR_BLUE = 0x01;
 
-const uint8_t Const_MiniPC_ARMOR = 0x00;
-const uint8_t Const_MiniPC_BIG_BUFF = 0x01;
-const uint8_t Const_MiniPC_LITTLE_BUFF = 0x02;
+// const uint8_t Const_MiniPC_ARMOR = 0x00;
+// const uint8_t Const_MiniPC_BIG_BUFF = 0x01;
+// const uint8_t Const_MiniPC_LITTLE_BUFF = 0x02;
 
 const uint8_t Const_MiniPC_PACKET_HEADR_0 = 0xa5;
 const uint8_t Const_MiniPC_PACKET_HEADR_1 = 0X5a;
@@ -102,7 +102,7 @@ void MiniPC_GimbalAngleCalibrate() {
                                imu->speed.yaw,
                                imu->speed.pitch};
 
-    if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF) {
+    if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF || minipc->aim_mode == MiniPC_GIMBAL_DEBUG) {
         float angles_now_motor[2] = {buscomm->yaw_encoder_angle,
                                      Motor_gimbalMotorPitch.encoder.angle};
 
@@ -113,7 +113,7 @@ void MiniPC_GimbalAngleCalibrate() {
         // memcpy(MiniPC_angles + 2, angles_now_imu + 2, sizeof(float) * 3);
         memcpy(MiniPC_angles + 1, angles_now_imu + 1, sizeof(float) * 4);
 
-        if (MiniPC_last_mode != MiniPC_SMALL_BUFF && MiniPC_last_mode != MiniPC_BIG_BUFF) {
+        if (MiniPC_last_mode != MiniPC_SMALL_BUFF && MiniPC_last_mode != MiniPC_BIG_BUFF && MiniPC_last_mode != MiniPC_GIMBAL_DEBUG) {
             // memcpy(MiniPC_angles_offset_imu, angles_now_imu, sizeof(float) * 2);
             // memcpy(MiniPC_angles_offset_motor, angles_now_motor, sizeof(float) * 2);
             memcpy(MiniPC_angles, angles_now_imu, sizeof(MiniPC_angles));

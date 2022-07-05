@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 13:39:13
+ * @LastEditTime : 2022-07-05 21:11:44
  */
 
 #ifndef BUSCOMM_CTRL_H
@@ -31,8 +31,8 @@ extern FDCAN_HandleTypeDef* Const_CapComm_CAN_HANDLER;
 extern const uint8_t Const_BusComm_FRAME_HEADER_SOF;
 
 //      power limit mode
-#define POWER_LIMITED 0x01
-#define POWER_UNLIMIT 0x02
+#define POWER_LIMITED 0x00
+#define POWER_UNLIMIT 0x01
 //      gimbal yaw mode
 #define GIMBAL_YAW_CTRL_NO_AUTO 0x03
 #define GIMBAL_YAW_CTRL_ARMOR 0x04
@@ -40,9 +40,13 @@ extern const uint8_t Const_BusComm_FRAME_HEADER_SOF;
 #define GIMBAL_YAW_CTRL_BIG_ENERGY 0x06
 #define GIMBAL_YAW_CTRL_SMALL_ENERGY 0x07
 //      chassis mode
-#define CHASSIS_CTRL_STOP 0x01
-#define CHASSIS_CTRL_NORMAL 0x02
-#define CHASSIS_CTRL_GYRO 0x03
+#define CHASSIS_CTRL_STOP 0x00
+#define CHASSIS_CTRL_NORMAL 0x01
+#define CHASSIS_CTRL_GYRO 0x02
+#define CHASSIS_CTRL_ASS 0x03
+#define CHASSIS_CTRL_CRAB 0x04
+#define CHASSIS_CTRL_DISCO 0x05
+#define CHASSIS_CTRL_SUPERGYRO 0x06
 //      cap mode
 #define SUPERCAP_CTRL_OFF 0x00
 #define SUPERCAP_CTRL_ON 0x01
@@ -69,6 +73,7 @@ extern FDCAN_TxHeaderTypeDef BusComm_GimControl;
 extern FDCAN_TxHeaderTypeDef BusComm_GimGimbalData;
 extern FDCAN_TxHeaderTypeDef BusComm_GimImuYaw;
 extern FDCAN_TxHeaderTypeDef BusComm_GimChassisRef;
+extern FDCAN_TxHeaderTypeDef BusComm_GimUIState;
 
 extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_1;
 extern FDCAN_TxHeaderTypeDef BusComm_ChaRefereeData_2;
@@ -92,17 +97,18 @@ typedef enum {
     BusComm_PKG_CTRL,
     BusComm_PKG_IMU,
     BusComm_PKG_CHA_REF,
+    BusComm_PKG_UI_STATE,
     BusComm_PKG_CAP_1,
     BusComm_PKG_CAP_2
 } BusComm_BusCommPkgEnum;
 
 typedef struct {
     BusComm_BusCommStateEnum state;
-    uint32_t last_update_time[7];
+    uint32_t last_update_time[8];
 
     // Chassis up stream
     float yaw_relative_angle;     // Angle of chassis relative to pan tilt
-    float yaw_encoder_angle;     // Angle of chassis relative to pan tilt (consequent)
+    float yaw_encoder_angle;      // Angle of chassis relative to pan tilt (consequent)
     uint8_t robot_id;             // Robot ID
     uint8_t power_limit;          // Super capacitor state
     uint16_t heat_17mm;           // Heat transfer of 17mm launching mechanism
@@ -127,10 +133,17 @@ typedef struct {
     float chassis_lr_ref;         // Target value of chassis left and right speed
     uint8_t cap_mode_user;        // Capacitance mode   1bit
     uint8_t cap_boost_mode_user;  // cap boost mode    1bit
-    uint8_t power_limit_mode;     // Force to change power limit mode 2bit
-    // float pitch_angle;
-    uint8_t ui_cmd;         // 1bit
-    uint8_t infantry_code;  // 4bit
+    uint8_t power_limit_mode;     // Force to change power limit mode 1bit
+    uint8_t ui_cmd;               // 1bit
+    uint8_t infantry_code;        // 4bit
+
+    float pitch_angle;         // int16_t x100 2byte
+    uint8_t magazine_state;    // 1 bit
+    uint8_t shooter_state;     // 1 bit
+    uint8_t minipc_mode;       // 2 bit
+    uint8_t minipc_target_id;  // 0-15 4 bit
+    int8_t minipc_offset_horizental;
+    int8_t minipc_offset_vertical;
 
     // Super Cap up stream
     uint32_t power_path_change_flag;

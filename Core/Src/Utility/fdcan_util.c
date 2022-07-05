@@ -16,7 +16,7 @@ uint8_t FDCAN_RxData[Const_FDCan_RX_BUFF_LEN];
  */
 void FDCAN_ErrorHandler(void) {
     while (1) {
-        return;
+        //return;
     }
 }
 

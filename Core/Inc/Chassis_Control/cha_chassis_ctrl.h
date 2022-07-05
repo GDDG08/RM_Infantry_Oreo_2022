@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-29 20:20:13
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-20 11:54:55
+ * @LastEditTime : 2022-07-04 22:27:22
  */
 
 #ifndef CHA_CHASSIS_CTRL_H
@@ -24,11 +24,16 @@ extern "C" {
 #include "math_alg.h"
 
 typedef enum {
-    Chassis_MODE_NULL = 0,
-    Chassis_MODE_INIT = 1,
-    Chassis_MODE_STOP = 2,
-    Chassis_MODE_NORMAL = 3,
-    Chassis_MODE_GYRO = 4
+    Chassis_MODE_NULL = 0u,
+    Chassis_MODE_INIT,
+    Chassis_MODE_STOP,
+    Chassis_MODE_NORMAL,
+    Chassis_MODE_SUPERGYRO,
+    Chassis_MODE_GYRO,
+    Chassis_MODE_ASS,
+    Chassis_MODE_CRAB,
+    Chassis_MODE_DISCO
+
 } Chassis_ChassisModeEnum;
 
 typedef struct {
@@ -82,6 +87,7 @@ void Chassis_SetStopRef(void);
 void Chassis_ClearChassisRef(Chassis_ChassisRefTypeDef* pref);
 void Chassis_CopyChassisRef(Chassis_ChassisRefTypeDef* dest, Chassis_ChassisRefTypeDef* src);
 void Chassis_CalcFollowRef(void);
+void Chassis_CalcDiscoRef(void);
 void Chassis_CalcGyroRef(void);
 void Chassis_CalcMecanumRef(void);
 void Chassis_Control(void);

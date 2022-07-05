@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-02 15:28:48
+ * @LastEditTime : 2022-07-05 15:34:01
  */
 
 #include "debug_BTlog.h"
@@ -141,6 +141,7 @@ void BTlog_Init() {
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
     PowerCtrl_Data_t* PowCtr = PowerCtrl_GetPowerDataPtr();
     CAP_CtrlDataTypeDef* capctrl = Cap_GetCapDataPtr();
+    Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
 #elif __FN_IF_ENABLE(__FN_SUPER_CAP)
     Sen_PowerValueTypeDef* powerValue = Sen_GetPowerDataPtr();
 #endif
@@ -150,9 +151,12 @@ void BTlog_Init() {
     // Log Data Send
     ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
-    ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
-    // // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
+    ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
+    ADD_SEND_DATA(Motor_gimbalMotorPitch.pid_pos.err[0], Float, "Pitch.pid_pos.err");
+    // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
+    // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
     // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
+    // ADD_SEND_DATA(buscomm->gimbal_yaw_ref, Float, "gimbal_yaw_ref");
     // ADD_SEND_DATA(buscomm->yaw_encoder_angle, Float, "yaw_encoder_angle");
     // ADD_SEND_DATA(MiniPC_angles[0], Float, "MiniPC_angles:yaw");
     // ADD_SEND_DATA(MiniPC_angles[1], Float, "MiniPC_angles:pitch");
@@ -163,9 +167,10 @@ void BTlog_Init() {
     // ADD_SEND_DATA(BTlog_MiniPC_debug_time_diff, Int16, "minipcD->timediff");
     // ADD_SEND_DATA(minipc_data->is_get_target, uInt8, "minipcD->is_get");
     // ADD_SEND_DATA(sin_gen, Float, "sin_gen");
-    // ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
-    // ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
+    ADD_SEND_DATA(minipc_data->yaw_angle, Float, "minipcD->yaw_angle");
+    ADD_SEND_DATA(minipc_data->pitch_angle, Float, "minipcD->pitch_angle");
     // ADD_SEND_DATA(minipc_data->x, Int16, "minipcD->x");
+    // ADD_SEND_DATA(minipc_data->y, Int16, "minipcD->y");
     // ADD_SEND_DATA(minipc_data->z, Int16, "minipcD->z");
     // ADD_SEND_DATA(minipc_data->vx, Int16, "minipcD->vx");
     // ADD_SEND_DATA(minipc_data->vz, Int16, "minipcD->vz");
@@ -180,7 +185,7 @@ void BTlog_Init() {
     // ADD_SEND_DATA(gimbal->angle.yaw_angle_ref, Float, "yaw_ref");
     // ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
     // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
-    ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
+    // ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "bullet_speed");
     // ADD_SEND_DATA(shooter->ref_output, Float, "speed_ref");
     // ADD_SEND_DATA(shooter->heat_ctrl.current_speed, Float, "feeder_speed");/
     // ADD_SEND_DATA(shooter->slope_output, Float, "slope");
@@ -188,16 +193,19 @@ void BTlog_Init() {
     //  ADD_SEND_DATA(shooter->speed_limit, Float, "overspeed_limit");
     //  ADD_SEND_DATA(buscomm->speed_17mm_fdb, Float, "shoot_speed");
 
-    ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
-    ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
+    // ADD_SEND_DATA(Motor_shooterMotorLeft.pid_spd.fdb, Float, "shooterL_spd");
+    // ADD_SEND_DATA(Motor_shooterMotorRight.pid_spd.fdb, Float, "shooterR_spd");
 
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
+    ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.err[0], Float, "Yaw.pid_pos.err");
     // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.output, Float, "Yaw.pid_pos.output");
     // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_spd.output, Float, "Yaw.pid_spd.output");
     // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_cur.output, Float, "Yaw.pid_cur.output");
-    // ADD_SEND_DATA(gimbal->yaw_ref, Float, "yaw_ref");
-    // ADD_SEND_DATA(gimbal->yaw_position_fdb, Float, "yaw_fdb_pos");
+    ADD_SEND_DATA(gimbal->yaw_ref, Float, "yaw_ref");
+    ADD_SEND_DATA(gimbal->yaw_position_fdb, Float, "yaw_fdb_pos");
+    ADD_SEND_DATA(chassis->Chassis_followPID.ref, Float, "followPID.ref");
+    ADD_SEND_DATA(chassis->Chassis_followPID.fdb, Float, "followPID.fdb");
     // ADD_SEND_DATA(gimbal->yaw_speed_fdb, Float, "yaw_fdb_spd");
     // ADD_SEND_DATA(Motor_chassisMotor1.encoder.speed, Int16, "Chassis_Motor1_spd");
     // ADD_SEND_DATA(Motor_chassisMotor2.encoder.speed, Int16, "Chassis_Motor2_spd");
@@ -206,15 +214,15 @@ void BTlog_Init() {
     // ADD_SEND_DATA(capctrl->Chassis_voltage, Float, "Cap_Voltage");
     // ADD_SEND_DATA(capctrl->Sum_CurrentReally, Float, "Cap_Current");
     // ADD_SEND_DATA(capctrl->, Float, "Cap_Voltage");
-    ADD_SEND_DATA(buscomm->chassis_power_limit, uInt8, "REFEREE_power_limit");
-    ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
-    ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
+    // ADD_SEND_DATA(buscomm->chassis_power_limit, uInt8, "REFEREE_power_limit");
+    // ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
+    // ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
     // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].ref, Float, "current_pid[0].ref");
     // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].fdb, Float, "current_pid[0].fdb");
     // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].output, Float, "current_pid[0].output");
     // ADD_SEND_DATA(PowCtr->Power_scale, Float, "Power_scale");
-    ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
-    ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
+    // ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
+    // ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
     // ADD_SEND_DATA(referee->bullet_speed, Float, "bullet_speed");
     // ADD_SEND_DATA(buscomm->cap_mode_user, uInt8, "cap_mode_user");
     // ADD_SEND_DATA(buscomm->cap_boost_mode_user, uInt8, "cap_boost_mode_user");

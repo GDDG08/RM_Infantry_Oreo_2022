@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-10 18:30:24
+ * @LastEditTime : 2022-07-05 14:53:06
  */
 
 #include "cha_chassis_ctrl.h"
@@ -172,7 +172,7 @@ void Chassis_SetStopRef() {
 }
 
 /**
- * @brief      Set stop target value
+ * @brief      calculate move speed ref
  * @param      NULL
  * @retval     NULL
  */
@@ -180,16 +180,39 @@ void Chassis_CalcMoveRef() {
     Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
 
     float theta_rad;
-    if (chassis->mode == Chassis_MODE_GYRO) {
-        theta_rad = -(Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET) * PI / 180 - 0.5f;
+    if (chassis->mode == Chassis_MODE_GYRO || chassis->mode == Chassis_MODE_SUPERGYRO) {
+        theta_rad = -(Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - 90) * PI / 180 - 0.5f;
     } else {
-        theta_rad = -(Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET) * PI / 180;
+        theta_rad = -(Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - 90) * PI / 180;
     }
 
     float sin_tl = (float)sin(theta_rad);
     float cos_tl = (float)cos(theta_rad);
     chassis->raw_speed_ref.forward_back_ref = chassis->raw_ref.forward_back_ref * cos_tl - chassis->raw_ref.left_right_ref * sin_tl;
     chassis->raw_speed_ref.left_right_ref = chassis->raw_ref.forward_back_ref * sin_tl + chassis->raw_ref.left_right_ref * cos_tl;
+}
+
+/**
+ * @brief      calculate disco speed ref
+ * @param      NULL
+ * @retval     NULL
+ */
+void Chassis_CalcDiscoRef() {
+    Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
+    static uint32_t last_change_time;
+    static int8_t disco_orientation = -1;
+
+    float theta_rad = -(Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - 90) * PI / 180;
+
+    if (HAL_GetTick() - last_change_time > 400) {
+        disco_orientation *= -1;
+        last_change_time = HAL_GetTick();
+    }
+
+    float sin_tl = (float)sin(theta_rad);
+    float cos_tl = (float)cos(theta_rad);
+    chassis->raw_speed_ref.forward_back_ref = chassis->raw_ref.forward_back_ref * cos_tl - chassis->raw_ref.left_right_ref * sin_tl;
+    chassis->raw_speed_ref.left_right_ref = chassis->raw_ref.forward_back_ref * sin_tl + chassis->raw_ref.left_right_ref * cos_tl + disco_orientation * 150;
 }
 
 /**
@@ -202,7 +225,13 @@ void Chassis_CalcFollowRef() {
     GimbalYaw_GimbalYawTypeDef* gimbalyaw = GimbalYaw_GetGimbalYawPtr();
 
     chassis->raw_speed_ref.rotate_ref = chassis->raw_ref.rotate_ref;
-    PID_SetPIDRef(&(chassis->Chassis_followPID), 0);
+    if (chassis->mode == Chassis_MODE_ASS)
+        PID_SetPIDRef(&(chassis->Chassis_followPID), -90);
+    else if (chassis->mode == Chassis_MODE_CRAB)
+        PID_SetPIDRef(&(chassis->Chassis_followPID), 0);
+    else
+        PID_SetPIDRef(&(chassis->Chassis_followPID), 90);
+
     PID_SetPIDFdb(&(chassis->Chassis_followPID), Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET);
     if ((fabs(chassis->Chassis_followPID.ref - chassis->Chassis_followPID.fdb) < 3) && (gimbalyaw->yaw_ref == chassis->last_yaw_ref)) {
         chassis->raw_speed_ref.rotate_ref += 0;
@@ -229,10 +258,15 @@ void Chassis_CalcGyroRef() {
     float speed_ref = (float)sqrt(sqr(chassis->raw_speed_ref.forward_back_ref) + sqr(chassis->raw_speed_ref.left_right_ref));
     float min_vro, power_exp;
 
-    if (/*buscomm->cap_state == SUPERCAP_MODE_ON && */ buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
+    float superGyro_Offset = 0;
+    if (chassis->mode == Chassis_MODE_SUPERGYRO) {
+        superGyro_Offset = 100 * sin(HAL_GetTick() / 160.0f);
+    }
+    if (/*buscomm->cap_state == SUPERCAP_MODE_ON && */ buscomm->cap_boost_mode_user == SUPERCAP_BOOST || buscomm->cap_mode_user == SUPERCAP_CTRL_ON) {
         chassis->raw_speed_ref.rotate_ref = 750.0f - speed_ref * 1.2f;
         if (chassis->raw_speed_ref.rotate_ref < 400)
             chassis->raw_speed_ref.rotate_ref = 400;
+        chassis->raw_speed_ref.rotate_ref += superGyro_Offset;
         return;
     }
 
@@ -249,6 +283,7 @@ void Chassis_CalcGyroRef() {
     chassis->raw_speed_ref.rotate_ref = (float)sqrt(power_exp - sqr(speed_ref));
     if (chassis->raw_speed_ref.rotate_ref < min_vro)
         chassis->raw_speed_ref.rotate_ref = min_vro;
+    chassis->raw_speed_ref.rotate_ref += superGyro_Offset;
 }
 
 /**
@@ -335,20 +370,27 @@ void Chassis_Control() {
             Chassis_SetStopRef();  // Set stop state
             break;
         case Chassis_MODE_NORMAL:
+        case Chassis_MODE_ASS:
+        case Chassis_MODE_CRAB:
             chassis->current_param = &Chassis_chassisMotorParamNormal;
             Chassis_CalcMoveRef();    // Translation solution without head
             Chassis_CalcFollowRef();  // Chassis following solution
             break;
         case Chassis_MODE_GYRO:
+        case Chassis_MODE_SUPERGYRO:
             chassis->current_param = &Chassis_chassisMotorParamGyro;
             Chassis_CalcMoveRef();  // Headless translation solution
             Chassis_CalcGyroRef();  // Solution of small gyroscope
+            break;
+
+        case Chassis_MODE_DISCO:
+            Chassis_CalcDiscoRef();
             break;
         default:
             return;
     }
 
-    if (chassis->mode == Chassis_MODE_GYRO) {
+    if (chassis->mode == Chassis_MODE_GYRO || chassis->mode == Chassis_MODE_SUPERGYRO) {
         Gyro_compensate_1 = Chassis_Gyro_compensate[0];
         Gyro_compensate_2 = Chassis_Gyro_compensate[1];
         Gyro_compensate_3 = Chassis_Gyro_compensate[2];

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-27 15:19:09
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-27 21:40:48
+ * @LastEditTime : 2022-07-04 22:41:30
  */
 
 #ifndef GIM_MINIPC_CTRL_H
@@ -33,7 +33,8 @@ typedef enum {
     MiniPC_ARMOR = 0u,
     MiniPC_BIG_BUFF = 1u,
     MiniPC_SMALL_BUFF = 2u,
-    MiniPC_SENTRY = 3u
+    MiniPC_SENTRY = 3u,
+    MiniPC_GIMBAL_DEBUG = 4u
 } MiniPC_AutoAimModeEnum;
 
 typedef enum {
@@ -79,7 +80,7 @@ typedef struct {
     MiniPC_AutoControlModeEnum control_mode;
     MiniPC_TargetFollowModeEnum target_state;
     MiniPC_OffsetTypeDef output_offset;
-    MiniPC_OffsetTuneCntTypeDef vision_offset[4];
+    MiniPC_OffsetTuneCntTypeDef vision_offset[5];
 } MiniPC_MiniPCControlTypeDef;
 
 typedef enum {
