@@ -1,11 +1,20 @@
 /*
  * @Project      : RM_Infantry_Oreo
  * @FilePath     : \Infantry_Oreo\Core\Src\Chassis_Control\cha_gimbal_ctrl.c
+ * @Descripttion : 
+ * @Author       : GDDG08
+ * @Date         : 2022-05-03 21:06:43
+ * @LastEditors  : GDDG08
+ * @LastEditTime : 2022-07-05 14:36:06
+ */
+/*
+ * @Project      : RM_Infantry_Oreo
+ * @FilePath     : \Infantry_Oreo\Core\Src\Chassis_Control\cha_gimbal_ctrl.c
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 20:53:27
+ * @LastEditTime : 2022-07-05 14:34:40
  */
 
 #include "cha_gimbal_ctrl.h"
@@ -118,7 +127,6 @@ float GimbalYaw_Angle_compensate;
 void GimbalYaw_AngleCalibrate() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     GimbalYaw_Angle_compensate = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - buscomm->gimbal_imu_pos;
-
 }
 
 /**
@@ -142,16 +150,17 @@ float GimbalYaw_Limit(float ref) {
     Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
     GimbalYaw_GimbalYawTypeDef* gimbalyaw = GimbalYaw_GetGimbalYawPtr();
 
-    float yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET;
+    float yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET + ((chassis->mode == Chassis_MODE_ASS) ? -90 : 90);
     float yaw_relative_angle_ref = gimbalyaw->yaw_ref - gimbalyaw->yaw_position_fdb + yaw_relative_angle;
-    float yaw_relative_angle_ref_to = ref - gimbalyaw->yaw_position_fdb + yaw_relative_angle;
+    // float yaw_relative_angle_ref_to = ref - gimbalyaw->yaw_position_fdb + yaw_relative_angle;
 
     float ref_limited;
-    if (chassis->mode == Chassis_MODE_GYRO)
+    if (chassis->mode == Chassis_MODE_GYRO || chassis->mode == Chassis_MODE_SUPERGYRO)
         ref_limited = ref;
-    else if (((yaw_relative_angle_ref < -Const_YAW_MAXANGLE) && (ref < gimbalyaw->yaw_ref)) ||
-             ((yaw_relative_angle_ref > Const_YAW_MAXANGLE) && (ref > gimbalyaw->yaw_ref)))
-        ref_limited = gimbalyaw->yaw_ref;
+    // else if (((yaw_relative_angle_ref < -Const_YAW_MAXANGLE) && (ref < gimbalyaw->yaw_ref)) ||
+    //          ((yaw_relative_angle_ref > Const_YAW_MAXANGLE) && (ref > gimbalyaw->yaw_ref)))
+    //     ref_limited = gimbalyaw->yaw_ref;
+
     // else if (yaw_relative_angle_ref_to < -Const_YAW_MAXANGLE) {
     //     ref_limited = gimbalyaw->yaw_position_fdb - yaw_relative_angle - Const_YAW_MAXANGLE;
     //     if (ref_limited > 0)

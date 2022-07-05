@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-29 18:25:33
+ * @LastEditTime : 2022-07-04 22:47:39
  */
 
 #ifndef MINIPC_PERIPH_H
@@ -74,9 +74,9 @@ typedef struct __attribute__((packed)) {
 //     uint8_t ID;
 // } MiniPC_BuffPacket_t;
 
-extern const uint8_t Const_MiniPC_ARMOR;
-extern const uint8_t Const_MiniPC_BIG_BUFF;
-extern const uint8_t Const_MiniPC_LITTLE_BUFF;
+// extern const uint8_t Const_MiniPC_ARMOR;
+// extern const uint8_t Const_MiniPC_BIG_BUFF;
+// extern const uint8_t Const_MiniPC_LITTLE_BUFF;
 
 extern MiniPC_MiniPCDataTypeDef MiniPC_MiniPCData;
 extern uint32_t MiniPC_Data_FrameTime;

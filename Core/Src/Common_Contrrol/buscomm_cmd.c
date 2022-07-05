@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-02 15:23:31
+ * @LastEditTime : 2022-07-05 14:24:10
  */
 
 #include "buscomm_cmd.h"
@@ -135,7 +135,7 @@ static void _send_referee_data_2(uint8_t buff[]) {
     ratea[1] = 1000 * counta[1] / HAL_GetTick();
     memset(buff, 0, 8);
     buff[0] = (buscomm->game_outpost_alive << 7) + buscomm->robot_id;
-    buff[1] = buscomm->speed_17mm_limit << 6 ;
+    buff[1] = buscomm->speed_17mm_limit << 6;
     i162buff(buscomm->heat_cooling_limit, buff + 2);
 
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
@@ -172,7 +172,7 @@ static void _send_control(uint8_t buff[]) {
     counta[3]++;
     ratea[3] = 1000 * counta[3] / HAL_GetTick();
     memset(buff, 0, 8);
-    buff[0] = (buscomm->gimbal_yaw_mode << 4) + (buscomm->chassis_mode << 2) + buscomm->power_limit_mode;
+    buff[0] = (buscomm->gimbal_yaw_mode << 4) + (buscomm->chassis_mode << 1) + buscomm->power_limit_mode;
     buff[1] = (buscomm->infantry_code << 4) + (buscomm->ui_cmd << 2) + (buscomm->cap_mode_user << 1) + buscomm->cap_boost_mode_user;
     float2buff(buscomm->gimbal_yaw_ref, buff + 2);
     FDCAN_SendMessage(Const_BusComm_CAN_HANDLER, pheader, buff);
@@ -272,8 +272,8 @@ static void _set_control(uint8_t buff[]) {
     }
 
     buscomm->gimbal_yaw_mode = buff[0] >> 4;
-    buscomm->chassis_mode = (buff[0] & 0x0C) >> 2;
-    buscomm->power_limit_mode = buff[0] & 0x03;
+    buscomm->chassis_mode = (buff[0] & 0x0E) >> 1;
+    buscomm->power_limit_mode = buff[0] & 0x01;
     buscomm->infantry_code = buff[1] >> 4;
     buscomm->ui_cmd = buff[1] & 0x04 >> 2;
     buscomm->cap_mode_user = (buff[1] & 0x02) >> 1;

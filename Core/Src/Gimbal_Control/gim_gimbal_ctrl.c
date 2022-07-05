@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 13:47:34
+ * @LastEditTime : 2022-07-05 00:25:57
  */
 
 #include "gim_gimbal_ctrl.h"
@@ -195,7 +195,7 @@ float Gimbal_LimitPitch(float ref) {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
     float pitch_umaxangle;
-    if (buscomm->chassis_mode == CHASSIS_CTRL_GYRO) {
+    if (buscomm->chassis_mode == CHASSIS_CTRL_GYRO || buscomm->chassis_mode == CHASSIS_CTRL_SUPERGYRO) {
         pitch_umaxangle = Const_PITCH_UMAXANGLE_GRYO;
     } else {
         pitch_umaxangle = Const_PITCH_UMAXANGLE;
@@ -240,7 +240,6 @@ void Gimbal_SetPitchRefDelta(float delta) {
 
 float AutoControl_offset_pitch = 0.0f;
 void Gimbal_SetPitchAutoRef(float ref) {
-
     ref += AutoControl_offset_pitch;
 
     Gimbal_SetPitchRef(ref);
@@ -256,16 +255,16 @@ float Gimbal_LimitYaw(float ref) {
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
 
-    float yaw_relative_angle = buscomm->yaw_relative_angle;
+    float yaw_relative_angle = buscomm->yaw_relative_angle + ((buscomm->chassis_mode == CHASSIS_CTRL_ASS) ? -90 : 90);
     float yaw_relative_angle_ref = gimbal->angle.yaw_angle_ref - imu->angle.yaw + yaw_relative_angle;
     // float yaw_relative_angle_ref_to = ref - imu->angle.yaw + yaw_relative_angle;
 
     float ref_limited;
-    if (buscomm->chassis_mode == CHASSIS_CTRL_GYRO)
+    if (buscomm->chassis_mode == CHASSIS_CTRL_GYRO || buscomm->chassis_mode == CHASSIS_CTRL_SUPERGYRO)
         ref_limited = ref;
-    else if (((yaw_relative_angle_ref < -Const_YAW_MAXANGLE) && (ref < gimbal->angle.yaw_angle_ref)) ||
-             ((yaw_relative_angle_ref > Const_YAW_MAXANGLE) && (ref > gimbal->angle.yaw_angle_ref)))
-        ref_limited = gimbal->angle.yaw_angle_ref;
+    // else if (((yaw_relative_angle_ref < -Const_YAW_MAXANGLE) && (ref < gimbal->angle.yaw_angle_ref)) ||
+    //          ((yaw_relative_angle_ref > Const_YAW_MAXANGLE) && (ref > gimbal->angle.yaw_angle_ref)))
+    //     ref_limited = gimbal->angle.yaw_angle_ref;
     else
         ref_limited = ref;
 

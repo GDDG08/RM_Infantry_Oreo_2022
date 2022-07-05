@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-27 21:32:21
+ * @LastEditTime : 2022-07-04 22:44:05
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -171,6 +171,9 @@ void MiniPC_UpdateControlData() {
         } else if (minipc->aim_mode == MiniPC_SENTRY) {
             minipc->output_offset = MiniPC_Offset_Sentry;
             minipc->control_mode = MiniPC_ABSOLUTE;
+        } else if (minipc->aim_mode == MiniPC_GIMBAL_DEBUG) {
+            minipc->output_offset = MiniPC_Offset_Buff_Small;
+            minipc->control_mode = MiniPC_RELATIVE;
         }
     }
 }
@@ -186,6 +189,7 @@ void MiniPC_SetAutoAimOutput() {
     MiniPC_MiniPCDataTypeDef* minipc_data = MiniPC_GetMiniPCDataPtr();
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     Gimbal_GimbalTypeDef* gimbal = Gimbal_GetGimbalControlPtr();
+    BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
     GimbalMove_AutoAimRef_Change();
     if ((minipc->enable_aim_output) && (gimbal->mode.present_mode != Gimbal_NOAUTO)) {
@@ -196,8 +200,10 @@ void MiniPC_SetAutoAimOutput() {
             }
         } else {
             if (minipc->target_state == MiniPC_TARGET_FOLLOWING) {
-                Gimbal_SetYawAutoRef(/*imu->angle.yaw + */ minipc->yaw_ref_filtered + minipc->output_offset.yaw);
-                Gimbal_SetPitchAutoRef(/*imu->angle.pitch  +*/ minipc->pitch_ref_filtered + minipc->output_offset.pitch);
+                Gimbal_SetYawAutoRef(minipc->yaw_ref_filtered + minipc->output_offset.yaw);
+                Gimbal_SetPitchAutoRef(minipc->pitch_ref_filtered + minipc->output_offset.pitch);
+                // Gimbal_SetYawAutoRef(buscomm->yaw_encoder_angle + minipc->yaw_ref_filtered + minipc->output_offset.yaw);
+                // Gimbal_SetPitchAutoRef(imu->angle.pitch + minipc->pitch_ref_filtered + minipc->output_offset.pitch);
             }
         }
     }

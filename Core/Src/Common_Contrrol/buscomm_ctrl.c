@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-01 20:55:20
+ * @LastEditTime : 2022-07-05 15:10:28
  *
  */
 
@@ -346,7 +346,7 @@ void BusComm_Update() {
     uint8_t auto_aim_mode = 0, cha_mode = 0;
     if (data->chassis_mode == CHASSIS_CTRL_NORMAL)
         cha_mode = 0;
-    if (data->chassis_mode == CHASSIS_CTRL_GYRO)
+    if (data->chassis_mode == CHASSIS_CTRL_GYRO || data->chassis_mode == CHASSIS_CTRL_SUPERGYRO)
         cha_mode = 1;
     if (data->gimbal_yaw_mode == GIMBAL_YAW_CTRL_NO_AUTO)
         auto_aim_mode = 0;
@@ -364,7 +364,7 @@ void BusComm_Update() {
         data->yaw_encoder_angle -= 360;
     while (data->yaw_encoder_angle < -180)
         data->yaw_encoder_angle += 360;
-        
+
     data->yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     data->robot_id = referee->robot_id;
     data->power_limit = referee->max_chassis_power;
@@ -490,6 +490,17 @@ void _cmd_mode_control() {
 
             break;
         }
+        case CHASSIS_CTRL_SUPERGYRO: {
+            Chassis_SetMode(Chassis_MODE_SUPERGYRO);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(1);
+
+            break;
+        }
         case CHASSIS_CTRL_GYRO: {
             Chassis_SetMode(Chassis_MODE_GYRO);
             Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
@@ -499,6 +510,36 @@ void _cmd_mode_control() {
 
             Referee_SetWidthMode(1);
 
+            break;
+        }
+        case CHASSIS_CTRL_ASS: {
+            Chassis_SetMode(Chassis_MODE_ASS);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(0);
+            break;
+        }
+        case CHASSIS_CTRL_CRAB: {
+            Chassis_SetMode(Chassis_MODE_CRAB);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(0);
+            break;
+        }
+        case CHASSIS_CTRL_DISCO: {
+            Chassis_SetMode(Chassis_MODE_DISCO);
+            Chassis_SetForwardBackRef(buscomm->chassis_fb_ref);
+            Chassis_SetLeftRightRef(buscomm->chassis_lr_ref);
+            Chassis_SetChassisControlState(1);
+            Chassis_SetChassisOutputState(1);
+
+            Referee_SetWidthMode(0);
             break;
         }
         default:
