@@ -322,6 +322,7 @@ void BusComm_ResetBusCommData() {
  * @param      NULL
  * @retval     NULL
  */
+   uint8_t auto_aim_mode = 0, cha_mode = 0;
 void BusComm_Update() {
     BusComm_BusCommDataTypeDef* data = BusComm_GetBusDataPtr();
 
@@ -353,9 +354,9 @@ void BusComm_Update() {
     Referee_SetAimMode(mode);
 
     Referee_SetCapState(data->cap_rest_energy);
-    //    Referee_SetPitchAngle(data->pitch_angle);
+       Referee_SetPitchAngle(data->pitch_angle);
 
-    uint8_t auto_aim_mode = 0, cha_mode = 0;
+ 
     if (data->chassis_mode == CHASSIS_CTRL_NORMAL)
         cha_mode = 0;
     if (data->chassis_mode == CHASSIS_CTRL_GYRO || data->chassis_mode == CHASSIS_CTRL_SUPERGYRO)
@@ -440,7 +441,7 @@ void BusComm_Update() {
 
 void _cmd_mode_control() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-
+static uint8_t ui_cmd_last = 0;
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     switch (buscomm->gimbal_yaw_mode) {
         case GIMBAL_YAW_CTRL_BIG_ENERGY: {
@@ -580,14 +581,10 @@ void _cmd_mode_control() {
             break;
     }
 
-    static int flag = 0;
-    if (buscomm->ui_cmd == 1) {
-        flag = 1;
-    } else
-        flag = 0;
-
-    if (flag == 1) {
+    
+    if (buscomm->ui_cmd != ui_cmd_last) {
         Referee_Setup();
+				ui_cmd_last =buscomm->ui_cmd ;
     }
 #endif
 }

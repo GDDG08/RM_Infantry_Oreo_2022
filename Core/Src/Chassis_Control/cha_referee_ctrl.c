@@ -118,27 +118,29 @@ const char* CAP_STATE_TEXT_STR = "CAP";
 
 const uint8_t PITCH_METER_LAYER = 2;
 const Draw_Color PITCH_METER_COLOR = Draw_COLOR_GREEN;
-const uint16_t PITCH_METER_TEXT[5] = {0x501, 20, 2, 1600, 500};  // ID, Font Size, Width, X, Y
+const uint16_t PITCH_METER_TEXT[5] = {0x501, 20, 2, 50, 750};  // ID, Font Size, Width, X, Y
 const char* PITCH_METER_TEXT_STR = "PITCH:";
-const uint16_t PITCH_METER_VALUE[6] = {0x502, 20, 3, 2, 1600, 540};  // ID, Font Size, Precision, Width, X, Y
+const uint16_t PITCH_METER_VALUE[6] = {0x502, 20, 3, 2, 150, 750};  // ID, Font Size, Precision, Width, X, Y
 
 const uint8_t AIM_MODE_LAYER = 2;
 const Draw_Color AIM_MODE_COLOR = Draw_COLOR_GREEN;
-const uint16_t AIM_MODE_TEXT[5] = {0x503, 20, 2, 200, 800};        // ID, Font Size, Width, X, Y
-const uint16_t AIM_MODE_VALUE_TEXT[5] = {0x504, 20, 2, 600, 900};  // ID, Font Size, Width, X, Y
+const uint16_t AIM_MODE_TEXT[5] = {0x503, 20, 2, 50, 800};        // ID, Font Size, Width, X, Y
+const uint16_t AIM_MODE_VALUE_TEXT[5] = {0x504, 20, 2,50, 900};  // ID, Font Size, Width, X, Y
 const char* AIM_MODE_TEXT_STR = "AIM_MODE:\0";
 const char* NORMAL_AIM_TEXT_STR = "AIM_MODE: NORMAL\0";
 const char* ARMOR_AIM_TEXT_STR = "AIM_MODE: ARMOR\0";
+const char* DEBUG_AIM_TEXT_STR = "AIM_MODE: DEBUG\0";
 const char* BIG_BUFF_AIM_TEXT_STR = "AIM_MODE: BIG_BUF\0";
 const char* SMALL_BUFF_AIM_TEXT_STR = "AIM_MODE: SMALL_BUF\0";
 
 const uint8_t CHASSIS_MODE_LAYER = 2;
 const Draw_Color CHASSIS_MODE_COLOR = Draw_COLOR_GREEN;
-const uint16_t CHASSIS_MODE_TEXT[5] = {0x505, 20, 2, 200, 600};        // ID, Font Size, Width, X, Y
-const uint16_t CHASSIS_MODE_VALUE_TEXT[5] = {0x506, 20, 2, 600, 850};  // ID, Font Size, Width, X, Y
+const uint16_t CHASSIS_MODE_TEXT[5] = {0x505, 20, 2, 50, 600};        // ID, Font Size, Width, X, Y
+const uint16_t CHASSIS_MODE_VALUE_TEXT[5] = {0x506, 20, 2, 50, 850};  // ID, Font Size, Width, X, Y
 const char* CHASSIS_MODE_TEXT_STR = "CHASSIS_MODE:\0";
 const char* NORMAL_RUN_TEXT_STR = "CHASSIS_MODE: NORMAL\0";
 const char* GYRO_RUN_TEXT_STR = "CHASSIS_MODE: GYRO\0";
+const char* STOP_RUN_TEXT_STR = "CHASSIS_MODE: STOP\0";
 
 /********** END OF Drawing Constants **********/
 
@@ -186,6 +188,12 @@ void Referee_SetPitchAngle(float angle) {
     draw->pitch_angle = angle;
 }
 
+
+void Referee_SetMagazineState(uint8_t magazine_state){
+	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+	draw->magazine_state=magazine_state ;
+	
+}
 /**
  * @brief      ��׼�߻��ƣ���ʼ���׶�
  * @param      ��
@@ -340,6 +348,7 @@ void Referee_SetupPitchMeter() {
     // draw_cnt: 1
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     float value = -draw->pitch_angle;
+	  Draw_AddString(PITCH_METER_TEXT[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_TEXT[1], PITCH_METER_TEXT[2], PITCH_METER_TEXT[3], PITCH_METER_TEXT[4], PITCH_METER_TEXT_STR);
     Draw_AddFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
 }
 
@@ -351,9 +360,9 @@ void Referee_SetupPitchMeter() {
 void Referee_UpdatePitchMeter() {
     // draw_cnt: 1
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-    float value = -draw->pitch_angle;
-    Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
-    // Draw_ModifyInt(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], (int32_t) (value * 1000));
+    float value = 12.345;
+    //Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
+     Draw_ModifyInt(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], (int32_t) (value * 1000));
 }
 
 /**
@@ -391,7 +400,7 @@ void Referee_SetupModeDisplay() {
  */
 void Referee_UpdateModeDisplay() {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-    if (draw->auto_aim_mode_last != draw->auto_aim_mode) {
+    if (draw->auto_aim_mode_last == draw->auto_aim_mode) {
         draw->auto_aim_mode_last = draw->auto_aim_mode;
         switch (draw->auto_aim_mode) {
             case 0:
@@ -411,7 +420,7 @@ void Referee_UpdateModeDisplay() {
         }
     }
 
-    if (draw->cha_mode_last != draw->cha_mode) {
+    if (draw->cha_mode_last == draw->cha_mode) {
         draw->cha_mode_last = draw->cha_mode;
         switch (draw->cha_mode) {
             case 0:
@@ -463,27 +472,29 @@ void Referee_SetupAllString() {
  * @param      ��
  * @retval     ��
  */
+   static int last_time = -1000;
+	int now;
 void Referee_Setup() {
-    static int last_time = -1000;
-    int now = HAL_GetTick();
+	
+     now = HAL_GetTick();
     if (now - last_time < 1000)
         return;
     last_time = now;
 
-    Draw_ClearAll();  // cmd_cnt: 1, total_cmd_cnt: 1
+  Draw_ClearAll();  // cmd_cnt: 1, total_cmd_cnt: 1
 
     Referee_SetupAimLine();       // draw_cnt: 4
     Referee_SetupCrosshair();     // draw_cnt: 1
     Referee_SetupWidthMark();     // draw_cnt: 2, send(7), total_cmd_cnt: 2
     Referee_SetupCapState();      // draw_cnt: 2
     Referee_SetupPitchMeter();    // draw_cnt: 1
-    Referee_SetupModeDisplay();   // draw_cnt: 2
+   Referee_SetupModeDisplay();   // draw_cnt: 2
     Referee_SetupErrorDisplay();  // draw_cnt: 0, send(2)send(1), total_cmd_cnt: 4
 
-    Referee_SetupAllString();  // cmd_cnt: 2, total_cmd_cnt: 6
+   // Referee_SetupAllString();  // cmd_cnt: 2, total_cmd_cnt: 6
 
     Referee_DrawingBufferFlush();  // useless since string cmd sent previously
-    referee_setup_flag = 1;
+   referee_setup_flag = 1;
 }
 
 /**
