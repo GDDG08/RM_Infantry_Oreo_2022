@@ -473,15 +473,16 @@ void Referee_SendDrawingCmd(graphic_data_struct_t graph[], uint8_t mode) {
  * @param      str: �ַ���������Ϊ30��
  * @retval     ��
  */
-void Referee_SendDrawingStringCmd(graphic_data_struct_t* pgraph, const uint8_t str[]) {
+void Referee_SendDrawingStringCmd(graphic_data_struct_t* pgraph, const uint8_t str[],uint8_t len) {
     Referee_RefereeDataTypeDef* referee = &Referee_RefereeData;
 
     ext_client_custom_character_t struct_data;
     memcpy(&struct_data.grapic_data_struct, pgraph, sizeof(graphic_data_struct_t));
-    memcpy(&struct_data.data, str, Const_Referee_DATA_CMD_ID_LIST[5].data_length - sizeof(graphic_data_struct_t));
-
+	//memcpy(&struct_data.data, str, Const_Referee_DATA_CMD_ID_LIST[5].data_length - sizeof(graphic_data_struct_t));
+		memcpy(&struct_data.data, str,  len);
     Referee_SendInteractiveData(Const_Referee_DATA_CMD_ID_LIST[5].cmd_id, referee->client_id,
                                 (void*)&struct_data, Const_Referee_DATA_CMD_ID_LIST[5].data_length);
+
 }
 
 /**
@@ -887,7 +888,8 @@ void Draw_AddString(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t
         return;
     uint8_t buf[35];
     memcpy(buf, str, len);
-    Referee_SendDrawingStringCmd(&graph, buf);
+    Referee_SendDrawingStringCmd(&graph, buf,len+1);
+//		Referee_DrawingBufferFlush();
 }
 
 /**
@@ -897,15 +899,17 @@ void Draw_AddString(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t
  */
 void Draw_ModifyString(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t font_size, uint8_t width, uint16_t start_x, uint16_t start_y, const char str[]) {
     graphic_data_struct_t graph;
-    //    Referee_DrawingBufferFlush();
+    //     ,  ();
     uint8_t len = strlen(str);
     if (Referee_PackStringGraphicData(&graph, graph_id, Draw_OPERATE_MODIFY, layer, color,
                                       font_size, len, width, start_x, start_y) != PARSE_SUCCEEDED)
         return;
     uint8_t buf[35];
     memcpy(buf, str, len);
-    Referee_SendDrawingStringCmd(&graph, buf);
+    Referee_SendDrawingStringCmd(&graph, buf,len +1);
+//		Referee_DrawingBufferFlush();
 }
+
 
 /********** END OF REFEREE CUSTOM GRAPHIC DRAWING FUNCTION **********/
 

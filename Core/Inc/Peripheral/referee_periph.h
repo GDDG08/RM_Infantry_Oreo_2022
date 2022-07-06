@@ -406,7 +406,7 @@ uint16_t Referee_GetClientIDByRobotID(uint8_t robot_id);
 void Referee_SendInteractiveData(uint16_t data_cmd_id, uint16_t receiver_ID, const uint8_t* interactive_data, uint16_t interactive_data_length);
 void Referee_SendRobotCustomData(uint16_t data_cmd_id, uint16_t receiver_ID, const uint8_t* data, uint16_t data_length);
 void Referee_SendDrawingCmd(graphic_data_struct_t graph[], uint8_t mode);
-void Referee_SendDrawingStringCmd(graphic_data_struct_t* pgraph, const uint8_t str[]);
+void Referee_SendDrawingStringCmd(graphic_data_struct_t* pgraph, const uint8_t str[],uint8_t len);
 uint8_t Referee_IsDrawingBufferEmpty(void);
 void Referee_DrawingBufferFlush(void);
 void Referee_DrawingBufferPushDummy(void);
@@ -436,6 +436,7 @@ void Draw_AddInt(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t fo
 void Draw_ModifyInt(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t font_size, uint8_t width, uint16_t start_x, uint16_t start_y, int value);
 void Draw_AddString(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t font_size, uint8_t width, uint16_t start_x, uint16_t start_y, const char str[]);
 void Draw_ModifyString(uint32_t graph_id, uint8_t layer, Draw_Color color, uint16_t font_size, uint8_t width, uint16_t start_x, uint16_t start_y, const char str[]);
+
 
 uint8_t Referee_IsRefereeOffline(void);
 uint8_t Referee_CheckDataLengthByCmdID(uint16_t cmd_id, uint16_t data_length);
