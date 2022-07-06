@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-04 22:44:05
+ * @LastEditTime : 2022-07-05 22:11:04
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -67,8 +67,8 @@ void MiniPC_ControlInit() {
     minipc->control_mode = MiniPC_ABSOLUTE;
     memset(minipc->vision_offset, 0, sizeof(minipc->vision_offset));
 
-    Filter_LowPassInit(0.4, &minipc->yaw_fil_param);
-    Filter_LowPassInit(0.1, &minipc->pitch_fil_param);
+    Filter_LowPassInit(0.5, &minipc->yaw_fil_param);
+    Filter_LowPassInit(0.8, &minipc->pitch_fil_param);
     Filter_LowPassInit(0.01, &minipc->distance_fil_param);
 
     AutoAim_Para_Init();

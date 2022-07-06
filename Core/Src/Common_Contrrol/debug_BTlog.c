@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-05 15:34:01
+ * @LastEditTime : 2022-07-06 21:07:36
  */
 
 #include "debug_BTlog.h"
@@ -155,9 +155,9 @@ void BTlog_Init() {
     ADD_SEND_DATA(Motor_gimbalMotorPitch.pid_pos.err[0], Float, "Pitch.pid_pos.err");
     // ADD_SEND_DATA(imu->angle.yaw, Float, "imu->angle.yaw");
     // ADD_SEND_DATA(imu->speed.yaw, Float, "imu->speed.yaw");
-    // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
+    ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
     // ADD_SEND_DATA(buscomm->gimbal_yaw_ref, Float, "gimbal_yaw_ref");
-    // ADD_SEND_DATA(buscomm->yaw_encoder_angle, Float, "yaw_encoder_angle");
+    ADD_SEND_DATA(buscomm->yaw_encoder_angle, Float, "yaw_encoder_angle");
     // ADD_SEND_DATA(MiniPC_angles[0], Float, "MiniPC_angles:yaw");
     // ADD_SEND_DATA(MiniPC_angles[1], Float, "MiniPC_angles:pitch");
     // ADD_SEND_DATA(MiniPC_angles[2], Float, "MiniPC_angles:roll");

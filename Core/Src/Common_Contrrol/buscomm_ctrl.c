@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-05 21:44:00
+ * @LastEditTime : 2022-07-06 21:20:11
  *
  */
 
@@ -372,10 +372,10 @@ void BusComm_Update() {
     Referee_SetMode(auto_aim_mode, cha_mode);
 
     data->yaw_encoder_angle = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
-    while (data->yaw_encoder_angle > 180)
-        data->yaw_encoder_angle -= 360;
-    while (data->yaw_encoder_angle < -180)
-        data->yaw_encoder_angle += 360;
+    // while (data->yaw_encoder_angle > 180)
+    //     data->yaw_encoder_angle -= 360;
+    // while (data->yaw_encoder_angle < -180)
+    //     data->yaw_encoder_angle += 360;
 
     data->yaw_relative_angle = Motor_gimbalMotorYaw.encoder.limited_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     data->robot_id = referee->robot_id;
