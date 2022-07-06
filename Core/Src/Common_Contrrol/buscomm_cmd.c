@@ -300,7 +300,7 @@ static void _set_control(uint8_t buff[]) {
     buscomm->chassis_mode = (buff[0] & 0x0E) >> 1;
     buscomm->power_limit_mode = buff[0] & 0x01;
     buscomm->infantry_code = buff[1] >> 4;
-    buscomm->ui_cmd = buff[1] & 0x04 >> 2;
+    buscomm->ui_cmd = (buff[1] & 0x04) >> 2;
     buscomm->cap_mode_user = (buff[1] & 0x02) >> 1;
     buscomm->cap_boost_mode_user = buff[1] & 0x01;
     buscomm->gimbal_yaw_ref = buff2float(buff + 2);

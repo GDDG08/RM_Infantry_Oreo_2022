@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-07-24 10:27:08
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:49:54
+ * @LastEditTime : 2022-07-06 22:36:01
  */
 
 #ifndef CHA_REFEREE_CTRL_H
@@ -36,6 +36,13 @@ typedef struct {
     uint8_t cha_mode, cha_mode_last;
     uint8_t cap_state;  // cap percent, 0 ~ 100
     float pitch_angle;
+
+    uint8_t magazine_state;
+    uint8_t shooter_state;
+    uint8_t minipc_mode;
+    uint8_t minipc_target_id;
+    int8_t minipc_offset_horizental;
+    int8_t minipc_offset_vertical;
 } Referee_DrawDataTypeDef;
 
 void Referee_Task(void const* argument);

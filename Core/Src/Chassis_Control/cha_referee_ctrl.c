@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:59:44
+ * @LastEditTime : 2022-07-06 22:35:49
  */
 
 #include "cha_referee_ctrl.h"
@@ -125,7 +125,7 @@ const uint16_t PITCH_METER_VALUE[6] = {0x502, 20, 3, 2, 150, 750};  // ID, Font 
 const uint8_t AIM_MODE_LAYER = 2;
 const Draw_Color AIM_MODE_COLOR = Draw_COLOR_GREEN;
 const uint16_t AIM_MODE_TEXT[5] = {0x503, 20, 2, 50, 800};        // ID, Font Size, Width, X, Y
-const uint16_t AIM_MODE_VALUE_TEXT[5] = {0x504, 20, 2,50, 900};  // ID, Font Size, Width, X, Y
+const uint16_t AIM_MODE_VALUE_TEXT[5] = {0x504, 20, 2, 50, 900};  // ID, Font Size, Width, X, Y
 const char* AIM_MODE_TEXT_STR = "AIM_MODE:\0";
 const char* NORMAL_AIM_TEXT_STR = "AIM_MODE: NORMAL\0";
 const char* ARMOR_AIM_TEXT_STR = "AIM_MODE: ARMOR\0";
@@ -188,11 +188,9 @@ void Referee_SetPitchAngle(float angle) {
     draw->pitch_angle = angle;
 }
 
-
-void Referee_SetMagazineState(uint8_t magazine_state){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	draw->magazine_state=magazine_state ;
-	
+void Referee_SetMagazineState(uint8_t magazine_state) {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    draw->magazine_state = magazine_state;
 }
 /**
  * @brief      ��׼�߻��ƣ���ʼ���׶�
@@ -348,7 +346,7 @@ void Referee_SetupPitchMeter() {
     // draw_cnt: 1
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     float value = -draw->pitch_angle;
-	  Draw_AddString(PITCH_METER_TEXT[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_TEXT[1], PITCH_METER_TEXT[2], PITCH_METER_TEXT[3], PITCH_METER_TEXT[4], PITCH_METER_TEXT_STR);
+    Draw_AddString(PITCH_METER_TEXT[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_TEXT[1], PITCH_METER_TEXT[2], PITCH_METER_TEXT[3], PITCH_METER_TEXT[4], PITCH_METER_TEXT_STR);
     Draw_AddFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
 }
 
@@ -361,8 +359,8 @@ void Referee_UpdatePitchMeter() {
     // draw_cnt: 1
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     float value = 12.345;
-    //Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
-     Draw_ModifyInt(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], (int32_t) (value * 1000));
+    // Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
+    Draw_ModifyInt(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], (int32_t)(value * 1000));
 }
 
 /**
@@ -472,29 +470,28 @@ void Referee_SetupAllString() {
  * @param      ��
  * @retval     ��
  */
-   static int last_time = -1000;
-	int now;
+static int last_time = -1000;
+int now;
 void Referee_Setup() {
-	
-     now = HAL_GetTick();
+    now = HAL_GetTick();
     if (now - last_time < 1000)
         return;
     last_time = now;
 
-  Draw_ClearAll();  // cmd_cnt: 1, total_cmd_cnt: 1
+    Draw_ClearAll();  // cmd_cnt: 1, total_cmd_cnt: 1
 
     Referee_SetupAimLine();       // draw_cnt: 4
     Referee_SetupCrosshair();     // draw_cnt: 1
     Referee_SetupWidthMark();     // draw_cnt: 2, send(7), total_cmd_cnt: 2
     Referee_SetupCapState();      // draw_cnt: 2
     Referee_SetupPitchMeter();    // draw_cnt: 1
-   Referee_SetupModeDisplay();   // draw_cnt: 2
+    Referee_SetupModeDisplay();   // draw_cnt: 2
     Referee_SetupErrorDisplay();  // draw_cnt: 0, send(2)send(1), total_cmd_cnt: 4
 
-   // Referee_SetupAllString();  // cmd_cnt: 2, total_cmd_cnt: 6
+    // Referee_SetupAllString();  // cmd_cnt: 2, total_cmd_cnt: 6
 
     Referee_DrawingBufferFlush();  // useless since string cmd sent previously
-   referee_setup_flag = 1;
+    referee_setup_flag = 1;
 }
 
 /**
