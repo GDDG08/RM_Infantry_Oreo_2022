@@ -449,10 +449,9 @@ uint8_t flag=0;
 
 void _cmd_mode_control() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-	    Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
-
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
+	  Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
     switch (buscomm->gimbal_yaw_mode) {
         case GIMBAL_YAW_CTRL_BIG_ENERGY: {
             GimbalYaw_SetMode(GimbalYaw_MODE_BIG_ENERGY);

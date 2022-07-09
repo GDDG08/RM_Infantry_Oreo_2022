@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 20:00:25
+ * @LastEditTime : 2022-07-09 17:10:19
  */
 
 #include "gim_ins_ctrl.h"
@@ -281,6 +281,11 @@ void Ins_DecodeIMUData() {
 #if __FN_IF_ENABLE(__IMU_HI22X)
     HI22X_HI22XDataTypeDef* hi22x = HI22X_GetHI22XDataPtr();
     imu->angle.pitch = hi22x->angle.pitch;
+
+    while (imu->angle.pitch > 180)
+        imu->angle.pitch -= 360;
+    while (imu->angle.pitch < -180)
+        imu->angle.pitch += 360;
     imu->angle.row = hi22x->angle.row;
     imu->angle.yaw = hi22x->angle.yaw;
     imu->speed.pitch = hi22x->speed.pitch;
