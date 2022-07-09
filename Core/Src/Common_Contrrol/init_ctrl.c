@@ -109,7 +109,7 @@ void Init_Task(void const* argument) {
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
 
     Referee_InitReferee();
-
+		Referee_Setup();
     Motor_InitAllMotors();
     BusComm_InitBusComm();
     FDCAN_IntFilterAndStart(&hfdcan1);
