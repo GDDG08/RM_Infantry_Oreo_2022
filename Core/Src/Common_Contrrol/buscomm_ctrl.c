@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-06 23:29:28
+ * @LastEditTime : 2022-07-10 00:19:33
  *
  */
 
@@ -322,9 +322,9 @@ void BusComm_ResetBusCommData() {
  * @param      NULL
  * @retval     NULL
  */
-	uint8_t auto_aim_mode = 0, cha_mode = 0;  
-	uint8_t mode = 0;
-  uint8_t spd_id = 0;
+uint8_t auto_aim_mode = 0, cha_mode = 0;
+uint8_t mode = 0;
+uint8_t spd_id = 0;
 void BusComm_Update() {
     BusComm_BusCommDataTypeDef* data = BusComm_GetBusDataPtr();
 
@@ -332,7 +332,6 @@ void BusComm_Update() {
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     GimbalYaw_GimbalYawTypeDef* gimbal = GimbalYaw_GetGimbalYawPtr();
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
-
 
     switch (referee->shooter_heat0_speed_limit) {
         default:
@@ -370,13 +369,13 @@ void BusComm_Update() {
     if (data->gimbal_yaw_mode == GIMBAL_YAW_CTRL_BIG_ENERGY)
         auto_aim_mode = 3;
 
-    Referee_SetAimMode(mode);                        //UI  shooter_speed
-		Referee_SetAutoAimMode(data->minipc_mode);   //UI  aim_mode 
+    Referee_SetAimMode(mode);                   // UI  shooter_speed
+    Referee_SetAutoAimMode(data->minipc_mode);  // UI  aim_mode
     Referee_SetCapState(data->cap_rest_energy);
     Referee_SetPitchAngle(data->pitch_angle);
-		Referee_SetShooterStateMode(data->shooter_state);
-		Referee_SetMagazineStateMode(data->magazine_state);
-	  Referee_SetMinipc_Offset(data->minipc_offset_horizental,data->minipc_offset_vertical);
+    Referee_SetShooterStateMode(data->shooter_state);
+    Referee_SetMagazineStateMode(data->magazine_state);
+    Referee_SetMinipc_Offset(data->minipc_offset_horizental, data->minipc_offset_vertical);
 
     data->yaw_encoder_angle = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     // while (data->yaw_encoder_angle > 180)
@@ -444,14 +443,18 @@ void BusComm_Update() {
     //         data->cap_rest_energy = powerValue->CapPercent;
     // #endif
 }
-uint8_t flag=0;
-    static uint8_t ui_cmd_last = 0;
 
+// uint8_t watch_ui_cmd;
+// uint8_t watch_ui_cmd_last;
+// uint8_t watch_ui_cmd_bool;
+uint8_t watch_ui_cmd_cnt;
 void _cmd_mode_control() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
-	  Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
+    Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
+    static uint8_t ui_cmd_last = 0;
+
     switch (buscomm->gimbal_yaw_mode) {
         case GIMBAL_YAW_CTRL_BIG_ENERGY: {
             GimbalYaw_SetMode(GimbalYaw_MODE_BIG_ENERGY);
@@ -589,9 +592,17 @@ void _cmd_mode_control() {
         default:
             break;
     }
-		
-		
-				Referee_SetChassisMode(chassis->mode);			//UI   chassis_mode
+
+    Referee_SetChassisMode(chassis->mode);  // UI   chassis_mode
+
+    // watch_ui_cmd = buscomm->ui_cmd;
+    // watch_ui_cmd_last = ui_cmd_last;
+    // watch_ui_cmd_bool = buscomm->ui_cmd != ui_cmd_last;
+    if (buscomm->ui_cmd != ui_cmd_last) {
+        watch_ui_cmd_cnt++;
+        Referee_Setup();
+    }
+    ui_cmd_last = buscomm->ui_cmd;
 #endif
 }
 
