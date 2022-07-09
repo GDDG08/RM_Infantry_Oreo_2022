@@ -365,7 +365,7 @@ typedef enum {
     Draw_OPERATE_ADD = 1,     // ����
     Draw_OPERATE_MODIFY = 2,  // �޸�
     Draw_OPERATE_DELETE = 3   // ɾ��
-} Draw_OperateType;           // ͼ�β���
+} Draw_OperateType;           // 绘画类型
 
 typedef enum {
     Draw_TYPE_LINE = 0,       // ֱ��
@@ -373,10 +373,10 @@ typedef enum {
     Draw_TYPE_CIRCLE = 2,     // ��Բ
     Draw_TYPE_ELLIPSE = 3,    // ��Բ
     Draw_TYPE_ARC = 4,        // Բ��
-    Draw_TYPE_FLOAT = 6,      // ������
-    Draw_TYPE_INT = 5,        // ������
+    Draw_TYPE_FLOAT = 5,      // ������
+    Draw_TYPE_INT = 6,        // ������
     Draw_TYPE_STRING = 7      // �ַ�
-} Draw_GraphicType;           // ͼ������
+} Draw_GraphicType;           // 图形种类
 
 typedef enum {
     Draw_COLOR_RED_BLUE = 0,  // ������ɫ
@@ -388,7 +388,7 @@ typedef enum {
     Draw_COLOR_CYAN = 6,      // ��ɫ
     Draw_COLOR_BLACK = 7,     // ��ɫ
     Draw_COLOR_WHITE = 8      // ��ɫ
-} Draw_Color;                 // ��ɫ
+} Draw_Color;                 // 图形颜色
 
 extern const uint16_t Const_Referee_RX_BUFF_LEN;
 extern const uint16_t Const_Referee_REMOTE_OFFLINE_TIME;
@@ -418,8 +418,10 @@ uint32_t Referee_PackIntGraphicData(graphic_data_struct_t* pgraph, uint32_t grap
 uint32_t Referee_PackStringGraphicData(graphic_data_struct_t* pgraph, uint32_t graph_id, Draw_OperateType operate_type, uint8_t layer, Draw_Color color, uint16_t font_size, uint8_t length, uint8_t width, uint16_t start_x, uint16_t start_y);
 
 void Draw_ClearLayer(uint8_t layer);
+//清除所有图层
 void Draw_ClearAll(void);
 void Draw_Delete(uint32_t graph_id);
+//添加图形和修改图形是两个概念
 void Draw_AddLine(uint32_t graph_id, uint8_t layer, Draw_Color color, uint8_t width, uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);
 void Draw_ModifyLine(uint32_t graph_id, uint8_t layer, Draw_Color color, uint8_t width, uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);
 void Draw_AddRectangle(uint32_t graph_id, uint8_t layer, Draw_Color color, uint8_t width, uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y);

@@ -322,7 +322,9 @@ void BusComm_ResetBusCommData() {
  * @param      NULL
  * @retval     NULL
  */
-uint8_t auto_aim_mode = 0, cha_mode = 0;
+	uint8_t auto_aim_mode = 0, cha_mode = 0;  
+	uint8_t mode = 0;
+  uint8_t spd_id = 0;
 void BusComm_Update() {
     BusComm_BusCommDataTypeDef* data = BusComm_GetBusDataPtr();
 
@@ -331,8 +333,7 @@ void BusComm_Update() {
     GimbalYaw_GimbalYawTypeDef* gimbal = GimbalYaw_GetGimbalYawPtr();
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
 
-    uint8_t mode = 0;
-    uint8_t spd_id = 0;
+
     switch (referee->shooter_heat0_speed_limit) {
         default:
         case 15:
@@ -369,7 +370,13 @@ void BusComm_Update() {
     if (data->gimbal_yaw_mode == GIMBAL_YAW_CTRL_BIG_ENERGY)
         auto_aim_mode = 3;
 
-    Referee_SetMode(auto_aim_mode, cha_mode);
+    Referee_SetAimMode(mode);                        //UI  shooter_speed
+		Referee_SetAutoAimMode(data->minipc_mode);   //UI  aim_mode 
+    Referee_SetCapState(data->cap_rest_energy);
+    Referee_SetPitchAngle(data->pitch_angle);
+		Referee_SetShooterStateMode(data->shooter_state);
+		Referee_SetMagazineStateMode(data->magazine_state);
+	  Referee_SetMinipc_Offset(data->minipc_offset_horizental,data->minipc_offset_vertical);
 
     data->yaw_encoder_angle = Motor_gimbalMotorYaw.encoder.consequent_angle - Const_YAW_MOTOR_INIT_OFFSET - GimbalYaw_Angle_compensate;
     // while (data->yaw_encoder_angle > 180)
@@ -437,10 +444,14 @@ void BusComm_Update() {
     //         data->cap_rest_energy = powerValue->CapPercent;
     // #endif
 }
+uint8_t flag=0;
+    static uint8_t ui_cmd_last = 0;
 
 void _cmd_mode_control() {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
-    static uint8_t ui_cmd_last = 0;
+	
+
+
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     switch (buscomm->gimbal_yaw_mode) {
         case GIMBAL_YAW_CTRL_BIG_ENERGY: {
@@ -579,11 +590,9 @@ void _cmd_mode_control() {
         default:
             break;
     }
-
-    if (buscomm->ui_cmd != ui_cmd_last) {
-        Referee_Setup();
-    }
-    ui_cmd_last = buscomm->ui_cmd;
+		
+		
+				Referee_SetChassisMode(chassis->mode);			//UI   chassis_mode
 #endif
 }
 
