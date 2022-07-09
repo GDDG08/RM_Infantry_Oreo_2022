@@ -18,7 +18,7 @@ Referee_RefereeDataTypeDef Referee_RefereeData;
  * @retval     ָ��ָ�����ϵͳ���ݶ���
  */
 Referee_RefereeDataTypeDef* Referee_GetRefereeDataPtr() {
-    return &Referee_RefereeData;
+    return &Referee_RefereeData;     //获取裁判系统数据
 }
 
 /**
@@ -345,35 +345,43 @@ uint16_t Referee_GetClientIDByRobotID(uint8_t robot_id) {
  */
 void Referee_SendInteractiveData(uint16_t data_cmd_id, uint16_t receiver_ID, const uint8_t* interactive_data, uint16_t interactive_data_length) {
     Referee_RefereeDataTypeDef* referee = &Referee_RefereeData;
-    static uint8_t seq = 0;
-    uint8_t* buf = Referee_TxData;
+    static uint8_t bag_count = 0;
+    uint8_t *buf = Referee_TxData;
     buf[0] = Const_Referee_FRAME_HEADER_SOF;
-
-    uint16_t* data_length_ptr = (void*)(buf + 1);
+    
+    uint16_t *data_length_ptr = (void *) (buf + 1);
     *data_length_ptr = interactive_data_length + Const_Referee_CMD_INTERACTIVE.data_length;
-
-    uint8_t* seq_ptr = (void*)(buf + 3);
-    *seq_ptr = seq;  // not obvious in doc
-    seq = (seq + 1) % 256;
-
-    uint8_t* crc8_ptr = (void*)(buf + 4);
+    
+    uint8_t *seq_ptr = (void *) (buf + 3);
+		
+	  
+    *seq_ptr = bag_count;   // not obvious in doc
+    
+		if(bag_count != 255){
+				bag_count++;
+		}
+		else{
+				bag_count = 0;
+		}
+	
+    uint8_t *crc8_ptr = (void *) (buf + 4);
     *crc8_ptr = CRC_GetCRC8CheckSum(buf, 4, CRC8_INIT);
-
-    buf[5] = 0x01;
-    buf[6] = 0x03;
-
-    ext_student_interactive_header_data_t* header = (void*)(buf + 7);
-    header->data_cmd_id = data_cmd_id;
-    header->receiver_ID = receiver_ID;
-    header->sender_ID = (uint16_t)referee->robot_id;
-
+	
+	buf[5] = 0x01;
+	buf[6] = 0x03;
+    
+    ext_student_interactive_header_data_t *header = (void *) (buf + 7);
+    header->data_cmd_id  = data_cmd_id;
+    header->receiver_ID  = receiver_ID;
+    header->sender_ID    = (uint16_t)referee->robot_id;
+    
     memcpy(buf + 5 + Const_Referee_CMD_INTERACTIVE.data_length, interactive_data, interactive_data_length);
-
-    uint16_t* crc16_ptr = (void*)(buf + 5 + 2 + *data_length_ptr);
+    
+    uint16_t *crc16_ptr = (void *) (buf + 5 + 2 + *data_length_ptr);
     *crc16_ptr = CRC_GetCRC16CheckSum(buf, 5 + 2 + *data_length_ptr, CRC16_INIT);
-
+    
     uint16_t tx_size = 5 + 2 + *data_length_ptr + 2;
-    Uart_SendMessage(Const_Referee_UART_HANDLER, buf, tx_size, 100);
+    Uart_SendMessage(Const_Referee_UART_HANDLER, buf, tx_size, 15);
 }
 
 /**
