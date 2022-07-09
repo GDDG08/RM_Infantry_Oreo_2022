@@ -25,7 +25,7 @@ void Referee_SetChassisMode(uint8_t mode);
 void Referee_SetAutoAimMode(uint8_t mode);
 void Referee_SetWidthMode(uint8_t mode);
 void Referee_SetAimMode(uint8_t mode);
-void Referee_SetCapState(uint8_t state);
+void Referee_SetCapState(uint8_t state,uint8_t cap_boost_mode_fnl,uint8_t cap_mode_fnl);
 void Referee_SetPitchAngle(float angle);
 void Referee_SetMode(uint8_t auto_aim_mode, uint8_t cha_mode);
 void Referee_SetShooterStateMode(uint8_t state);
@@ -41,6 +41,8 @@ typedef struct {
     uint8_t cha_mode, cha_mode_last;   //底盘模式
     uint8_t cap_state;  // cap percent, 0 ~ 100
 	uint8_t cap_state_last;
+	    uint8_t cap_mode_fnl,cap_mode_fnl_last;
+    uint8_t cap_boost_mode_fnl,cap_boost_mode_fnl_last;
     float pitch_angle;
 	float pitch_angle_last;
 

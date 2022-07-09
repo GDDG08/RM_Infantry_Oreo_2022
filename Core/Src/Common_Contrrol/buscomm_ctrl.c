@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-10 00:19:33
+ * @LastEditTime : 2022-07-10 00:21:26
  *
  */
 
@@ -351,10 +351,6 @@ void BusComm_Update() {
             spd_id = REFEREE_SHOOTER_SPEED_30;
             break;
     }
-    Referee_SetAimMode(mode);
-
-    Referee_SetCapState(data->cap_rest_energy);
-    Referee_SetPitchAngle(data->pitch_angle);
 
     if (data->chassis_mode == CHASSIS_CTRL_NORMAL)
         cha_mode = 0;

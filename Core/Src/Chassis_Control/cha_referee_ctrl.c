@@ -139,7 +139,7 @@ const uint8_t CHASSIS_MODE_LAYER = 2;
 const Draw_Color CHASSIS_MODE_COLOR = Draw_COLOR_GREEN;
 const uint16_t CHASSIS_MODE_TEXT[5] = {0x505, 20, 2, 1750, 900};        // ID, Font Size, Width, X, Y
 const uint16_t CHASSIS_MODE_VALUE_TEXT[5] = {0x506, 20, 2, 1550, 900};  // ID, Font Size, Width, X, Y
-const char* CHASSIS_MODE_TEXT_STR = ":CHASSIS\0";
+const char* CHASSIS_MODE_TEXT_STR = ":CHASSIS  \0";
 const char* NORMAL_RUN_TEXT_STR = "NORMAL\0";
 const char* GYRO_RUN_TEXT_STR = "GYRO\0";
 const char* SUPERGYRO_RUN_TEXT_STR = "SUPERGYRO\0";
@@ -177,6 +177,10 @@ const uint16_t OFFSET_Y_TEXT[5] = {0x50C, 20, 2, 1800, 600};        // ID, Font 
 const uint16_t OFFSET_Y_VALUE_TEXT[6] = {0x50F, 20,  2, 1700, 600};  // ID, Font Size, Precision, Width, X, Y
 const char* OFFSET_Y_TEXT_STR = ":Y     \0";
 
+const uint16_t CAP2_STATE_TEXT[5] = {0x510, 20, 2, 1000, 150};        // ID, Font Size, Width, X, Y
+const char* CAP2_BOOST_TEXT_STR = "BOOST";
+const char* CAP2_ON_TEXT_STR = "ON";
+const char* CAP2_OFF_TEXT_STR = "OFF";
 /********** END OF Drawing Constants **********/
 
 Referee_DrawDataTypeDef Referee_DrawData;
@@ -228,9 +232,11 @@ void Referee_SetAimMode(uint8_t mode) {
     draw->aim_mode = mode;
 }
 
-void Referee_SetCapState(uint8_t state) {
+void Referee_SetCapState(uint8_t state,uint8_t cap_boost_mode_fnl,uint8_t cap_mode_fnl) {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     draw->cap_state = state;
+		draw->cap_boost_mode_fnl=cap_boost_mode_fnl;
+	  draw->cap_mode_fnl=cap_mode_fnl;
 }
 
 void Referee_SetPitchAngle(float angle) {     
@@ -381,7 +387,22 @@ void Referee_UpdateCapState() {
 		}
 			Draw_ModifyInt(CAP_STATE_VALUE_TEXT[0], CAP_STATE_LAYER[1], color, CAP_STATE_VALUE_TEXT[1], CAP_STATE_VALUE_TEXT[2], CAP_STATE_VALUE_TEXT[3], CAP_STATE_VALUE_TEXT[4], value);
 
-
+	if(draw->cap_boost_mode_fnl_last==10&&draw->cap_mode_fnl_last==10){
+				Draw_AddString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_OFF_TEXT_STR);			
+		draw->cap_boost_mode_fnl_last=draw->cap_mode_fnl;
+			draw->cap_mode_fnl_last=draw->cap_mode_fnl;
+	}	
+	
+	if(draw->cap_boost_mode_fnl_last!=draw->cap_boost_mode_fnl||draw->cap_mode_fnl!=draw->cap_mode_fnl_last){
+	if(draw->cap_boost_mode_fnl==1){
+			Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_BOOST_TEXT_STR);
+	}else if(draw->cap_mode_fnl==1){
+			Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_ON_TEXT_STR);
+	}else {Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_ON_TEXT_STR);}
+	
+		draw->cap_boost_mode_fnl_last=draw->cap_boost_mode_fnl;
+	draw->cap_mode_fnl_last=draw->cap_mode_fnl;
+}
 }
 
 /**
@@ -538,6 +559,8 @@ void Referee_SetLastMode(){
 	Referee_DrawDataTypeDef* draw = &Referee_DrawData; // 1、make an original value 2、 help set up first value
 	draw->aim_mode_last=10;
 	draw->cap_state_last=101;
+	draw->cap_boost_mode_fnl_last=10;
+	draw->cap_mode_fnl_last=10;
 	draw->pitch_angle_last=50;
 	draw->cha_mode_last=10;
 	draw->magazine_state_last=10;
