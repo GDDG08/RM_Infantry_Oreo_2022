@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-10 00:21:26
+ * @LastEditTime : 2022-07-10 00:50:21
  *
  */
 
@@ -367,7 +367,7 @@ void BusComm_Update() {
 
     Referee_SetAimMode(mode);                   // UI  shooter_speed
     Referee_SetAutoAimMode(data->minipc_mode);  // UI  aim_mode
-    Referee_SetCapState(data->cap_rest_energy);
+    Referee_SetCapState(data->cap_rest_energy, data->cap_boost_mode_fnl, data->cap_mode_fnl);
     Referee_SetPitchAngle(data->pitch_angle);
     Referee_SetShooterStateMode(data->shooter_state);
     Referee_SetMagazineStateMode(data->magazine_state);
@@ -596,7 +596,7 @@ void _cmd_mode_control() {
     // watch_ui_cmd_bool = buscomm->ui_cmd != ui_cmd_last;
     if (buscomm->ui_cmd != ui_cmd_last) {
         watch_ui_cmd_cnt++;
-        Referee_Setup();
+        Referee_Setup_Start();
     }
     ui_cmd_last = buscomm->ui_cmd;
 #endif

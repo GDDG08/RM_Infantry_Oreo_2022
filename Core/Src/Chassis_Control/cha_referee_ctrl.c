@@ -4,8 +4,8 @@
  * @Descripttion :
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
- * @LastEditors  : HUHAO
- * @LastEditTime : 2022-07-06 22:35:49
+ * @LastEditors  : GDDG08
+ * @LastEditTime : 2022-07-10 01:17:22
  */
 
 #include "cha_referee_ctrl.h"
@@ -44,6 +44,7 @@ void Referee_Task(void const* argument) {
         while (!GLOBAL_INIT_FLAG) {
             osDelay(1);
         }
+        Referee_Setup();
         if (referee_setup_flag == 1)
             Referee_Update();
         osDelay(REFEREE_TASK_PERIOD);
@@ -114,7 +115,7 @@ const uint16_t CAP_STATE[4] = {6, 960, 240, 40};              // Width, X, Y, R
 const uint16_t CAP_STATE_CIRCLE = 0x401;                      // Background Circle ID
 const uint16_t CAP_STATE_ARC = 0x402;                         // Foreground Arc ID
 const uint16_t CAP_STATE_TEXT[5] = {0x50D, 20, 2, 900, 200};  // ID, Font Size, Width, X, Y
-const uint16_t CAP_STATE_VALUE_TEXT[6]={0x403, 20 , 2 ,1000,200};
+const uint16_t CAP_STATE_VALUE_TEXT[6] = {0x403, 20, 2, 1000, 200};
 const char* CAP_STATE_TEXT_STR = "CAP:   %";
 
 const uint8_t PITCH_METER_LAYER = 2;
@@ -148,8 +149,7 @@ const char* DISCO_RUN_TEXT_STR = "DISCO\0";
 const char* CRAB_RUN_TEXT_STR = "CRAB\0";
 const char* ASS_RUN_TEXT_STR = "ASS\0";
 
-
-const uint8_t MAGAZINE_STATE_LAYER=2;
+const uint8_t MAGAZINE_STATE_LAYER = 2;
 const Draw_Color MAGAZINE_STATE_COLOR = Draw_COLOR_GREEN;
 const uint16_t MAGAZINE_STATE_TEXT[5] = {0x507, 20, 2, 1750, 700};        // ID, Font Size, Width, X, Y
 const uint16_t MAGAZINE_STATE_VALUE_TEXT[5] = {0x508, 20, 2, 1680, 700};  // ID, Font Size, Width, X, Y
@@ -157,7 +157,7 @@ const char* MAGAZINE_STATE_TEXT_STR = ":DOOR    \0";
 const char* MAGAZINE_ON_TEXT_STR = "ON     \0";
 const char* MAGAZINE_OFF_TEXT_STR = "OFF        \0";
 
-const uint8_t SHOOTER_STATE_LAYER=2;
+const uint8_t SHOOTER_STATE_LAYER = 2;
 const Draw_Color SHOOTER_STATE_COLOR = Draw_COLOR_GREEN;
 const uint16_t SHOOTER_STATE_TEXT[5] = {0x509, 20, 2, 1750, 750};        // ID, Font Size, Width, X, Y
 const uint16_t SHOOTER_STATE_VALUE_TEXT[5] = {0x50A, 20, 2, 1680, 750};  // ID, Font Size, Width, X, Y
@@ -165,19 +165,19 @@ const char* SHOOTER_STATE_TEXT_STR = ":SHOOTER";
 const char* SHOOTER_ON_TEXT_STR = "ON      \0";
 const char* SHOOTER_OFF_TEXT_STR = "OFF     \0";
 
-const uint8_t OFFSET_X_LAYER=2;
+const uint8_t OFFSET_X_LAYER = 2;
 const Draw_Color OFFSET_X_COLOR = Draw_COLOR_GREEN;
 const uint16_t OFFSET_X_TEXT[5] = {0x50B, 20, 2, 1800, 650};        // ID, Font Size, Width, X, Y
-const uint16_t OFFSET_X_VALUE_TEXT[6] = {0x50E, 20,  2, 1700, 650};  // ID, Font Size, Precision, Width, X, Y
+const uint16_t OFFSET_X_VALUE_TEXT[6] = {0x50E, 20, 2, 1700, 650};  // ID, Font Size, Precision, Width, X, Y
 const char* OFFSET_X_TEXT_STR = ":X     \0";
 
-const uint8_t OFFSET_Y_LAYER=2;
+const uint8_t OFFSET_Y_LAYER = 2;
 const Draw_Color OFFSET_Y_COLOR = Draw_COLOR_GREEN;
 const uint16_t OFFSET_Y_TEXT[5] = {0x50C, 20, 2, 1800, 600};        // ID, Font Size, Width, X, Y
-const uint16_t OFFSET_Y_VALUE_TEXT[6] = {0x50F, 20,  2, 1700, 600};  // ID, Font Size, Precision, Width, X, Y
+const uint16_t OFFSET_Y_VALUE_TEXT[6] = {0x50F, 20, 2, 1700, 600};  // ID, Font Size, Precision, Width, X, Y
 const char* OFFSET_Y_TEXT_STR = ":Y     \0";
 
-const uint16_t CAP2_STATE_TEXT[5] = {0x510, 20, 2, 1000, 150};        // ID, Font Size, Width, X, Y
+const uint16_t CAP2_STATE_TEXT[5] = {0x510, 20, 2, 1000, 150};  // ID, Font Size, Width, X, Y
 const char* CAP2_BOOST_TEXT_STR = "BOOST";
 const char* CAP2_ON_TEXT_STR = "ON";
 const char* CAP2_OFF_TEXT_STR = "OFF";
@@ -185,9 +185,8 @@ const char* CAP2_OFF_TEXT_STR = "OFF";
 
 Referee_DrawDataTypeDef Referee_DrawData;
 
-
 /**
-* @brief      draw结构体赋值函数，赋值数据用于UI绘图
+ * @brief      draw结构体赋值函数，赋值数据用于UI绘图
  * @param      mode: ������ģʽ��1ΪС���ݣ�0Ϊ��ͨ��
  * @retval     ��
  */
@@ -197,32 +196,28 @@ void Referee_SetWidthMode(uint8_t mode) {
     draw->width_mode = mode;
 }
 
-void Referee_SetChassisMode(uint8_t mode){
-	 Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	draw->cha_mode=mode;
+void Referee_SetChassisMode(uint8_t mode) {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    draw->cha_mode = mode;
 }
 
-void Referee_SetAutoAimMode(uint8_t mode){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	draw->minipc_mode=mode;
-	
+void Referee_SetAutoAimMode(uint8_t mode) {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    draw->minipc_mode = mode;
 }
 
-void	Referee_SetShooterStateMode(uint8_t state){
-			Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	draw->shooter_state=state;
-		
-		}
-void	Referee_SetMagazineStateMode(uint8_t state){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	draw->magazine_state=state;
-
+void Referee_SetShooterStateMode(uint8_t state) {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    draw->shooter_state = state;
 }
-void Referee_SetMinipc_Offset(uint8_t angle_x,uint8_t angle_y){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	draw->minipc_offset_horizental=angle_x;
-	draw->minipc_offset_vertical=angle_y;
-
+void Referee_SetMagazineStateMode(uint8_t state) {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    draw->magazine_state = state;
+}
+void Referee_SetMinipc_Offset(uint8_t angle_x, uint8_t angle_y) {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    draw->minipc_offset_horizental = angle_x;
+    draw->minipc_offset_vertical = angle_y;
 }
 
 void Referee_SetAimMode(uint8_t mode) {
@@ -232,14 +227,14 @@ void Referee_SetAimMode(uint8_t mode) {
     draw->aim_mode = mode;
 }
 
-void Referee_SetCapState(uint8_t state,uint8_t cap_boost_mode_fnl,uint8_t cap_mode_fnl) {
+void Referee_SetCapState(uint8_t state, uint8_t cap_boost_mode_fnl, uint8_t cap_mode_fnl) {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     draw->cap_state = state;
-		draw->cap_boost_mode_fnl=cap_boost_mode_fnl;
-	  draw->cap_mode_fnl=cap_mode_fnl;
+    draw->cap_boost_mode_fnl = cap_boost_mode_fnl;
+    draw->cap_mode_fnl = cap_mode_fnl;
 }
 
-void Referee_SetPitchAngle(float angle) {     
+void Referee_SetPitchAngle(float angle) {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     draw->pitch_angle = angle;
 }
@@ -253,19 +248,18 @@ void Referee_SetMagazineState(uint8_t magazine_state) {
 void Referee_SetupAimLine() {
     // draw_cnt: 4
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	
+
     draw->aim_mode_last = draw->aim_mode;
     const uint16_t(*aim_lines)[6] = AIM_LINES[0];
     for (int i = 0; i < AIM_LINE_LINE_NUM; ++i) {
         Draw_AddLine(aim_lines[i][0], AIM_LINE_LAYER, AIM_LINE_COLOR, aim_lines[i][1], aim_lines[i][2], aim_lines[i][3], aim_lines[i][4], aim_lines[i][5]);
     }
-	
 }
 
 /**
  * @brief      更新瞄准线
- * @param      
- * @retval     
+ * @param
+ * @retval
  */
 
 void Referee_UpdateAimLine() {
@@ -273,7 +267,7 @@ void Referee_UpdateAimLine() {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     if (draw->aim_mode_last == draw->aim_mode)
         return;
-		
+
     draw->aim_mode_last = draw->aim_mode;
     const uint16_t(*aim_lines)[6] = AIM_LINES[draw->aim_mode];
     for (int i = 0; i < AIM_LINE_LINE_NUM; ++i) {
@@ -333,33 +327,32 @@ void Referee_UpdateWidthMark() {
 }
 
 /**
-* @brief      初始化电容字符CAP:
+ * @brief      初始化电容字符CAP:
  * @param      ��
  * @retval     ��
  */
 void Referee_SetupCapState() {
     // draw_cnt: 2
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-//    Draw_AddCircle(CAP_STATE_CIRCLE, CAP_STATE_LAYER[1], CAP_STATE_COLOR[0], CAP_STATE[0], CAP_STATE[1], CAP_STATE[2], CAP_STATE[3]);
-//    int value = draw->cap_state;
-//    value = (int)(-draw->pitch_angle + 10) * 2;
-//    Draw_Color color;
-//    if (value > 100)
-//        return;
-//    else if (value >= 50)
-//        color = CAP_STATE_COLOR[2];
-//    else if (value >= 20)
-//        color = CAP_STATE_COLOR[3];
-//    else
-//        color = CAP_STATE_COLOR[4];
-//    uint16_t start_angle = 0;
-//    uint16_t end_angle = 0;
-//    if (value > 0 && value <= 100)
-//        end_angle = (uint16_t)(360.0 * value / 100.0);
-//    Draw_AddArc(CAP_STATE_ARC, CAP_STATE_LAYER[0], color, start_angle, end_angle, CAP_STATE[0], CAP_STATE[1], CAP_STATE[2], CAP_STATE[3], CAP_STATE[3]);
-	
-	 Draw_AddString(CAP_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP_STATE_TEXT[1], CAP_STATE_TEXT[2], CAP_STATE_TEXT[3], CAP_STATE_TEXT[4], CAP_STATE_TEXT_STR);
-	
+    //    Draw_AddCircle(CAP_STATE_CIRCLE, CAP_STATE_LAYER[1], CAP_STATE_COLOR[0], CAP_STATE[0], CAP_STATE[1], CAP_STATE[2], CAP_STATE[3]);
+    //    int value = draw->cap_state;
+    //    value = (int)(-draw->pitch_angle + 10) * 2;
+    //    Draw_Color color;
+    //    if (value > 100)
+    //        return;
+    //    else if (value >= 50)
+    //        color = CAP_STATE_COLOR[2];
+    //    else if (value >= 20)
+    //        color = CAP_STATE_COLOR[3];
+    //    else
+    //        color = CAP_STATE_COLOR[4];
+    //    uint16_t start_angle = 0;
+    //    uint16_t end_angle = 0;
+    //    if (value > 0 && value <= 100)
+    //        end_angle = (uint16_t)(360.0 * value / 100.0);
+    //    Draw_AddArc(CAP_STATE_ARC, CAP_STATE_LAYER[0], color, start_angle, end_angle, CAP_STATE[0], CAP_STATE[1], CAP_STATE[2], CAP_STATE[3], CAP_STATE[3]);
+
+    Draw_AddString(CAP_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP_STATE_TEXT[1], CAP_STATE_TEXT[2], CAP_STATE_TEXT[3], CAP_STATE_TEXT[4], CAP_STATE_TEXT_STR);
 }
 
 /**
@@ -381,32 +374,34 @@ void Referee_UpdateCapState() {
         color = CAP_STATE_COLOR[3];
     else
         color = CAP_STATE_COLOR[4];
- if(draw->cap_state_last==101){
-		Draw_AddInt(CAP_STATE_VALUE_TEXT[0], CAP_STATE_LAYER[1], color, CAP_STATE_VALUE_TEXT[1], CAP_STATE_VALUE_TEXT[2], CAP_STATE_VALUE_TEXT[3], CAP_STATE_VALUE_TEXT[4], value);
-			draw->cap_state_last=draw->cap_state;
-		}
-			Draw_ModifyInt(CAP_STATE_VALUE_TEXT[0], CAP_STATE_LAYER[1], color, CAP_STATE_VALUE_TEXT[1], CAP_STATE_VALUE_TEXT[2], CAP_STATE_VALUE_TEXT[3], CAP_STATE_VALUE_TEXT[4], value);
+    if (draw->cap_state_last == 101) {
+        Draw_AddInt(CAP_STATE_VALUE_TEXT[0], CAP_STATE_LAYER[1], color, CAP_STATE_VALUE_TEXT[1], CAP_STATE_VALUE_TEXT[2], CAP_STATE_VALUE_TEXT[3], CAP_STATE_VALUE_TEXT[4], value);
+        draw->cap_state_last = draw->cap_state;
+    }
+    Draw_ModifyInt(CAP_STATE_VALUE_TEXT[0], CAP_STATE_LAYER[1], color, CAP_STATE_VALUE_TEXT[1], CAP_STATE_VALUE_TEXT[2], CAP_STATE_VALUE_TEXT[3], CAP_STATE_VALUE_TEXT[4], value);
 
-	if(draw->cap_boost_mode_fnl_last==10&&draw->cap_mode_fnl_last==10){
-				Draw_AddString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_OFF_TEXT_STR);			
-		draw->cap_boost_mode_fnl_last=draw->cap_mode_fnl;
-			draw->cap_mode_fnl_last=draw->cap_mode_fnl;
-	}	
-	
-	if(draw->cap_boost_mode_fnl_last!=draw->cap_boost_mode_fnl||draw->cap_mode_fnl!=draw->cap_mode_fnl_last){
-	if(draw->cap_boost_mode_fnl==1){
-			Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_BOOST_TEXT_STR);
-	}else if(draw->cap_mode_fnl==1){
-			Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_ON_TEXT_STR);
-	}else {Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_ON_TEXT_STR);}
-	
-		draw->cap_boost_mode_fnl_last=draw->cap_boost_mode_fnl;
-	draw->cap_mode_fnl_last=draw->cap_mode_fnl;
-}
+    if (draw->cap_boost_mode_fnl_last == 10 && draw->cap_mode_fnl_last == 10) {
+        Draw_AddString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_OFF_TEXT_STR);
+        draw->cap_boost_mode_fnl_last = draw->cap_mode_fnl;
+        draw->cap_mode_fnl_last = draw->cap_mode_fnl;
+    }
+
+    if (draw->cap_boost_mode_fnl_last != draw->cap_boost_mode_fnl || draw->cap_mode_fnl != draw->cap_mode_fnl_last) {
+        if (draw->cap_boost_mode_fnl == 1) {
+            Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_BOOST_TEXT_STR);
+        } else if (draw->cap_mode_fnl == 1) {
+            Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_ON_TEXT_STR);
+        } else {
+            Draw_ModifyString(CAP2_STATE_TEXT[0], CAP_STATE_LAYER[1], CAP_STATE_COLOR[1], CAP2_STATE_TEXT[1], CAP2_STATE_TEXT[2], CAP2_STATE_TEXT[3], CAP2_STATE_TEXT[4], CAP2_ON_TEXT_STR);
+        }
+
+        draw->cap_boost_mode_fnl_last = draw->cap_boost_mode_fnl;
+        draw->cap_mode_fnl_last = draw->cap_mode_fnl;
+    }
 }
 
 /**
-* @brief      初始化Pitch轴字符Pitch:
+ * @brief      初始化Pitch轴字符Pitch:
  * @param      ��
  * @retval     ��
  */
@@ -415,7 +410,6 @@ void Referee_SetupPitchMeter() {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     float value = -draw->pitch_angle;
     Draw_AddString(PITCH_METER_TEXT[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_TEXT[1], PITCH_METER_TEXT[2], PITCH_METER_TEXT[3], PITCH_METER_TEXT[4], PITCH_METER_TEXT_STR);
-  
 }
 
 /**
@@ -428,12 +422,12 @@ void Referee_UpdatePitchMeter() {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
     float value = -draw->pitch_angle;
     // Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], PITCH_METER_VALUE[2], PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
-    if(draw->pitch_angle_last==50){
-		Draw_AddFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], 0,PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
-			draw->pitch_angle_last=draw->pitch_angle;
-		}
-				Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], 0,PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5],value);
-draw->pitch_angle_last=draw->pitch_angle;
+    if (draw->pitch_angle_last == 50) {
+        Draw_AddFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], 0, PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
+        draw->pitch_angle_last = draw->pitch_angle;
+    }
+    Draw_ModifyFloat(PITCH_METER_VALUE[0], PITCH_METER_LAYER, PITCH_METER_COLOR, PITCH_METER_VALUE[1], 0, PITCH_METER_VALUE[3], PITCH_METER_VALUE[4], PITCH_METER_VALUE[5], value);
+    draw->pitch_angle_last = draw->pitch_angle;
 }
 
 /**
@@ -443,11 +437,10 @@ draw->pitch_angle_last=draw->pitch_angle;
  * @retval     ��
  */
 void Referee_SetMode(uint8_t auto_aim_mode, uint8_t cha_mode) {
-
 }
 
 /**
-* @brief      初始化底盘模式和自瞄模式字符串 CHASSIS:和AIM：
+ * @brief      初始化底盘模式和自瞄模式字符串 CHASSIS:和AIM：
  * @param      ��
  * @retval     ��
  */
@@ -463,12 +456,12 @@ void Referee_SetupModeDisplay() {
  * @param      ��
  * @retval     ��
  */
-void Referee_UpdateChassisModeDisplay(){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-		if(draw->cha_mode_last==10){
-			    Draw_AddString(CHASSIS_MODE_VALUE_TEXT[0], CHASSIS_MODE_LAYER, CHASSIS_MODE_COLOR, CHASSIS_MODE_VALUE_TEXT[1], CHASSIS_MODE_VALUE_TEXT[2], CHASSIS_MODE_VALUE_TEXT[3], CHASSIS_MODE_VALUE_TEXT[4], NORMAL_RUN_TEXT_STR);
-			draw->cha_mode_last=2;
-		}
+void Referee_UpdateChassisModeDisplay() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    if (draw->cha_mode_last == 10) {
+        Draw_AddString(CHASSIS_MODE_VALUE_TEXT[0], CHASSIS_MODE_LAYER, CHASSIS_MODE_COLOR, CHASSIS_MODE_VALUE_TEXT[1], CHASSIS_MODE_VALUE_TEXT[2], CHASSIS_MODE_VALUE_TEXT[3], CHASSIS_MODE_VALUE_TEXT[4], NORMAL_RUN_TEXT_STR);
+        draw->cha_mode_last = 2;
+    }
     if (draw->cha_mode_last != draw->cha_mode) {
         draw->cha_mode_last = draw->cha_mode;
         switch (draw->cha_mode) {
@@ -489,10 +482,10 @@ void Referee_UpdateChassisModeDisplay(){
                 break;
             case 7:
                 Draw_ModifyString(CHASSIS_MODE_VALUE_TEXT[0], CHASSIS_MODE_LAYER, CHASSIS_MODE_COLOR, CHASSIS_MODE_VALUE_TEXT[1], CHASSIS_MODE_VALUE_TEXT[2], CHASSIS_MODE_VALUE_TEXT[3], CHASSIS_MODE_VALUE_TEXT[4], CRAB_RUN_TEXT_STR);
-                break;	
+                break;
             case 6:
                 Draw_ModifyString(CHASSIS_MODE_VALUE_TEXT[0], CHASSIS_MODE_LAYER, CHASSIS_MODE_COLOR, CHASSIS_MODE_VALUE_TEXT[1], CHASSIS_MODE_VALUE_TEXT[2], CHASSIS_MODE_VALUE_TEXT[3], CHASSIS_MODE_VALUE_TEXT[4], ASS_RUN_TEXT_STR);
-                break;					
+                break;
             default:
                 break;
         }
@@ -505,38 +498,36 @@ void Referee_UpdateChassisModeDisplay(){
  */
 void Referee_UpdateMinipcModeDisplay() {
     Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	
-	if(draw->minipc_mode_last ==10){
-	Draw_AddString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], ARMOR_AIM_TEXT_STR);
-	draw->minipc_mode_last=0;
-	}
-		if (draw->minipc_mode_last != draw->minipc_mode) {
+
+    if (draw->minipc_mode_last == 10) {
+        Draw_AddString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], ARMOR_AIM_TEXT_STR);
+        draw->minipc_mode_last = 0;
+    }
+    if (draw->minipc_mode_last != draw->minipc_mode) {
         draw->minipc_mode_last = draw->minipc_mode;
         switch (draw->minipc_mode_last) {
-            case 10: //  waiting for  no_auto 
+            case 10:  //  waiting for  no_auto
                 Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], NORMAL_AIM_TEXT_STR);
                 break;
             case 0:
                 Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], ARMOR_AIM_TEXT_STR);
                 break;
-						case 4:
-								Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], DEBUG_AIM_TEXT_STR);
-								break;
+            case 4:
+                Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], DEBUG_AIM_TEXT_STR);
+                break;
             case 1:
                 Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], BIG_BUFF_AIM_TEXT_STR);
                 break;
             case 2:
                 Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], SMALL_BUFF_AIM_TEXT_STR);
                 break;
-            case 3  :
+            case 3:
                 Draw_ModifyString(AIM_MODE_VALUE_TEXT[0], AIM_MODE_LAYER, AIM_MODE_COLOR, AIM_MODE_VALUE_TEXT[1], AIM_MODE_VALUE_TEXT[2], AIM_MODE_VALUE_TEXT[3], AIM_MODE_VALUE_TEXT[4], SENTRY_AIM_TEXT_STR);
                 break;
             default:
                 break;
         }
     }
-
-	
 }
 //弃用
 void Referee_SetupAllString() {
@@ -555,20 +546,20 @@ void Referee_SetupAllString() {
  * @param      ��
  * @retval     ��
  */
-void Referee_SetLastMode(){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData; // 1、make an original value 2、 help set up first value
-	draw->aim_mode_last=10;
-	draw->cap_state_last=101;
-	draw->cap_boost_mode_fnl_last=10;
-	draw->cap_mode_fnl_last=10;
-	draw->pitch_angle_last=50;
-	draw->cha_mode_last=10;
-	draw->magazine_state_last=10;
-	draw->minipc_mode_last=10;
-	draw->shooter_state_last=10;
-	draw->minipc_mode_last=10;
-	draw->minipc_offset_horizental_last=126;
-	draw->minipc_offset_vertical_last=126;  
+void Referee_SetLastMode() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;  // 1、make an original value 2、 help set up first value
+    draw->aim_mode_last = 10;
+    draw->cap_state_last = 101;
+    draw->cap_boost_mode_fnl_last = 10;
+    draw->cap_mode_fnl_last = 10;
+    draw->pitch_angle_last = 50;
+    draw->cha_mode_last = 10;
+    draw->magazine_state_last = 10;
+    draw->minipc_mode_last = 10;
+    draw->shooter_state_last = 10;
+    draw->minipc_mode_last = 10;
+    draw->minipc_offset_horizental_last = 126;
+    draw->minipc_offset_vertical_last = 126;
 }
 
 /**
@@ -576,25 +567,24 @@ void Referee_SetLastMode(){
  * @param      ��
  * @retval     ��
  */
-void Referee_SetupMagazineState(){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	 Draw_AddString(MAGAZINE_STATE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_TEXT[1], MAGAZINE_STATE_TEXT[2], MAGAZINE_STATE_TEXT[3], MAGAZINE_STATE_TEXT[4], MAGAZINE_STATE_TEXT_STR);
+void Referee_SetupMagazineState() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    Draw_AddString(MAGAZINE_STATE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_TEXT[1], MAGAZINE_STATE_TEXT[2], MAGAZINE_STATE_TEXT[3], MAGAZINE_STATE_TEXT[4], MAGAZINE_STATE_TEXT_STR);
 }
-void Referee_UpdateMagazineState(){
-Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	if(draw->magazine_state_last==10){
-		Draw_AddString(MAGAZINE_STATE_VALUE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_VALUE_TEXT[1], MAGAZINE_STATE_VALUE_TEXT[2], MAGAZINE_STATE_VALUE_TEXT[3], MAGAZINE_STATE_VALUE_TEXT[4], MAGAZINE_OFF_TEXT_STR);
-		draw->magazine_state_last=0;
-	}
-	if(draw->magazine_state_last!=draw->magazine_state){
-		if(draw->magazine_state==1){
-		Draw_ModifyString(MAGAZINE_STATE_VALUE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_VALUE_TEXT[1], MAGAZINE_STATE_VALUE_TEXT[2], MAGAZINE_STATE_VALUE_TEXT[3], MAGAZINE_STATE_VALUE_TEXT[4], MAGAZINE_ON_TEXT_STR);
-			}else if(draw->magazine_state==0){
-				Draw_ModifyString(MAGAZINE_STATE_VALUE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_VALUE_TEXT[1], MAGAZINE_STATE_VALUE_TEXT[2], MAGAZINE_STATE_VALUE_TEXT[3], MAGAZINE_STATE_VALUE_TEXT[4], MAGAZINE_OFF_TEXT_STR);
-			}
-			draw->magazine_state_last=draw->magazine_state;
-		}
-	
+void Referee_UpdateMagazineState() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    if (draw->magazine_state_last == 10) {
+        Draw_AddString(MAGAZINE_STATE_VALUE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_VALUE_TEXT[1], MAGAZINE_STATE_VALUE_TEXT[2], MAGAZINE_STATE_VALUE_TEXT[3], MAGAZINE_STATE_VALUE_TEXT[4], MAGAZINE_OFF_TEXT_STR);
+        draw->magazine_state_last = 0;
+    }
+    if (draw->magazine_state_last != draw->magazine_state) {
+        if (draw->magazine_state == 1) {
+            Draw_ModifyString(MAGAZINE_STATE_VALUE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_VALUE_TEXT[1], MAGAZINE_STATE_VALUE_TEXT[2], MAGAZINE_STATE_VALUE_TEXT[3], MAGAZINE_STATE_VALUE_TEXT[4], MAGAZINE_ON_TEXT_STR);
+        } else if (draw->magazine_state == 0) {
+            Draw_ModifyString(MAGAZINE_STATE_VALUE_TEXT[0], MAGAZINE_STATE_LAYER, MAGAZINE_STATE_COLOR, MAGAZINE_STATE_VALUE_TEXT[1], MAGAZINE_STATE_VALUE_TEXT[2], MAGAZINE_STATE_VALUE_TEXT[3], MAGAZINE_STATE_VALUE_TEXT[4], MAGAZINE_OFF_TEXT_STR);
+        }
+        draw->magazine_state_last = draw->magazine_state;
+    }
 }
 
 /**
@@ -602,24 +592,24 @@ Referee_DrawDataTypeDef* draw = &Referee_DrawData;
  * @param      ��
  * @retval     ��
  */
-void Referee_SetupShooterState(){
-Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	Draw_AddString(SHOOTER_STATE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_TEXT[1], SHOOTER_STATE_TEXT[2], SHOOTER_STATE_TEXT[3], SHOOTER_STATE_TEXT[4], SHOOTER_STATE_TEXT_STR);
+void Referee_SetupShooterState() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    Draw_AddString(SHOOTER_STATE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_TEXT[1], SHOOTER_STATE_TEXT[2], SHOOTER_STATE_TEXT[3], SHOOTER_STATE_TEXT[4], SHOOTER_STATE_TEXT_STR);
 }
-void Referee_UpdateShooterState(){
-	Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	if(draw->shooter_state_last==10){
-		Draw_AddString(SHOOTER_STATE_VALUE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_VALUE_TEXT[1], SHOOTER_STATE_VALUE_TEXT[2], SHOOTER_STATE_VALUE_TEXT[3], SHOOTER_STATE_VALUE_TEXT[4], SHOOTER_OFF_TEXT_STR);
-		draw->shooter_state_last=draw->shooter_state;
-	}
-	if(draw->shooter_state_last!=draw->shooter_state){
-		if(draw->shooter_state==1){
-		Draw_ModifyString(SHOOTER_STATE_VALUE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_VALUE_TEXT[1], SHOOTER_STATE_VALUE_TEXT[2], SHOOTER_STATE_VALUE_TEXT[3], SHOOTER_STATE_VALUE_TEXT[4], SHOOTER_ON_TEXT_STR);
-			}else if(draw->shooter_state==0){
-				Draw_ModifyString(SHOOTER_STATE_VALUE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_VALUE_TEXT[1], SHOOTER_STATE_VALUE_TEXT[2], SHOOTER_STATE_VALUE_TEXT[3], SHOOTER_STATE_VALUE_TEXT[4], SHOOTER_OFF_TEXT_STR);
-			}
-			draw->shooter_state_last=draw->shooter_state;
-		}
+void Referee_UpdateShooterState() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    if (draw->shooter_state_last == 10) {
+        Draw_AddString(SHOOTER_STATE_VALUE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_VALUE_TEXT[1], SHOOTER_STATE_VALUE_TEXT[2], SHOOTER_STATE_VALUE_TEXT[3], SHOOTER_STATE_VALUE_TEXT[4], SHOOTER_OFF_TEXT_STR);
+        draw->shooter_state_last = draw->shooter_state;
+    }
+    if (draw->shooter_state_last != draw->shooter_state) {
+        if (draw->shooter_state == 1) {
+            Draw_ModifyString(SHOOTER_STATE_VALUE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_VALUE_TEXT[1], SHOOTER_STATE_VALUE_TEXT[2], SHOOTER_STATE_VALUE_TEXT[3], SHOOTER_STATE_VALUE_TEXT[4], SHOOTER_ON_TEXT_STR);
+        } else if (draw->shooter_state == 0) {
+            Draw_ModifyString(SHOOTER_STATE_VALUE_TEXT[0], SHOOTER_STATE_LAYER, SHOOTER_STATE_COLOR, SHOOTER_STATE_VALUE_TEXT[1], SHOOTER_STATE_VALUE_TEXT[2], SHOOTER_STATE_VALUE_TEXT[3], SHOOTER_STATE_VALUE_TEXT[4], SHOOTER_OFF_TEXT_STR);
+        }
+        draw->shooter_state_last = draw->shooter_state;
+    }
 }
 
 /**
@@ -627,70 +617,90 @@ void Referee_UpdateShooterState(){
  * @param      ��
  * @retval     ��
  */
-void Referee_SetupMinipcOffset_x(){
-Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	Draw_AddString(OFFSET_X_TEXT[0], OFFSET_X_LAYER, OFFSET_X_COLOR, OFFSET_X_TEXT[1], OFFSET_X_TEXT[2], OFFSET_X_TEXT[3], OFFSET_X_TEXT[4], OFFSET_X_TEXT_STR);
+void Referee_SetupMinipcOffset_x() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    Draw_AddString(OFFSET_X_TEXT[0], OFFSET_X_LAYER, OFFSET_X_COLOR, OFFSET_X_TEXT[1], OFFSET_X_TEXT[2], OFFSET_X_TEXT[3], OFFSET_X_TEXT[4], OFFSET_X_TEXT_STR);
 }
-void Referee_UpdateMinipcOffset_x(){
-Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	   if(draw->minipc_offset_horizental_last==126){
-		Draw_AddInt(OFFSET_X_VALUE_TEXT[0], OFFSET_X_LAYER, OFFSET_X_COLOR, OFFSET_X_VALUE_TEXT[1],OFFSET_X_VALUE_TEXT[2], OFFSET_X_VALUE_TEXT[3], OFFSET_X_VALUE_TEXT[4], draw->minipc_offset_horizental);
-			draw->minipc_offset_horizental_last=draw->minipc_offset_horizental;
-		}
-				Draw_ModifyInt(OFFSET_X_VALUE_TEXT[0],OFFSET_X_LAYER, OFFSET_X_COLOR, OFFSET_X_VALUE_TEXT[1], OFFSET_X_VALUE_TEXT[2], OFFSET_X_VALUE_TEXT[3], OFFSET_X_VALUE_TEXT[4],draw->minipc_offset_horizental);
-draw->minipc_offset_horizental_last=draw->minipc_offset_horizental;
+void Referee_UpdateMinipcOffset_x() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    if (draw->minipc_offset_horizental_last == 126) {
+        Draw_AddInt(OFFSET_X_VALUE_TEXT[0], OFFSET_X_LAYER, OFFSET_X_COLOR, OFFSET_X_VALUE_TEXT[1], OFFSET_X_VALUE_TEXT[2], OFFSET_X_VALUE_TEXT[3], OFFSET_X_VALUE_TEXT[4], draw->minipc_offset_horizental);
+        draw->minipc_offset_horizental_last = draw->minipc_offset_horizental;
+    }
+    Draw_ModifyInt(OFFSET_X_VALUE_TEXT[0], OFFSET_X_LAYER, OFFSET_X_COLOR, OFFSET_X_VALUE_TEXT[1], OFFSET_X_VALUE_TEXT[2], OFFSET_X_VALUE_TEXT[3], OFFSET_X_VALUE_TEXT[4], draw->minipc_offset_horizental);
+    draw->minipc_offset_horizental_last = draw->minipc_offset_horizental;
 }
-void Referee_SetupMinipcOffset_y(){
-Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	Draw_AddString(OFFSET_Y_TEXT[0], OFFSET_Y_LAYER, OFFSET_Y_COLOR, OFFSET_Y_TEXT[1], OFFSET_Y_TEXT[2], OFFSET_Y_TEXT[3], OFFSET_Y_TEXT[4], OFFSET_Y_TEXT_STR);
+void Referee_SetupMinipcOffset_y() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    Draw_AddString(OFFSET_Y_TEXT[0], OFFSET_Y_LAYER, OFFSET_Y_COLOR, OFFSET_Y_TEXT[1], OFFSET_Y_TEXT[2], OFFSET_Y_TEXT[3], OFFSET_Y_TEXT[4], OFFSET_Y_TEXT_STR);
 }
-void Referee_UpdateMinipcOffset_y(){
-Referee_DrawDataTypeDef* draw = &Referee_DrawData;
-	   if(draw->minipc_offset_vertical_last==126){
-		Draw_AddInt(OFFSET_Y_VALUE_TEXT[0], OFFSET_Y_LAYER, OFFSET_Y_COLOR, OFFSET_Y_VALUE_TEXT[1], OFFSET_Y_VALUE_TEXT[2], OFFSET_Y_VALUE_TEXT[3], OFFSET_Y_VALUE_TEXT[4], draw->minipc_offset_vertical);
-			draw->minipc_offset_vertical_last=draw->minipc_offset_vertical;
-		}
-				Draw_ModifyInt(OFFSET_Y_VALUE_TEXT[0], OFFSET_Y_LAYER, OFFSET_Y_COLOR, OFFSET_Y_VALUE_TEXT[1], OFFSET_Y_VALUE_TEXT[2], OFFSET_Y_VALUE_TEXT[3], OFFSET_Y_VALUE_TEXT[4],draw->minipc_offset_vertical);
-draw->minipc_offset_vertical_last=draw->minipc_offset_vertical;
-	
+void Referee_UpdateMinipcOffset_y() {
+    Referee_DrawDataTypeDef* draw = &Referee_DrawData;
+    if (draw->minipc_offset_vertical_last == 126) {
+        Draw_AddInt(OFFSET_Y_VALUE_TEXT[0], OFFSET_Y_LAYER, OFFSET_Y_COLOR, OFFSET_Y_VALUE_TEXT[1], OFFSET_Y_VALUE_TEXT[2], OFFSET_Y_VALUE_TEXT[3], OFFSET_Y_VALUE_TEXT[4], draw->minipc_offset_vertical);
+        draw->minipc_offset_vertical_last = draw->minipc_offset_vertical;
+    }
+    Draw_ModifyInt(OFFSET_Y_VALUE_TEXT[0], OFFSET_Y_LAYER, OFFSET_Y_COLOR, OFFSET_Y_VALUE_TEXT[1], OFFSET_Y_VALUE_TEXT[2], OFFSET_Y_VALUE_TEXT[3], OFFSET_Y_VALUE_TEXT[4], draw->minipc_offset_vertical);
+    draw->minipc_offset_vertical_last = draw->minipc_offset_vertical;
 }
 
+/**
+ * @brief      初始化函数Reset
+ * @param      ��
+ * @retval     ��
+ */
 
+const uint8_t REFEREE_SETUP_TIME = 20;
+uint8_t Referee_Setup_cnt = 0;
+void Referee_Setup_Start() {
+    Referee_Setup_cnt = 0;
+}
 /**
  * @brief      初始化函数，在全车初始化里调用
  * @param      ��
  * @retval     ��
  */
-static int last_time = -1000;
-int now;
+// static int last_time = -1000;
+// int now;
+
 void Referee_Setup() {
-//    now = HAL_GetTick();
-//    if (now - last_time < 5000)
-//        return;
-//    last_time = now;
- //   Draw_ClearAll();  // cmd_cnt: 1, total_cmd_cnt: 1 
+    //    now = HAL_GetTick();
+    //    if (now - last_time < 5000)
+    //        return;
+    //    last_time = now;
+    //   Draw_ClearAll();  // cmd_cnt: 1, total_cmd_cnt: 1
 
-//		Referee_SetupAimLine();       // draw_cnt: 4
-//    Referee_SetupCrosshair();     // draw_cnt: 1
-//    Referee_SetupWidthMark();     // draw_cnt: 2, send(7), total_cmd_cnt: 2
-//    Referee_SetupErrorDisplay();  // draw_cnt: 0, send(2)send(1), total_cmd_cnt: 4
-		for(int j=1;j<=20;j++){  
-			Referee_SetupPitchMeter();    // draw_cnt: 1
-			Referee_SetupModeDisplay();   // draw_cnt: 2
-			Referee_SetupMagazineState();
-			Referee_SetupShooterState();
-			Referee_SetupMinipcOffset_x();
-			Referee_SetupMinipcOffset_y();
-			Referee_SetupCapState();
-			Referee_SetupCrosshair();     // draw_cnt: 1
-			Referee_SetupWidthMark();     // draw_cnt: 2, send(7), total_cmd_cnt: 2
-		}
-    // Referee_SetupAllString();  // cmd_cnt: 2, total_cmd_cnt: 6
+    //		Referee_SetupAimLine();       // draw_cnt: 4
+    //    Referee_SetupCrosshair();     // draw_cnt: 1
+    //    Referee_SetupWidthMark();     // draw_cnt: 2, send(7), total_cmd_cnt: 2
+    //    Referee_SetupErrorDisplay();  // draw_cnt: 0, send(2)send(1), total_cmd_cnt: 4
+    // for (int j = 1; j <= 20; j++) {
+    if (Referee_Setup_cnt > REFEREE_SETUP_TIME) {
+        return;
+    } else if (Referee_Setup_cnt < REFEREE_SETUP_TIME) {
+        referee_setup_flag = 0;
+        Referee_SetupPitchMeter();   // draw_cnt: 1
+        Referee_SetupModeDisplay();  // draw_cnt: 2
+        Referee_SetupMagazineState();
+        Referee_SetupShooterState();
+        Referee_SetupMinipcOffset_x();
+        Referee_SetupMinipcOffset_y();
+        Referee_SetupCapState();
+        Referee_SetupCrosshair();  // draw_cnt: 1
+        Referee_SetupWidthMark();  // draw_cnt: 2, send(7), total_cmd_cnt: 2
 
-    Referee_DrawingBufferFlush();  // useless since string cmd sent previously
+        Referee_Setup_cnt++;
 
-		Referee_SetLastMode();
-    referee_setup_flag = 1;
+    } else if (Referee_Setup_cnt == REFEREE_SETUP_TIME) {
+        // }
+        // Referee_SetupAllString();  // cmd_cnt: 2, total_cmd_cnt: 6
+
+        Referee_DrawingBufferFlush();  // useless since string cmd sent previously
+
+        Referee_SetLastMode();
+        referee_setup_flag = 1;
+        Referee_Setup_cnt++;
+    }
 }
 
 /**
@@ -699,62 +709,62 @@ void Referee_Setup() {
  * @retval     ��
  */
 
-uint8_t Update_turn=1;
+uint8_t Update_turn = 1;
+
 void Referee_Update() {
-	//为了避免超出发送图形上限，采用依次发送的方法
-        switch (Update_turn) {
-            case 1:
-								Referee_SetupAimLine();
-                Referee_UpdateAimLine();       // draw_cnt: if bullet speed changed 4, else 0
-								Update_turn++;
-                break;
-            case 2:
-								Referee_UpdatePitchMeter();	
-								Update_turn++; 
-                break;
-						case 3:
-								Referee_UpdateChassisModeDisplay();   // draw_cnt: 0
-								Update_turn++; 
-								break;
-            case 4:
-								Referee_UpdateMinipcModeDisplay();   // draw_cnt: 0
-								Update_turn++; 
-                break;
-            case 5:
-								Referee_UpdateMagazineState();
-								Update_turn++; 
-                break;
-						case 6:
-							Referee_UpdateShooterState();
-						Update_turn++; 							
-						break;
-						case 7:
-						Referee_UpdateMinipcOffset_x();
-						Update_turn++;
-						break;
-						case 8:
-						Referee_UpdateMinipcOffset_y();  // x,y偏置绘画函数
-							Update_turn++;
-						break;
-						case 9:
-				Referee_UpdateCapState();      // draw_cnt: 1
-						Update_turn=1;
-						break;
-            default:
-                break;
-        }
+    //为了避免超出发送图形上限，采用依次发送的方法
 
+    /* code */
 
-
-
-//    Referee_UpdateAimLine();       // draw_cnt: if bullet speed changed 4, else 0
-//   // Referee_UpdateWidthMark();     // draw_cnt: if gyro mode changed 2, else 0
-//   // Referee_UpdateCapState();      // draw_cnt: 1
-//    Referee_UpdatePitchMeter();    // draw_cnt: 1
-//    Referee_UpdateModeDisplay();   // draw_cnt: 0
-//	
-//	Referee_UpdateMagazineState();
-//    Referee_UpdateErrorDisplay();  // draw_cnt: 0
+    switch (Update_turn) {
+        case 1:
+            Referee_SetupAimLine();
+            Referee_UpdateAimLine();  // draw_cnt: if bullet speed changed 4, else 0
+            Update_turn++;
+            break;
+        case 2:
+            Referee_UpdatePitchMeter();
+            Update_turn++;
+            break;
+        case 3:
+            Referee_UpdateChassisModeDisplay();  // draw_cnt: 0
+            Update_turn++;
+            break;
+        case 4:
+            Referee_UpdateMinipcModeDisplay();  // draw_cnt: 0
+            Update_turn++;
+            break;
+        case 5:
+            Referee_UpdateMagazineState();
+            Update_turn++;
+            break;
+        case 6:
+            Referee_UpdateShooterState();
+            Update_turn++;
+            break;
+        case 7:
+            Referee_UpdateMinipcOffset_x();
+            Update_turn++;
+            break;
+        case 8:
+            Referee_UpdateMinipcOffset_y();  // x,y偏置绘画函数
+            Update_turn++;
+            break;
+        case 9:
+            Referee_UpdateCapState();  // draw_cnt: 1
+            Update_turn = 1;
+            break;
+        default:
+            break;
+    }
+    //    Referee_UpdateAimLine();       // draw_cnt: if bullet speed changed 4, else 0
+    //   // Referee_UpdateWidthMark();     // draw_cnt: if gyro mode changed 2, else 0
+    //   // Referee_UpdateCapState();      // draw_cnt: 1
+    //    Referee_UpdatePitchMeter();    // draw_cnt: 1
+    //    Referee_UpdateModeDisplay();   // draw_cnt: 0
+    //
+    //	Referee_UpdateMagazineState();
+    //    Referee_UpdateErrorDisplay();  // draw_cnt: 0
 
     Referee_DrawingBufferFlush();  // max draw_cnt: 8, cmd_cnt:2
                                    // min draw_cnt: 2, cmd_cnt:1
