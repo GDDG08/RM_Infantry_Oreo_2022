@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-05 15:21:50
+ * @LastEditTime : 2022-07-08 20:15:00
  */
 
 #include "gim_remote_ctrl.h"
@@ -214,10 +214,23 @@ void Remote_RemoteProcess() {
     buscomm->chassis_fb_ref = Filter_Bessel((float)data->remote.ch[1], &Remote_forward_backFilter) * 0.5f;
     buscomm->chassis_lr_ref = Filter_Bessel((float)data->remote.ch[0], &Remote_right_leftFilter) * 0.5f;
 
-    if (data->remote.ch[4] <= -500.0f)
-        Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
-    else
-        Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    if (data->remote.ch[4] <= -500.0f) {
+        Remote_Chassis_SuperGyro_State = 0;
+        Remote_Chassis_Gyro_State = 1;
+        Remote_Chassis_Ass_State = 0;
+        Remote_Chassis_Crab_State = 0;
+        Remote_Chassis_Disco_State = 0;
+
+        // Remote_ChangeChassisState(CHASSIS_CTRL_GYRO);
+    } else {
+        Remote_Chassis_SuperGyro_State = 0;
+        Remote_Chassis_Gyro_State = 0;
+        Remote_Chassis_Ass_State = 0;
+        Remote_Chassis_Crab_State = 0;
+        Remote_Chassis_Disco_State = 0;
+
+        // Remote_ChangeChassisState(CHASSIS_CTRL_NORMAL);
+    }
 
     if (data->remote.ch[4] >= 500.0f)
         // Servo_SetServoAngle(&Servo_ammoContainerCapServo, 300);
@@ -286,7 +299,6 @@ void Remote_KeyMouseProcess() {
                 Remote_Chassis_Ass_State = !Remote_Chassis_Ass_State;
                 wait4release = 1;
             }
-
         }
     } else if (KEY(shift)) {
         if (wait4release <= 1) {

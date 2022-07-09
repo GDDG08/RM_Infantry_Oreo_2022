@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-05-02 16:30:21
+ * @LastEditTime : 2022-07-09 13:25:44
  */
 
 #include "configure.h"
@@ -27,8 +27,8 @@ static const float Const_chassisMotorParam_infantry_8[4][3][4][5] = {
 };
 
 static const float Const_gimbalYawMotorParam_infantry_8[5][3][4][5] = {
-    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamAimBigEnergy
-    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamAimSmallEnergy
+    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{350, 0.3, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{15, 0.1, 10, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamAimBigEnergy
+    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{350, 0.3, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{15, 0.1, 10, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamAimSmallEnergy
     {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamArmor
     {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamIMUDebug
     {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}}   // GimbalYaw_gimbalYawMotorParamNoAuto
@@ -40,11 +40,11 @@ static const float Const_gimbalYawMotorParam_infantry_8[5][3][4][5] = {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
 static const float Const_gimbalPitchMotorParam_infantry_8[5][3][4][5] = {
-    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{190, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},  // GimbalYaw_gimbalYawMotorParamAimBigEnergy
-    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{190, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},  // GimbalYaw_gimbalYawMotorParamAimSmallEnergy
-    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{190, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},  // GimbalYaw_gimbalYawMotorParamArmor
-    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{190, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},  // GimbalYaw_gimbalYawMotorParamIMUDebug
-    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{190, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}}   // GimbalYaw_gimbalYawMotorParamNoAuto
+    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{250, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.4, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},    // GimbalPitch_gimbalPitchMotorParamAimBigEnergy
+    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{250, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{22, 0.4, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},    // GimbalPitch_gimbalPitchMotorParamAimSmallEnergy
+    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{180, 0.1, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 10, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},  // GimbalPitch_gimbalPitchMotorParamArmor
+    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{180, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}},   // GimbalPitch_gimbalPitchMotorParamIMUDebug
+    {{{1.1, 0.1, 0, 8000, 30000}, {-1, -1}, {0, 0}, {-1, -1}}, {{180, 0.2, 20, 15000, 30000}, {0.4, -1}, {0, 0}, {-1, -1}}, {{25, 0.08, 0, 100, 500}, {-1, -1}, {100, 160}, {0.18, 0.3}}}    // GimbalPitch_gimbalPitchMotorParamNoAuto
     //  {           Current  PID                          }   {                 SPEED PID                       }  {                    POSITION PID                 }
     //  {Kp, Ki, Kd, SumMax, OutMax},{d_fil,delta_fil},{kf_1,kf_2},{kf1_fil_param,kf2_fil_param};
     //              PID Group            PID Filter    Feedforward      Feedforward Filter
@@ -53,13 +53,17 @@ static const float Const_gimbalPitchMotorParam_infantry_8[5][3][4][5] = {
     // Position PID param
 };
 
-static const float Const_ShooterMotorParam_infantry_8[2][3][4][5] = {
-    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{18, 0.2, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},  // Left shooter motor
-    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{18, 0.2, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}}   // Right shooter motor
+static const float Const_ShooterMotorParam_infantry_8[3][2][3][4][5] = {
+    {{{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{8, 0.4, 20, 20, 35}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},    // 15 Left
+     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{8, 0.4, 20, 20, 35}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}}},   // 15 Right
+    {{{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{8, 0.09, 10, 15, 35}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},   // 18 Left
+     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{8, 0.09, 10, 15, 35}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}}},  // 18 Right
+    {{{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{9, 0.1, 10, 15, 35}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}},    // 30 Left
+     {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{9, 0.1, 10, 15, 35}, {-1, -1}, {0, 0}, {-1, -1}}, {{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}}},   // 30 Right
 };
 
 static const float Const_FeederMotorParam_infantry_8[1][3][4][5] = {
-    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{750, 0.01, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{8.35, 0, 0.11, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}}  // feeder motor
+    {{{0, 0, 0, 0, 0}, {-1, -1}, {0, 0}, {-1, -1}}, {{500, 0.01, 0, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}, {{8.35, 0, 0.11, 10000, 20000}, {-1, -1}, {0, 0}, {-1, -1}}}  // feeder motor
 };
 
 static const float Const_AutoAimOffset_infantry_8[4][2] = {
@@ -94,7 +98,7 @@ void Const_Infantry_8_Init(Const_ConstTypeDef* x) {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     /*      infantry chasiss const                  */
-    x->YAW_MOTOR_INIT_OFFSET = -147.0f;
+    x->YAW_MOTOR_INIT_OFFSET = 31.50f;
     x->YAW_MAXANGLE = 60.0f;
 
     memcpy(x->chassisMotorParam, Const_chassisMotorParam_infantry_8, sizeof(Const_chassisMotorParam_infantry_8));
@@ -108,11 +112,11 @@ void Const_Infantry_8_Init(Const_ConstTypeDef* x) {
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     /*      infantry gimbal const       */
     x->MOUSE_PITCH_ANGLE_TO_FACT = 0.008f;
-    x->MOUSE_YAW_ANGLE_TO_FACT = 0.015f;
+    x->MOUSE_YAW_ANGLE_TO_FACT = 0.002f;
     x->MOUSE_CHASSIS_ACCELERATE = 0.5f;
     x->MOUSE_CHASSIS_SLOWDOWN = 0.5f;
     x->MOUSE_CHASSIS_MAX_SPEED = 600;
-    x->MOUSE_CHASSIS_MAX_GYRO_SPEED = 400;
+    x->MOUSE_CHASSIS_MAX_GYRO_SPEED = 300;
 
     x->MiniPC_Follow_Target_Time = 100;
     x->MiniPC_Lost_Target_Time = 100;
@@ -135,7 +139,7 @@ void Const_Infantry_8_Init(Const_ConstTypeDef* x) {
     x->CVKF_NT_YAW = 80;
 
     /*          Gimbal pitch limit                  */
-    x->YAW_MOTOR_INIT_OFFSET = -150.0f;
+    x->YAW_MOTOR_INIT_OFFSET = 31.5f;
 
     x->ShooterLockedCurrent = 3000.0f;
     x->ShooterLockedSpeed = 20.0f;
@@ -147,13 +151,13 @@ void Const_Infantry_8_Init(Const_ConstTypeDef* x) {
     x->ShooterFastSpeed = 230.0f;
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
-    x->Shooter15mpers = 215.0f;
-    x->Shooter18mpers = 230.0f;
-    x->Shooter30mpers = 330.0f;
+    x->Shooter15mpers = 15.8f;
+    x->Shooter18mpers = 19.0f;
+    x->Shooter30mpers = 28.5f;
 #else
     x->Shooter15mpers = 15.0f;
-    x->Shooter18mpers = 18.0f;
-    x->Shooter30mpers = 30.0f;
+    x->Shooter18mpers = 16.0f;
+    x->Shooter30mpers = 26.0f;
 #endif
 
     x->FeederSlowSpeed = 50.0f;
