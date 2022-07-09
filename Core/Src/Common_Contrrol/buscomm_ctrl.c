@@ -352,10 +352,6 @@ void BusComm_Update() {
             spd_id = REFEREE_SHOOTER_SPEED_30;
             break;
     }
-    Referee_SetAimMode(mode);
-
-    Referee_SetCapState(data->cap_rest_energy);
-    Referee_SetPitchAngle(data->pitch_angle);
 
     if (data->chassis_mode == CHASSIS_CTRL_NORMAL)
         cha_mode = 0;
@@ -372,7 +368,7 @@ void BusComm_Update() {
 
     Referee_SetAimMode(mode);                        //UI  shooter_speed
 		Referee_SetAutoAimMode(data->minipc_mode);   //UI  aim_mode 
-    Referee_SetCapState(data->cap_rest_energy);
+    Referee_SetCapState(data->cap_rest_energy,data->cap_boost_mode_fnl,data->cap_mode_fnl);
     Referee_SetPitchAngle(data->pitch_angle);
 		Referee_SetShooterStateMode(data->shooter_state);
 		Referee_SetMagazineStateMode(data->magazine_state);
