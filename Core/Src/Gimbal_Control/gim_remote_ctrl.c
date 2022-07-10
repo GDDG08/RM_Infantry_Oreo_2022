@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-08 20:15:00
+ * @LastEditTime : 2022-07-10 03:08:21
  */
 
 #include "gim_remote_ctrl.h"
@@ -376,6 +376,7 @@ void Remote_KeyMouseProcess() {
             wait4release = 0;
     }
 
+    // autoaim offset
     if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF ||
         (KEY(q) && (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY))) {
         if (KEY_DN(w))
@@ -395,9 +396,6 @@ void Remote_KeyMouseProcess() {
             vision_offset_mode->vertical += Ctrl_vertical;
         }
     }
-    // autoaim offset
-    vision_offset_mode->horizental += Ctrl_horizental;
-    vision_offset_mode->vertical += Ctrl_vertical;
 
     memcpy(&remoteKey_last, remoteKey, sizeof(remoteKey_last));
 
