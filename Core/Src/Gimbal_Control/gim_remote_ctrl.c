@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-10 03:08:21
+ * @LastEditTime : 2022-07-11 12:58:06
  */
 
 #include "gim_remote_ctrl.h"
@@ -299,6 +299,11 @@ void Remote_KeyMouseProcess() {
                 Remote_Chassis_Ass_State = !Remote_Chassis_Ass_State;
                 wait4release = 1;
             }
+            // reload
+            if (KEY_DN(r)) {
+                Remote_SwitchMagState();
+                wait4release = 1;
+            }
         }
     } else if (KEY(shift)) {
         if (wait4release <= 1) {
@@ -307,10 +312,7 @@ void Remote_KeyMouseProcess() {
                 buscomm->ui_cmd = !buscomm->ui_cmd;
                 wait4release = 1;
             }
-            // reload
-            if (KEY_DN(r)) {
-                wait4release = 1;
-            }
+
             if (KEY_DN(x)) {
                 Remote_SwitchGryoState(1);
                 wait4release = 1;
@@ -446,6 +448,21 @@ void Remote_ChangeChassisState(uint8_t chassis_mode) {
         buscomm->chassis_mode = CHASSIS_CTRL_DISCO;
     } else
         buscomm->chassis_mode = chassis_mode;
+}
+/**
+ * @brief      switch mag door state
+ * @param      NULL
+ * @retval     NULL
+ */
+uint8_t Remote_Mag_State = 0;
+void Remote_SwitchMagState() {
+    if (Remote_Mag_State == 0) {
+        Servo_SetServoAngle(&Servo_ammoContainerCapServo, 0);
+        Remote_Mag_State = 1;
+    } else {
+        Servo_SetServoAngle(&Servo_ammoContainerCapServo, 300);
+        Remote_Mag_State = 0;
+    }
 }
 
 /**

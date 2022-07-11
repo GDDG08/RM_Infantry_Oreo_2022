@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-04 22:40:31
+ * @LastEditTime : 2022-07-11 11:56:30
  */
 
 #ifndef GIM_REMOTE_CTRL_H
@@ -45,6 +45,8 @@ typedef struct {
     uint8_t onAim;
 } Remote_RemoteControlTypeDef;
 
+extern uint8_t Remote_Mag_State;
+
 void Remote_RemotrControlInit(void);
 Remote_RemoteControlTypeDef* Remote_GetControlDataPtr(void);
 void Remote_ControlCom(void);
@@ -53,6 +55,7 @@ void Remote_RemoteShooterModeSet(void);
 void Remote_RemoteProcess(void);
 void Remote_KeyMouseProcess(void);
 void Remote_ChangeChassisState(uint8_t chassis_mode);
+void Remote_SwitchMagState(void);
 void Remote_SwitchGryoState(uint8_t);
 void Remote_SwitchAutoAimMode(uint8_t mode);
 void Remote_SetAutoAimState(uint8_t state);

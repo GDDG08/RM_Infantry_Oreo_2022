@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-10 00:50:21
+ * @LastEditTime : 2022-07-11 11:57:05
  *
  */
 
@@ -26,6 +26,7 @@
 #include "gim_gimbal_ctrl.h"
 #include "gim_shoot_ctrl.h"
 #include "gim_minipc_ctrl.h"
+#include "gim_remote_ctrl.h"
 #include "gim_ins_ctrl.h"
 #include "key_periph.h"
 #include "minipc_periph.h"
@@ -420,7 +421,7 @@ void BusComm_Update() {
     data->infantry_code = Key_GetEquipCode();
 
     data->pitch_angle = imu->angle.pitch;
-    data->magazine_state = 0;
+    data->magazine_state = Remote_Mag_State;
     data->shooter_state = shooter->shooter_mode > 0;
     data->minipc_mode = minipc->aim_mode;
     data->minipc_target_id = minipc_data->ID;

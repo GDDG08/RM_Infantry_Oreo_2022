@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-10 04:45:18
+ * @LastEditTime : 2022-07-11 13:01:34
  */
 
 #include "configure.h"
@@ -27,8 +27,8 @@ static const float Const_chassisMotorParam_infantry_7[4][3][4][5] = {
 };
 
 static const float Const_gimbalYawMotorParam_infantry_7[5][3][4][5] = {
-    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{300, 0.3, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{15, 1, 0, 50, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamAimBigEnergy
-    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{300, 0.3, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{15, 1, 0, 50, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamAimSmallEnergy
+    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{300, 0.3, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{15, 1, 0, 50, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},      // GimbalYaw_gimbalYawMotorParamAimBigEnergy
+    {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{300, 0.3, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{15, 1, 0, 50, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},      // GimbalYaw_gimbalYawMotorParamAimSmallEnergy
     {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamArmor
     {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}},  // GimbalYaw_gimbalYawMotorParamIMUDebug
     {{{1.1, 0.1, 0, 10000, 26000}, {-1, -1}, {0, 0}, {-1, -1}}, {{320, 0.8, 10, 10000, 30000}, {0.3, -1}, {0, 0}, {-1, -1}}, {{11, 0.02, 0, 500, 1000}, {-1, -1}, {50, 100}, {0.8, 0.7}}}   // GimbalYaw_gimbalYawMotorParamNoAuto
@@ -134,7 +134,7 @@ void Const_Infantry_7_Init(Const_ConstTypeDef* x) {
     x->PITCH_DMAXANGLE = -22.2f;
     x->YAW_MAXANGLE = 55.0f;
     x->PITCH_MOTOR_INIT_OFFSETf = -31.0f;
-    x->SERVO_INIT_OFFSET = 0.05f;
+    x->SERVO_INIT_OFFSET = 0.0f;
 
     x->CVKF_NT_YAW = 80;
 

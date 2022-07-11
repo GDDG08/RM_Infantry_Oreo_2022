@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-23 20:40:59
+ * @LastEditTime : 2022-07-11 12:58:11
  */
 
 #include "servo_periph.h"
@@ -24,7 +24,7 @@ Servo_ServoTypeDef Servo_ammoContainerCapServo;
  * @retval     NULL
  */
 void Servo_InitAllServos() {
-    Servo_InitServo(&Servo_ammoContainerCapServo, &htim15, TIM_CHANNEL_1);
+    Servo_InitServo(&Servo_ammoContainerCapServo, &htim15, TIM_CHANNEL_2);
 }
 
 /**
@@ -73,7 +73,7 @@ float Servo_GetServoAngle(Servo_ServoTypeDef* servo) {
  */
 void Servo_SetServoAngle(Servo_ServoTypeDef* servo, float angle) {
     servo->angle = angle;
-    PWM_SetPWMDuty(&(servo->pwm), angle / 275.0f * 0.1f + Const_SERVO_INIT_OFFSET);
+    PWM_SetPWMDuty(&(servo->pwm), (angle + Const_SERVO_INIT_OFFSET) / 275.0f * 0.1f + 0.05f);
 }
 
 /**
