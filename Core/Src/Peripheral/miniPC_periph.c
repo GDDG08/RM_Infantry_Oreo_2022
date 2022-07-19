@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-05 14:37:26
+ * @LastEditTime : 2022-07-19 10:26:46
  */
 
 #include "minipc_periph.h"
@@ -197,7 +197,7 @@ void MiniPC_SendDataPacket() {
     buff[23] = minipc_data->team_color;
     buff[24] = minipc_data->mode;
     ui322buff(MiniPC_Data_FrameTime, buff + 25);
-    buff[29] = 0;  // is change target
+    buff[29] = minipc->isChangeTarget;  // is change target
     buff[30] = minipc->vision_offset[minipc->aim_mode].horizental;
     buff[31] = minipc->vision_offset[minipc->aim_mode].vertical;
     // Must be even

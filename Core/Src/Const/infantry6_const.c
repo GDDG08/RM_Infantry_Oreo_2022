@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-27 18:26:17
+ * @LastEditTime : 2022-07-19 10:28:24
  */
 
 #include "configure.h"
@@ -111,8 +111,8 @@ void Const_Infantry_6_Init(Const_ConstTypeDef* x) {
 
 #if __FN_IF_ENABLE(__FN_INFANTRY_GIMBAL)
     /*      infantry gimbal const       */
-    x->MOUSE_PITCH_ANGLE_TO_FACT = 0.008f;
-    x->MOUSE_YAW_ANGLE_TO_FACT = 0.015f;
+    x->MOUSE_PITCH_ANGLE_TO_FACT = 0.005f;
+    x->MOUSE_YAW_ANGLE_TO_FACT = 0.01f;
     x->MOUSE_CHASSIS_ACCELERATE = 2.0f;
     x->MOUSE_CHASSIS_SLOWDOWN = 1.5f;
     x->MOUSE_CHASSIS_MAX_SPEED = 600;

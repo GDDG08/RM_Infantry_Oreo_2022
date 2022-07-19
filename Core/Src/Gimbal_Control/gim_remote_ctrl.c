@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-11 12:58:06
+ * @LastEditTime : 2022-07-19 10:26:02
  */
 
 #include "gim_remote_ctrl.h"
@@ -341,9 +341,15 @@ void Remote_KeyMouseProcess() {
 
             if (KEY_UP(g))
                 Remote_SwitchAutoAimMode(AutoAim_SENTRY);
+
+            if (KEY_DN(r))
+                minipc->isChangeTarget = !minipc->isChangeTarget;
+                
+            control_data->onZoomCtrl = KEY(e);
         }
     }
 
+    // To enable shift + wasd
     if (wait4release == 0) {
         /******** MOVE function ******/
         if (!KEY(q) && !KEY2(ctrl, shift) && !KEY(ctrl)) {
@@ -372,50 +378,43 @@ void Remote_KeyMouseProcess() {
             // boost
             buscomm->cap_boost_mode_user = KEY(shift) ? SUPERCAP_BOOST : SUPERCAP_UNBOOST;
         }
+
+        // autoaim offset
+        if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF ||
+            (KEY(q) && (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY))) {
+            if (KEY_DN(w))
+                Ctrl_vertical = KEY(shift) ? 10 : 1;
+            if (KEY_DN(s))
+                Ctrl_vertical = KEY(shift) ? -10 : -1;
+            if (KEY_DN(d))
+                Ctrl_horizental = KEY(shift) ? 10 : 1;
+            if (KEY_DN(a))
+                Ctrl_horizental = KEY(shift) ? -10 : -1;
+
+            if (KEY(f)) {
+                vision_offset_mode->horizental = 0;
+                vision_offset_mode->vertical = 0;
+            } else {
+                vision_offset_mode->horizental += Ctrl_horizental;
+                vision_offset_mode->vertical += Ctrl_vertical;
+            }
+        }
     } else {
         // All zero
         if (memcmp(remoteKey, &remoteKey_zero, sizeof(remoteKey_zero)) == 0)
             wait4release = 0;
     }
 
-    // autoaim offset
-    if (minipc->aim_mode == MiniPC_SMALL_BUFF || minipc->aim_mode == MiniPC_BIG_BUFF ||
-        (KEY(q) && (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY))) {
-        if (KEY_DN(w))
-            Ctrl_vertical = KEY(shift) ? 10 : 1;
-        if (KEY_DN(s))
-            Ctrl_vertical = KEY(shift) ? -10 : -1;
-        if (KEY_DN(d))
-            Ctrl_horizental = KEY(shift) ? 10 : 1;
-        if (KEY_DN(a))
-            Ctrl_horizental = KEY(shift) ? -10 : -1;
-
-        if (KEY(f)) {
-            vision_offset_mode->horizental = 0;
-            vision_offset_mode->vertical = 0;
-        } else {
-            vision_offset_mode->horizental += Ctrl_horizental;
-            vision_offset_mode->vertical += Ctrl_vertical;
-        }
-    }
-
     memcpy(&remoteKey_last, remoteKey, sizeof(remoteKey_last));
 
     /*********** mouse control********/
     static uint8_t mouse_r_last = 0;
-    // if (minipc->aim_mode == MiniPC_ARMOR || minipc->aim_mode == MiniPC_SENTRY) {
-    //     if (data->mouse.r == 1)
-    //         Gimbal_ChangeMode(Gimbal_ARMOR);
-    //     else
-    //         Gimbal_ChangeMode(Gimbal_NOAUTO);
-    // }
-    // else {
+
     if (!mouse_r_last && data->mouse.r) {
         Remote_SetAutoAimState(1);
     } else if (mouse_r_last && !data->mouse.r) {
         Remote_SetAutoAimState(0);
     }
-    // }
     mouse_r_last = data->mouse.r;
 
     if (gimbal->mode.present_mode == Gimbal_NOAUTO || (gimbal->mode.present_mode != Gimbal_IMU_DEBUG && minipc->target_state != MiniPC_TARGET_FOLLOWING)) {
@@ -423,7 +422,10 @@ void Remote_KeyMouseProcess() {
         float yaw, pitch;
         yaw = (float)data->mouse.x * MOUSE_YAW_ANGLE_TO_FACT;
         pitch = Filter_Bessel((float)data->mouse.y, &Remote_mouse_y_Filter) * MOUSE_PITCH_ANGLE_TO_FACT;
-
+        if (control_data->onZoomCtrl) {
+            yaw /= 3;
+            pitch /= 2;
+        }
         Gimbal_SetYawRefDelta(yaw);
         Gimbal_SetPitchRefDelta(pitch);
     }

@@ -81,6 +81,7 @@ typedef struct {
     MiniPC_TargetFollowModeEnum target_state;
     MiniPC_OffsetTypeDef output_offset;
     MiniPC_OffsetTuneCntTypeDef vision_offset[5];
+    uint8_t isChangeTarget;
 } MiniPC_MiniPCControlTypeDef;
 
 typedef enum {

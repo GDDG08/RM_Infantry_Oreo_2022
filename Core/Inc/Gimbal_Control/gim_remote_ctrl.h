@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-11 11:56:30
+ * @LastEditTime : 2022-07-19 10:18:26
  */
 
 #ifndef GIM_REMOTE_CTRL_H
@@ -43,6 +43,7 @@ typedef struct {
     float yaw_angle_offset;
     Remote_AutoAimModeEnum aim_mode;
     uint8_t onAim;
+    uint8_t onZoomCtrl;
 } Remote_RemoteControlTypeDef;
 
 extern uint8_t Remote_Mag_State;
