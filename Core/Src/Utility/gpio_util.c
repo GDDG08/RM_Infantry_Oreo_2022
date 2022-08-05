@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-29 10:08:11
+ * @LastEditTime : 2022-07-24 15:28:50
  */
 
 #include "gpio_util.h"
@@ -121,17 +121,8 @@ void GPIO_IRQCallback(uint16_t GPIO_Pin) {
         //     break;
         case Buttom1_Pin:
             pin_state = GPIO_ReadPin(KEY_FUNC);
-
-#if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
-            if (pin_state == GPIO_PIN_RESET) {
-                GPIO_Set(PC_CAM);
-            } else {
-                GPIO_Reset(PC_CAM);
-            }
-#else
             KEY_FUNC->tick = trigger_time;
             Key_KeyEventHandler(KEY_FUNC);
-#endif
             break;
         case Buttom2_Pin:
             pin_state = GPIO_ReadPin(KEY_BACK);
