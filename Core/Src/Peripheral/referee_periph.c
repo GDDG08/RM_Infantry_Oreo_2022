@@ -419,16 +419,16 @@ void Referee_SendClientCustomData() {
  * @param      data_length: 数据帧长度
  * @retval     无
  */
-void Referee_SendRobotCustomData(uint16_t data_cmd_id, uint16_t receiver_ID, const uint8_t* data, uint16_t data_length) {
-    if (data_cmd_id < Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_LBOUND ||
-        data_cmd_id > Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_UBOUND)
-        return;  // wrong data cmd id
-    if (receiver_ID == 0 || (receiver_ID > 10 && receiver_ID < 110) || receiver_ID > 107)
-        return;  // wrong receiver id
-    if (data_length > Const_Referee_DATA_INTERACTIVE_DATA_MAX_LENGTH)
-        return;  // interactive data too long
-    Referee_SendInteractiveData(data_cmd_id, receiver_ID, data, data_length);
-}
+//void Referee_SendRobotCustomData(uint16_t data_cmd_id, uint16_t receiver_ID, const uint8_t* data, uint16_t data_length) {
+//    if (data_cmd_id < Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_LBOUND ||
+//        data_cmd_id > Const_Referee_DATA_CMD_ID_INTERACTIVE_DATA_UBOUND)
+//        return;  // wrong data cmd id
+//    if (receiver_ID == 0 || (receiver_ID > 10 && receiver_ID < 110) || receiver_ID > 107)
+//        return;  // wrong receiver id
+//    if (data_length > Const_Referee_DATA_INTERACTIVE_DATA_MAX_LENGTH)
+//        return;  // interactive data too long
+//    Referee_SendInteractiveData(data_cmd_id, receiver_ID, data, data_length);
+//}
 
 /**
  * @brief      ���ѷ������ͻ����Զ���ͼ�η��ͺ���
