@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-08-23 12:37:20
+ * @LastEditTime : 2022-08-23 23:32:18
  */
 
 #include "gim_shoot_ctrl.h"
@@ -350,6 +350,7 @@ void Shooter_UpdataControlData() {
     Motor_ReadPWMEncoder(&Motor_shooterMotorLeft);
     Motor_ReadPWMEncoder(&Motor_shooterMotorRight);
 
+    Adc_Decode();
     //    Shooter_FeederMotorLockedJudge();
 }
 

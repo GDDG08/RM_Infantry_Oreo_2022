@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-08-23 13:07:38
+ * @LastEditTime : 2022-08-23 23:30:17
  */
 
 #include "gim_remote_ctrl.h"
@@ -19,6 +19,7 @@
 #include "gim_miniPC_ctrl.h"
 #include "gim_shoot_ctrl.h"
 #include "gim_login_ctrl.h"
+#include "adc_util.h"
 
 #define KEY(T) (data->key.T)
 #define KEY2(T1, T2) (data->key.T1 && data->key.T2)
@@ -134,13 +135,13 @@ void Remote_MouseShooterModeSet() {
 
 #if __FN_IF_ENABLE(__FN_SHOOTER_PID)
     // Prevent launching without opening the friction wheel
-    if ((shooter->shooter_mode != Shoot_REFEREE) || (Motor_shooterMotorLeft.pid_spd.fdb <= 8) || (Motor_shooterMotorRight.pid_spd.fdb <= 8)) {
+    if ((shooter->shooter_mode != Shoot_REFEREE) || (ADC_shooterVoltage < 15) || (Motor_shooterMotorLeft.pid_spd.fdb <= 8) || (Motor_shooterMotorRight.pid_spd.fdb <= 8)) {
         Shooter_ChangeFeederMode(Feeder_FINISH);
         return;
     }
 #else
     // Prevent launching without opening the friction wheel
-    if ((shooter->shooter_mode != Shoot_REFEREE)) {
+    if ((shooter->shooter_mode != Shoot_REFEREE) || (ADC_shooterVoltage < 15)) {
         Shooter_ChangeFeederMode(Feeder_FINISH);
         return;
     }

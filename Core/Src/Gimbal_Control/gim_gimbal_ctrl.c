@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-05 00:25:57
+ * @LastEditTime : 2022-08-23 23:32:02
  */
 
 #include "gim_gimbal_ctrl.h"
@@ -13,7 +13,6 @@
 #if __FN_IF_ENABLE(__FN_CTRL_GIMBAL_GIM)
 
 #include "const.h"
-#include "adc_util.h"
 #include "gim_remote_ctrl.h"
 #include "gim_shoot_ctrl.h"
 #include "gim_miniPC_ctrl.h"
@@ -42,7 +41,6 @@ void Gimbal_Task(void const* argument) {
             osDelay(1);
         }
         Remote_ControlCom();
-        Adc_Decode();
         MiniPC_CalcAutoAim();
         Gimbal_CtrlPitch();
         Gimbal_CtrlYaw();

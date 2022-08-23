@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-03-24 19:58:27
+ * @LastEditTime : 2022-08-23 23:29:54
  */
 
 #ifndef ADC_UTIL_H
@@ -23,7 +23,7 @@ extern "C" {
 #include "string.h"
 
 extern uint32_t Adc_valueBuf[30];
-extern float Adc_decodeBuf[30];
+extern float ADC_shooterVoltage;
 
 void Adc_Init(void);
 void Adc_GetData(void);
