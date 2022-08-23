@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-22 22:06:02
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-06-23 17:38:31
+ * @LastEditTime : 2022-08-23 12:37:20
  */
 
 #include "gim_shoot_ctrl.h"
@@ -253,7 +253,7 @@ void Shooter_ChangeFeederMode(Shoot_FeederModeEnum mode) {
          (shooter->last_feeder_mode == Feeder_FAST_CONTINUE) ||
          (shooter->last_feeder_mode == Feeder_REFEREE))) {
         shooter->feeder_mode = Feeder_FINISH;
-        Shooter_AngleCorrect();
+        Shooter_RealAngleCorrect();
     }
 }
 
@@ -609,8 +609,8 @@ void Shooter_ShootControl() {
 void Shooter_SingleShootCtrl() {
     Shoot_StatusTypeDef* shooter = Shooter_GetShooterControlPtr();
 
-    if (fabs(Motor_feederMotor.pid_pos.fdb - Motor_feederMotor.pid_pos.ref) > 1.0f) {  // feeder motor not ready
-                                                                                       // return;     // do nothing
+    if (fabs(Motor_feederMotor.pid_pos.fdb - Motor_feederMotor.pid_pos.ref) > 5.0f) {  // feeder motor not ready
+        return;                                                                        // do nothing
     }
     if (!shooter->single_shoot_done) {  // not shoot yet
         Motor_feederMotor.pid_pos.ref += 45.0f;

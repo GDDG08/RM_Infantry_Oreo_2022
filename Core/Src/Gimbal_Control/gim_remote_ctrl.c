@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-19 10:26:02
+ * @LastEditTime : 2022-08-23 13:07:38
  */
 
 #include "gim_remote_ctrl.h"
@@ -138,26 +138,27 @@ void Remote_MouseShooterModeSet() {
         Shooter_ChangeFeederMode(Feeder_FINISH);
         return;
     }
+#else
+    // Prevent launching without opening the friction wheel
+    if ((shooter->shooter_mode != Shoot_REFEREE)) {
+        Shooter_ChangeFeederMode(Feeder_FINISH);
+        return;
+    }
+// #endif
 #endif
     static int count_mouse_L = 0;
     if (data->mouse.l == 1) {
-        // count_mouse_L++;
-        // if (count_mouse_L >= 50) {
-        //     // Shooter_ChangeFeederMode(Feeder_REFEREE);
-        //     Shooter_ChangeFeederMode(Feeder_SINGLE);
+        if (count_mouse_L < 150) {
+            count_mouse_L++;
+            Shooter_ChangeFeederMode(Feeder_SINGLE);
+        } else {
+            Shooter_ChangeFeederMode(Feeder_REFEREE);
+        }
 
-        //     count_mouse_L = 50;
-        // }
-
-        Shooter_ChangeFeederMode(Feeder_SINGLE);
     } else {
-        // if (0 < count_mouse_L && count_mouse_L < 50) {
-        //     Shooter_SingleShootReset();
-        //     Shooter_ChangeFeederMode(Feeder_SINGLE);
-        // } else
         Shooter_ChangeFeederMode(Feeder_FINISH);
         Shooter_SingleShootReset();
-        // count_mouse_L = 0;
+        count_mouse_L = 0;
     }
 }
 
@@ -344,7 +345,7 @@ void Remote_KeyMouseProcess() {
 
             if (KEY_DN(r))
                 minipc->isChangeTarget = !minipc->isChangeTarget;
-                
+
             control_data->onZoomCtrl = KEY(e);
         }
     }

@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-09 16:55:57
+ * @LastEditTime : 2022-08-23 11:38:33
  */
 
 #include "key_periph.h"
@@ -38,8 +38,8 @@ uint8_t Key_GetEquipCode() {
     //     code |= 0x04;
     // }
     // code = 0x06;  // for infantry 4?5
-    code = 0x07;  // for infantry 3
-    // code = 0x08;  // for infantry new 5
+    // code = 0x07;  // for infantry 3
+    code = 0x08;  // for infantry new 5
 #else
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     code = buscomm->infantry_code;

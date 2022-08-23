@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-03 22:47:32
+ * @LastEditTime : 2022-08-23 11:44:05
  */
 
 #include "init_ctrl.h"
@@ -79,13 +79,13 @@ void Init_Task(void const* argument) {
 
     Const_Init();
 
-    Client_Init();
+    // Client_Init();
 
     Servo_InitAllServos();
 
     Ins_InsInit();
     MiniPC_InitMiniPC();
-		Adc_Init();
+    Adc_Init();
     Motor_InitAllMotors();
     BusComm_InitBusComm();
     FDCAN_IntFilterAndStart(&hfdcan1);
@@ -109,7 +109,7 @@ void Init_Task(void const* argument) {
 #if __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
 
     Referee_InitReferee();
-		Referee_Setup();
+    Referee_Setup();
     Motor_InitAllMotors();
     BusComm_InitBusComm();
     FDCAN_IntFilterAndStart(&hfdcan1);
