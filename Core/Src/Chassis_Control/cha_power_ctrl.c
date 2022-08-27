@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-11 13:11:08
+ * @LastEditTime : 2022-08-27 19:25:44
  */
 
 #include "cha_power_ctrl.h"
@@ -218,14 +218,15 @@ void Motor_ModeControl(void) {
             PowCtr->Mecanum_motor_mode[2] == Motor_State_Starting &&
             PowCtr->Mecanum_motor_mode[3] == Motor_State_Starting) {
             capctrl->cap_mode_Starting = 1;
-
         } else {
             capctrl->cap_mode_Starting = 0;
         }
     } else if (capctrl->cap_mode_Starting == 1) {
         capctrl->starting_time++;
+        //Todo
         capctrl->cap_mode_Starting = 1;
     } else {
+        // Todo
         capctrl->cap_mode_Starting = 0;
 
         if (PowCtr->Mecanum_motor_mode[0] == Motor_State_Starting &&

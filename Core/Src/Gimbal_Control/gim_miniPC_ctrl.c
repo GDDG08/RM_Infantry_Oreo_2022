@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-05 22:11:04
+ * @LastEditTime : 2022-08-27 16:49:10
  */
 
 #include "gim_miniPC_ctrl.h"
@@ -239,11 +239,11 @@ void AutoAim_Para_Init() {
     Predict_Offest_x = 100.0f;
     Predict_Offset_y = -150.0f;
 
-    kk_Predict_x = 2.0f;
-    kt_Predict_x = 0.1f;
+    kk_Predict_x = 0.0f;
+    kt_Predict_x = 0.0f;
     k_Predict_z = 0.0f;
-    k_Predict_Offset_y = 0.02f;
-    k_Predict_Correction = 1.0f;
+    k_Predict_Offset_y = 0.0f;
+    k_Predict_Correction = 0.0f;
 
     is_x_SuddenStart = is_x_SuddenStop = is_z_SuddenStart = is_z_SuddenStop = 0;
 }

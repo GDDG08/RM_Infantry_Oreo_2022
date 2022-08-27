@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-19 10:26:46
+ * @LastEditTime : 2022-08-27 15:52:30
  */
 
 #include "minipc_periph.h"
@@ -144,6 +144,8 @@ void MiniPC_SendDataPacket() {
     MiniPC_MiniPCControlTypeDef* minipc = MiniPC_GetMiniPCControlDataPtr();
     INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
+
+    MiniPC_Update();
 
 #if __FN_IF_ENABLE(__FN_MINIPC_CAPT)
     osDelay(Const_MiniPC_CAPT_PRE);

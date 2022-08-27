@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2022-01-14 22:16:51
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-08-23 13:07:38
+ * @LastEditTime : 2022-08-27 15:54:38
  */
 
 #include "gim_remote_ctrl.h"
@@ -110,8 +110,8 @@ void Remote_ControlCom() {
             // Gimbal_ChangeMode(Gimbal_BIG_ENERGY);
             // MiniPC_ChangeAimMode(MiniPC_BIG_BUFF);
             // Remote_ChangeChassisState(CHASSIS_CTRL_STOP);
-            control_data->onAim = 0;
-            control_data->aim_mode = AutoAim_BIG_BUFF;
+            control_data->onAim = 1;
+            control_data->aim_mode = AutoAim_ARMOR;
             Remote_RemoteShooterModeSet();
             Remote_Gesture();
             break;

@@ -42,8 +42,8 @@ uint8_t Key_GetEquipCode() {
 //    // code = 0x07;  // for infantry 3
 //    code = 0x08;  // for infantry new 5
 //=======
-//   code = 0x07;  // for infantry 3
-    code = 0x08;  // for infantry new 5
+  code = 0x07;  // for infantry 3
+    // code = 0x08;  // for infantry new 5
 //>>>>>>> Stashed changes
 #else
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();

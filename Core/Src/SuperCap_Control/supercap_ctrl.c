@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-12-31 17:37:14
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-04-13 22:54:30
+ * @LastEditTime : 2022-08-27 19:27:06
  */
 
 #include "supercap_ctrl.h"
@@ -78,6 +78,7 @@ void Cap_Update(void) {
     BusComm_BusCommDataTypeDef* buscomm = BusComm_GetBusDataPtr();
     PowerCtrl_Data_t* PowCtr = PowerCtrl_GetPowerDataPtr();
     Referee_RefereeDataTypeDef* referee = Referee_GetRefereeDataPtr();
+    Chassis_ChassisTypeDef* chassis = Chassis_GetChassisControlPtr();
 
     capctrl->Sum_PowerReally = buscomm->Cap_power;
     capctrl->Chassis_voltage = buscomm->Cap_voltage;
@@ -86,8 +87,13 @@ void Cap_Update(void) {
     capctrl->cap_mode_Remote = buscomm->cap_mode_user;
     capctrl->cap_boost_mode = buscomm->cap_boost_mode_user;
 
-    buscomm->cap_boost_mode_fnl = PowCtr->ChassisStarting_flag << 2 | PowCtr->ChassisDown_flag << 1 | capctrl->cap_boost_mode;
-    buscomm->cap_mode_fnl = buscomm->cap_boost_mode_fnl || capctrl->cap_mode_Remote || capctrl->cap_mode_Stall || capctrl->cap_mode_Starting;
+    if (chassis->mode == Chassis_MODE_SUPERGYRO || chassis->mode == Chassis_MODE_GYRO) {
+        buscomm->cap_boost_mode_fnl = capctrl->cap_boost_mode;
+        buscomm->cap_mode_fnl = buscomm->cap_boost_mode_fnl || capctrl->cap_mode_Remote;
+    } else {
+        buscomm->cap_boost_mode_fnl = PowCtr->ChassisStarting_flag << 2 | PowCtr->ChassisDown_flag << 1 | capctrl->cap_boost_mode;
+        buscomm->cap_mode_fnl = buscomm->cap_boost_mode_fnl || capctrl->cap_mode_Remote || capctrl->cap_mode_Stall || capctrl->cap_mode_Starting;
+    }
     buscomm->chassis_power_limit = referee->max_chassis_power;
     buscomm->chassis_power_buffer = (uint8_t)referee->chassis_power_buffer;
     buscomm->chassis_power = referee->chassis_power;

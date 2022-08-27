@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-07-06 21:07:36
+ * @LastEditTime : 2022-08-27 18:55:14
  */
 
 #include "debug_BTlog.h"
@@ -198,34 +198,36 @@ void BTlog_Init() {
 
 #elif __FN_IF_ENABLE(__FN_INFANTRY_CHASSIS)
     // ADD_SEND_DATA(buscomm->yaw_relative_angle, Float, "yaw_relative_angle");
-    ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.err[0], Float, "Yaw.pid_pos.err");
+    // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.err[0], Float, "Yaw.pid_pos.err");
     // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_pos.output, Float, "Yaw.pid_pos.output");
     // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_spd.output, Float, "Yaw.pid_spd.output");
     // ADD_SEND_DATA(Motor_gimbalMotorYaw.pid_cur.output, Float, "Yaw.pid_cur.output");
-    ADD_SEND_DATA(gimbal->yaw_ref, Float, "yaw_ref");
-    ADD_SEND_DATA(gimbal->yaw_position_fdb, Float, "yaw_fdb_pos");
-    ADD_SEND_DATA(chassis->Chassis_followPID.ref, Float, "followPID.ref");
-    ADD_SEND_DATA(chassis->Chassis_followPID.fdb, Float, "followPID.fdb");
+    // ADD_SEND_DATA(gimbal->yaw_ref, Float, "yaw_ref");
+    // ADD_SEND_DATA(gimbal->yaw_position_fdb, Float, "yaw_fdb_pos");
+    // ADD_SEND_DATA(chassis->Chassis_followPID.ref, Float, "followPID.ref");
+    // ADD_SEND_DATA(chassis->Chassis_followPID.fdb, Float, "followPID.fdb");
     // ADD_SEND_DATA(gimbal->yaw_speed_fdb, Float, "yaw_fdb_spd");
     // ADD_SEND_DATA(Motor_chassisMotor1.encoder.speed, Int16, "Chassis_Motor1_spd");
     // ADD_SEND_DATA(Motor_chassisMotor2.encoder.speed, Int16, "Chassis_Motor2_spd");
     // ADD_SEND_DATA(Motor_chassisMotor3.encoder.speed, Int16, "Chassis_Motor3_spd");
     // ADD_SEND_DATA(Motor_chassisMotor4.encoder.speed, Int16, "Chassis_Motor4_spd");
-    // ADD_SEND_DATA(capctrl->Chassis_voltage, Float, "Cap_Voltage");
-    // ADD_SEND_DATA(capctrl->Sum_CurrentReally, Float, "Cap_Current");
+    ADD_SEND_DATA(capctrl->Chassis_voltage, Float, "Cap_Voltage");
+    ADD_SEND_DATA(capctrl->Sum_CurrentReally, Float, "Cap_Current");
+    ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
+    ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
     // ADD_SEND_DATA(capctrl->, Float, "Cap_Voltage");
     // ADD_SEND_DATA(buscomm->chassis_power_limit, uInt8, "REFEREE_power_limit");
-    // ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
+    ADD_SEND_DATA(PowCtr->Power_pid.ref, Float, "Power_pid.ref");
     // ADD_SEND_DATA(PowCtr->Power_pid.output, Float, "Power_pid.output");
     // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].ref, Float, "current_pid[0].ref");
     // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].fdb, Float, "current_pid[0].fdb");
     // ADD_SEND_DATA(PowCtr->Mecanum_current_pid[0].output, Float, "current_pid[0].output");
-    // ADD_SEND_DATA(PowCtr->Power_scale, Float, "Power_scale");
-    // ADD_SEND_DATA(capctrl->Sum_PowerReally, Float, "Cap_Power");
-    // ADD_SEND_DATA(buscomm->cap_rest_energy, uInt8, "cap_rest_energy");
+    ADD_SEND_DATA(PowCtr->Power_scale, Float, "Power_scale");
     // ADD_SEND_DATA(referee->bullet_speed, Float, "bullet_speed");
     // ADD_SEND_DATA(buscomm->cap_mode_user, uInt8, "cap_mode_user");
     // ADD_SEND_DATA(buscomm->cap_boost_mode_user, uInt8, "cap_boost_mode_user");
+    ADD_SEND_DATA(buscomm->cap_mode_fnl, uInt8, "cap_mode_fnl");
+    ADD_SEND_DATA(buscomm->cap_boost_mode_fnl, uInt8, "cap_boost_mode_fnl");
 
 #elif __FN_IF_ENABLE(__FN_SUPER_CAP)
 
